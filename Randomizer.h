@@ -17,6 +17,7 @@ public:
     void RandomizeStartingGenerals();
     void ResurrectAllAfterDeath();
     void GivePartyMaxFoodFromNPC();
+    void ModifyEncounterRate();
 
     void RandomizeBattles(std::vector<std::vector<BYTE>>& generalsForZone);
 

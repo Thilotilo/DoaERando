@@ -92,6 +92,16 @@ void Randomizer::GivePartyMaxFoodFromNPC()
     myRom->WriteByte(0x361DF, 0x3F);
 }
 
+void Randomizer::ModifyEncounterRate()
+{
+    printf("Keeping the enemies away(ish)...\n");
+    // Don't encounter enemies on anything that's not mountains (and whatever id 0x05 is)
+    myRom->WriteByte(0x3F4D6, 0x04);
+    // Make Mountain encounter rate really high (50%)
+    myRom->WriteByte(0x3F51C, 0x01);
+    myRom->WriteByte(0x3F522, 0x00);
+}
+
 void Randomizer::RandomizeBattles(vector<vector<BYTE>>& generalsForZone)
 {
     vector<int> zoneForBattle = {1, 1, 1, 1, 1, 1,
