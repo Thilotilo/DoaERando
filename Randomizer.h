@@ -15,6 +15,8 @@ public:
     void PrintName(BYTE id);
 
     void RandomizeStartingGenerals();
+
+    void FixSlot7Glitch();
     void ResurrectAllAfterDeath();
     void GivePartyMaxFoodFromNPC();
     void ModifyEncounterRate();

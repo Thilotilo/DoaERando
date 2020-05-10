@@ -75,6 +75,13 @@ void Randomizer::RandomizeStartingGenerals()
     }
 }
 
+void Randomizer::FixSlot7Glitch()
+{
+    // Based on meteorstrike's old guide, patching to terminate inner tactic
+    //  loop when Y >= 7 rather than Y == 7
+    myRom->WriteByte(0x3B616, 0x90);
+}
+
 void Randomizer::ResurrectAllAfterDeath()
 {
     printf("Resurrecting all after death...\n");
