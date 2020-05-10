@@ -78,8 +78,8 @@ void Randomizer::RandomizeStartingGenerals()
 void Randomizer::ResurrectAllAfterDeath()
 {
     printf("Resurrecting all after death...\n");
-    myRom->WriteByte(0x36145, 0x01);
-    myRom->WriteByte(0x36149, 0xD9);
+    myRom->WriteByte(0x36145, 0x01); // Resurrect all generals with an ID greater than this...
+    myRom->WriteByte(0x36149, 0xD9); // and an ID less than this
 }
 
 void Randomizer::RandomizeBattles(vector<vector<BYTE>>& generalsForZone)
