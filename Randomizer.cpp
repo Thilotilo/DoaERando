@@ -309,16 +309,6 @@ void Randomizer::RandomizeZones()
             myRom->WriteByte(armorOffset, armorDistribution(myGenerator));
             BYTE weaponVal = myRom->ReadByte(weaponOffset) & 0xE0;
             myRom->WriteByte(weaponOffset, weaponVal + weaponDistribution(myGenerator));
-
-            if ((i & 0xFF) != 0xA8)
-            {
-                //SetGeneralEncounterable(code, i);
-                //SetGeneralRecruitable(code, i);
-            }
-            else
-            {
-                //printf("+++ignoring General %d\n", i);
-            }
         }
 
     }
