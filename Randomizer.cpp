@@ -173,6 +173,19 @@ void Randomizer::SetGeneralEncounterable(BYTE id)
     myRom->WriteByte(BASE_ADDRESS + (id/8), newByte);
 }
 
+void Randomizer::MakeAllGeneralsRecruitableAndEncounterable()
+{
+    for (BYTE id = 0x05; id < 0xD9; ++id)
+    {
+        SetGeneralRecruitable(id);
+        SetGeneralEncounterable(id);
+    }
+
+    //Allow any General that appears in a town and isn't already on your party to show up.
+    myRom->WriteByte(0x3E8F0, 0xC0); // Compare general config with 0xC0 rather than 0x80
+    myRom->WriteByte(0x3E8F1, 0xD0); // Branch if != 0xC0 rather than branching if == 0x80 
+}
+
 void Randomizer::RandomizeTacticLevels()
 {
     std::uniform_int_distribution<int> levelSlot(1, 30);

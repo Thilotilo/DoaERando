@@ -26,6 +26,7 @@ int main(void)
     randomizer.RandomizeTacticLevels();
     randomizer.RandomizeStartingGenerals();
     randomizer.ResurrectAllAfterDeath();
+    randomizer.MakeAllGeneralsRecruitableAndEncounterable();
 
     printf("Saving file...\n");
     rom.WriteRom("./RandoRoms/", 0, seed);

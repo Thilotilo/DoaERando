@@ -22,6 +22,8 @@ public:
     void SetGeneralRecruitable(BYTE id);
     void SetGeneralEncounterable(BYTE id);
 
+    void MakeAllGeneralsRecruitableAndEncounterable();
+
     void RandomizeTacticLevels();
     void RandomizeZones();
 
