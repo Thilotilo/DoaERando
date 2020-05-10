@@ -280,7 +280,7 @@ void Randomizer::RandomizeZones()
             std::uniform_int_distribution<int> soldierDistribution(MIN_SOLDIERS[randomizedZone], MAX_SOLDIERS[randomizedZone]);
             BYTE randomizedSoldiers = soldierDistribution(myGenerator);
             {
-                if (myRom->ReadByte(soldiersOffset) & 0x80)
+                if (myRom->ReadByte(soldiersOffset + 1) & 0x80)
                 {
                     printf("Tiger detected, not modifying the first value.\n");
                     printf("Changing ");
