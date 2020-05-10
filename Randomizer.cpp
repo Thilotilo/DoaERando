@@ -82,6 +82,16 @@ void Randomizer::ResurrectAllAfterDeath()
     myRom->WriteByte(0x36149, 0xD9); // and an ID less than this
 }
 
+void Randomizer::GivePartyMaxFoodFromNPC()
+{
+    printf("Feeding the armies well...\n");
+    // 0xF423F is 999999 in decimal.  These bytes determine the amount of food the NPC gives you.
+    // Note that the text still says 1000.  I'll need to change that elsewhere.
+    myRom->WriteByte(0x361D7, 0x0F);
+    myRom->WriteByte(0x361DB, 0x42);
+    myRom->WriteByte(0x361DF, 0x3F);
+}
+
 void Randomizer::RandomizeBattles(vector<vector<BYTE>>& generalsForZone)
 {
     vector<int> zoneForBattle = {1, 1, 1, 1, 1, 1,

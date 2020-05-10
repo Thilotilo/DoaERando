@@ -27,6 +27,7 @@ int main(void)
     randomizer.RandomizeStartingGenerals();
     randomizer.ResurrectAllAfterDeath();
     randomizer.MakeAllGeneralsRecruitableAndEncounterable();
+    randomizer.GivePartyMaxFoodFromNPC();
 
     printf("Saving file...\n");
     rom.WriteRom("./RandoRoms/", 0, seed);
