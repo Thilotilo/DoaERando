@@ -14,4 +14,4 @@ all: $(TESTFILES)
 #	@mkdir -p $(BINDIR)
 
 $(TESTFILES): $($(TESTFILES)_OBJS)
-	$(CC) -g $($@_OBJS) $($@_DEFINES) -std=c++11 -o $(BINDIR)/$@
+	$(CC) -g $($@_OBJS) $($@_DEFINES) -static -std=c++11 -static-libgcc -static-libstdc++ -o $(BINDIR)/$@

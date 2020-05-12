@@ -32,7 +32,7 @@ int main(void)
     randomizer.FixSlot7Glitch();
 
     printf("Saving file...\n");
-    rom.WriteRom("./RandoRoms/", 1, seed);
+    rom.WriteRom("./RandoRoms/", 2, seed);
 
     return 0;
 }
