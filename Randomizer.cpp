@@ -378,5 +378,47 @@ void Randomizer::ImproveInitialBattlesAndFlags()
     myRom->WriteByte(0x3475E, 0x01);    // Ru Nan Sima Yi
 }
 
+void Randomizer::ImproveMap()
+{
+    // Add Bridge under ZGL's house
+    myRom->WriteByte(0x160C3, 0x2A);
+    myRom->WriteByte(0x160F2, 0xF1);
+    // Add Bridge from Chang Sha to Po Yang
+    myRom->WriteByte(0x1802C, 0xC8);
+    myRom->WriteByte(0x18031, 0x22);
+    myRom->WriteByte(0x18032, 0x22);
+    myRom->WriteByte(0x18033, 0x22);
+    myRom->WriteByte(0x18034, 0x28);
+    myRom->WriteByte(0x18035, 0x4A);
+    myRom->WriteByte(0x18036, 0xDC);
+    myRom->WriteByte(0x18037, 0xDC);
+    myRom->WriteByte(0x18053, 0xF7);
+    myRom->WriteByte(0x18054, 0x07);
+    myRom->WriteByte(0x18618, 0x27);
+    // Add Bridge from Xu Zhou to Ji Zhou
+    myRom->WriteByte(0x18838, 0xFE);
+    myRom->WriteByte(0x18839, 0x4A);
+    myRom->WriteByte(0x1883A, 0xDC);
+    myRom->WriteByte(0x1883B, 0xDC);
+    myRom->WriteByte(0x1883C, 0xDC);
+    myRom->WriteByte(0x1883D, 0xDC);
+    myRom->WriteByte(0x1883E, 0xCF);
+    myRom->WriteByte(0x1883F, 0x60);
+    myRom->WriteByte(0x18878, 0x7C);
+    myRom->WriteByte(0x188BF, 0xA7);
+    myRom->WriteByte(0x188C7, 0x41);
+    myRom->WriteByte(0x189EE, 0xCD);
+    myRom->WriteByte(0x189EF, 0xFE);
+    myRom->WriteByte(0x189DE, 0xCD);
+    // Add Hills in Ji Zhou
+    myRom->WriteByte(0x1889A, 0x87);
+    // Add Hills in Zone 2
+    myRom->WriteByte(0x1842C, 0x87);
+    // Enable all story-trigger bridges
+    myRom->WriteByte(0x34781, 0x01);    // Automatically enable the bridge in the Qing Zhou cave
+    myRom->WriteByte(0x34782, 0x01);    // Automatically enable the bridge from Luo Yang to Chin
+    myRom->WriteByte(0x34784, 0x01);    // Automatically enable the bridge from Nan Yang to Ji Zhou
+    myRom->WriteByte(0x34788, 0x01);    // Automatically enable the bridge from Gui Yang to Wu
+}
 
 }

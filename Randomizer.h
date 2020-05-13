@@ -33,6 +33,8 @@ public:
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
+    void ImproveMap();
+
 
 private:
     Randomizer() = delete;

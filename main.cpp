@@ -26,6 +26,7 @@ int main(void)
     randomizer.ImproveInitialBattlesAndFlags();
 
     // Optional items
+    randomizer.ImproveMap();
     randomizer.RandomizeZones();
     randomizer.RandomizeTacticLevels();
     randomizer.RandomizeStartingGenerals();
