@@ -31,6 +31,8 @@ public:
     void RandomizeTacticLevels();
     void RandomizeZones();
 
+    // For Freeform Map
+    void ImproveInitialBattlesAndFlags();
 
 private:
     Randomizer() = delete;

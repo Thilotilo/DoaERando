@@ -22,6 +22,10 @@ int main(void)
         printf("\n");
     }
 
+    // This is a non-negotiable - it changes no behavior, but enables other features.
+    randomizer.ImproveInitialBattlesAndFlags();
+
+    // Optional items
     randomizer.RandomizeZones();
     randomizer.RandomizeTacticLevels();
     randomizer.RandomizeStartingGenerals();

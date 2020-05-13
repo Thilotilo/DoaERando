@@ -342,5 +342,41 @@ void Randomizer::RandomizeZones()
     RandomizeBattles(generalsForZone);
 }
 
+void Randomizer::ImproveInitialBattlesAndFlags()
+{
+    // File start code (from scratch) initializes several battles to non-active, but it does it sequentially
+    // and hardcoded, rather than through an index.  There appears to be unused bytes in the same bank that
+    // runs this initialization code.  Thus, to save a few bytes and enable us to set more flags in the $6500
+    // range, we modify this code to use a loop and initialize based upon the contents of $8700-877F
+    std::vector<BYTE> loopingCode = {
+        0xA2, 0x00,             // LDX #$00
+        0xBD, 0x00, 0x87,       // LDA $8700,X
+        0x9D, 0x00, 0x65,       // STA $6500,X
+        0xE8,                   // INX
+        0xE0, 0x80,             // CPX #$80
+        0xD0, 0xF5,             // BNE ($9416) - (The LDA $8700,X instruction)
+        // This is designed to get us back on track. Write 1 to 0x6010, since we've overwritten that portion, then branch to existing code
+        0xA9, 0x01,             // LDA #$01
+        0x8D, 0x10, 0x60,       // STA $6010
+        0xD0, 0x0C,             // BEQ ($9434) - (The STA $6073 instruction)
+        // Zero out now-unused bytes
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    for (int i = 0; i < loopingCode.size(); ++i)
+    {
+        myRom->WriteByte(0x35424 + i, loopingCode[i]);
+    }
+
+    // Now update the data at $8700 to match the overwritten code
+    myRom->WriteByte(0x34715, 0x01);    // Qing Zhou (Front) for Second Yellow Scarves Battle
+    myRom->WriteByte(0x34738, 0x01);    // Ling Ling Fight for Wu
+    myRom->WriteByte(0x34739, 0x01);    // Wu Ling Fight for Wu
+    myRom->WriteByte(0x34753, 0x01);    // Luo Yang Gate 1 (Sima Yi)
+    myRom->WriteByte(0x34754, 0x01);    // Luo Yang Gate 2 (Sima Yi)
+    myRom->WriteByte(0x34755, 0x01);    // Luo Yang Gate 3 (Sima Yi)
+    myRom->WriteByte(0x34756, 0x01);    // Luo Yang Sima kids
+    myRom->WriteByte(0x34757, 0x01);    // Luo Yang Sima Yi 3
+    myRom->WriteByte(0x3475E, 0x01);    // Ru Nan Sima Yi
+}
+
 
 }
