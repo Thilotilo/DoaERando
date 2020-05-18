@@ -215,11 +215,11 @@ void Randomizer::MakeAllGeneralsRecruitableAndEncounterable()
 
 void Randomizer::RandomizeTacticLevels()
 {
-    std::uniform_int_distribution<int> levelSlot(1, 30);
+    std::uniform_int_distribution<int> levelSlot(1, 49);
 
     const int TACTIC_LEVEL_OFFSET = 0x3b880;
     printf("Old Tactic Levels:\n");
-    for(int i = 1; i < 31; ++i)
+    for(int i = 1; i < 50; ++i)
     {
         printf("  Level %d: Tactic id 0x%X\n", i + 1, myRom->ReadByte(TACTIC_LEVEL_OFFSET + i));
     }
@@ -232,7 +232,7 @@ void Randomizer::RandomizeTacticLevels()
     }
 
     printf("New Tactic Levels:\n");
-    for(int i = 1; i < 31; ++i)
+    for(int i = 1; i < 50; ++i)
     {
         printf("  Level %d: Tactic id 0x%X\n", i + 1, myRom->ReadByte(TACTIC_LEVEL_OFFSET + i));
     }
