@@ -3,6 +3,7 @@
 
 #include "Rom.h"
 #include <random>
+#include "Generals.h"
 
 namespace DoaERando {
 
@@ -14,14 +15,14 @@ public:
     int GetGeneralLocation(BYTE id);
     void PrintName(BYTE id);
 
-    void RandomizeStartingGenerals();
+    //void RandomizeStartingGenerals();
 
     void FixSlot7Glitch();
     void ResurrectAllAfterDeath();
     void GivePartyMaxFoodFromNPC();
     void ModifyEncounterRate();
 
-    void RandomizeBattles(std::vector<std::vector<BYTE>>& generalsForZone);
+    //void RandomizeBattles(std::vector<std::vector<BYTE>>& generalsForZone);
 
     void SetGeneralRecruitable(BYTE id);
     void SetGeneralEncounterable(BYTE id);
@@ -29,7 +30,8 @@ public:
     void MakeAllGeneralsRecruitableAndEncounterable();
 
     void RandomizeTacticLevels();
-    void RandomizeZones();
+    void RandomizeGenerals();
+    //void RandomizeZones();
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
@@ -39,7 +41,8 @@ public:
 private:
     Randomizer() = delete;
     ROM* myRom;
-    std::mt19937_64 myGenerator;
+    Generator myGenerator;
+    Generals myGenerals;
     
 };
 

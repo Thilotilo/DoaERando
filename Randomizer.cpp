@@ -1,5 +1,7 @@
 #include "Randomizer.h"
 #include <stdio.h>
+#include "Generals.h"
+#include "General.h"
 
 using namespace std;
 
@@ -8,6 +10,7 @@ namespace DoaERando {
 Randomizer::Randomizer(ROM* rom, int seed)
     : myRom(rom)
     , myGenerator(seed)
+    , myGenerals(*rom)
 {
 }
 
@@ -51,7 +54,7 @@ void Randomizer::PrintName(BYTE id)
     }
 }
 
-void Randomizer::RandomizeStartingGenerals()
+/*void Randomizer::RandomizeStartingGenerals()
 {
     printf("Randomizing Starting Generals...\n");
     uniform_int_distribution<int> distribution(0x05, 0xD8);
@@ -73,7 +76,7 @@ void Randomizer::RandomizeStartingGenerals()
         printf(" as a starting general\n");
         myRom->WriteByte(0x35559, general);
     }
-}
+}*/
 
 void Randomizer::FixSlot7Glitch()
 {
@@ -109,7 +112,7 @@ void Randomizer::ModifyEncounterRate()
     myRom->WriteByte(0x3F522, 0x00);
 }
 
-void Randomizer::RandomizeBattles(vector<vector<BYTE>>& generalsForZone)
+/*void Randomizer::RandomizeBattles(vector<vector<BYTE>>& generalsForZone)
 {
     vector<int> zoneForBattle = {1, 1, 1, 1, 1, 1,
                            2, 2, 2, 2, 2, 2, 2, 2,
@@ -182,7 +185,7 @@ void Randomizer::RandomizeBattles(vector<vector<BYTE>>& generalsForZone)
         printf("\n");
 
     }
-}
+}*/
 
 void Randomizer::SetGeneralRecruitable(BYTE id)
 {
@@ -238,7 +241,24 @@ void Randomizer::RandomizeTacticLevels()
     }
 }
 
-void Randomizer::RandomizeZones()
+void Randomizer::RandomizeGenerals()
+{
+    myGenerals.SetZonesForZone0(myGenerator);
+    uniform_int_distribution<int> generalDistribution(0, myGenerals.size()-1);
+    for (int i = 0; i < 10000; ++i)
+    {
+        myGenerals.SwapIDs(generalDistribution(myGenerator), generalDistribution(myGenerator));
+    }
+    for (int i = 0; i < 10000; ++i)
+    {
+        myGenerals.SwapZones(generalDistribution(myGenerator), generalDistribution(myGenerator));
+    }
+    myGenerals.ScaleForZone(myGenerator);
+    myGenerals.ScaleSpecialGenerals(myGenerator);
+    myGenerals.UpdateGenerals();
+}
+
+/*void Randomizer::RandomizeZones()
 {
     std::uniform_int_distribution<int> zoneDistribution(1,8);
     vector<vector<BYTE>> generalsForZone;
@@ -340,7 +360,7 @@ void Randomizer::RandomizeZones()
 
     }
     RandomizeBattles(generalsForZone);
-}
+}*/
 
 void Randomizer::ImproveInitialBattlesAndFlags()
 {

@@ -4,8 +4,11 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <random>
 
 namespace DoaERando {
+
+typedef std::mt19937_64 Generator;
 
 typedef uint8_t BYTE;
 
