@@ -214,9 +214,12 @@ int Generals::GetGeneralIndexById(BYTE id)
     int i = 0;
     for (i = 0; i < myGenerals.size(); ++i)
     {
-        if (myGenerals[i].id == id)
+        for (int j = myGenerals[i].id; j < myGenerals[i].id + myGenerals[i].count; ++j)
         {
-            return i;
+            if (j == id)
+            {
+                return i;
+            }
         }
     }
     return -1;
