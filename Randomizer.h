@@ -34,6 +34,7 @@ public:
 
     // Other QoL Boosts
     void DisableNonGeneralBattles();
+    void IncreaseTacticGains();
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
     void ImproveMap();

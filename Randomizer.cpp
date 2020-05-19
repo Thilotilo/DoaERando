@@ -128,6 +128,25 @@ void Randomizer::DisableNonGeneralBattles()
     myRom->WriteByte(0x3B31B, 0x00); // Set zones 6-8 to 100% generals
 }
 
+void Randomizer::IncreaseTacticGains()
+{
+    // Since we aren't gaining TP on every level now, let's up our TP gain
+    // Here, we're going to randomize each 1/16 chance value to be between
+    // 5-10, with the last slot being 15-20.
+    const int TACTIC_GAINS_OFFSET = 0x3B666;
+    uniform_int_distribution<BYTE> standardDistribution(5,10);
+    uniform_int_distribution<BYTE> majorGainDistribution(15,20);
+    for (int i = 0; i < 15; ++i)
+    {
+        BYTE tacticGain = standardDistribution(myGenerator);
+        myRom->WriteByte(TACTIC_GAINS_OFFSET + i, tacticGain);
+        printf("Increasing tactic gain 0x%X to %d\n", i, tacticGain);
+    }
+    BYTE tacticGain = majorGainDistribution(myGenerator);
+    myRom->WriteByte(TACTIC_GAINS_OFFSET + 15, tacticGain);
+    printf("Increasing tactic gain 0x%X to %d\n", 15, tacticGain);
+}
+
 void Randomizer::SetGeneralRecruitable(BYTE id)
 {
     const int BASE_ADDRESS = 0x3b153;
