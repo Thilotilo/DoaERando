@@ -22,8 +22,6 @@ public:
     void GivePartyMaxFoodFromNPC();
     void ModifyEncounterRate();
 
-    //void RandomizeBattles(std::vector<std::vector<BYTE>>& generalsForZone);
-
     void SetGeneralRecruitable(BYTE id);
     void SetGeneralEncounterable(BYTE id);
 
@@ -31,7 +29,6 @@ public:
 
     void RandomizeTacticLevels();
     void RandomizeGenerals();
-    //void RandomizeZones();
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
