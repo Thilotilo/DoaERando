@@ -120,6 +120,14 @@ void Randomizer::ModifyEncounterRate()
     myRom->WriteByte(0x3F522, 0x00);
 }
 
+void Randomizer::DisableNonGeneralBattles()
+{
+    // With these changes, the odds of a general battle is 100%, but if there are no
+    // generals, we will still get a random battle of forces.
+    myRom->WriteByte(0x3B310, 0x00); // Set zones 0-5 to 100% generals
+    myRom->WriteByte(0x3B31B, 0x00); // Set zones 6-8 to 100% generals
+}
+
 void Randomizer::SetGeneralRecruitable(BYTE id)
 {
     const int BASE_ADDRESS = 0x3b153;

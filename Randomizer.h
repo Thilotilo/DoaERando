@@ -32,6 +32,8 @@ public:
     void RandomizeGenerals();
     void RandomizeBattles();
 
+    // Other QoL Boosts
+    void DisableNonGeneralBattles();
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
     void ImproveMap();
