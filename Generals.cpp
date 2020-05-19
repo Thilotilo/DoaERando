@@ -96,6 +96,33 @@ bool Generals::GeneralExists(BYTE id)
     return false;
 }
 
+void Generals::AdjustZone1Generals()
+{
+    // These are generals that are not found in zone 1 but are marked as zone 1, making
+    //  zone 1 over populated:
+
+    const BYTE ZHOU_CHAO_ID = 0x05;
+    const BYTE WANG_GUI_ID = 0x09;
+    const BYTE SUN_GAN_ID = 0x9E;
+    const BYTE HUO_HU_ID = 0xB8;
+    const BYTE YANG_JIN_ID = 0xB9;
+    // Zhou Chao is in Chang An - he belongs in chapter 3
+    int zhouChaoIndex = GetGeneralIndexById(ZHOU_CHAO_ID);
+    myGenerals[zhouChaoIndex].zone = 3;
+    // Wang Gui is in Luo Yang - he belongs in chapter 2
+    int wangGuiIndex = GetGeneralIndexById(WANG_GUI_ID);
+    myGenerals[wangGuiIndex].zone = 2;
+    // Sun Gan is not in the game - he belongs in chapter 0
+    int sunGanIndex = GetGeneralIndexById(SUN_GAN_ID);
+    myGenerals[sunGanIndex].zone = 0;
+    // Huo Hu is in Lu Bu's fortress - he belongs in chapter 2
+    int huoHuIndex = GetGeneralIndexById(HUO_HU_ID);
+    myGenerals[huoHuIndex].zone = 2;
+    // Yang Jin is in Hua Xiong's fortress - he belongs in chapter 2
+    int yangJinIndex = GetGeneralIndexById(YANG_JIN_ID);
+    myGenerals[yangJinIndex].zone = 2;
+}
+
 void Generals::SwapIDs(int slot1, int slot2)
 {
     if (!isRestrictedGeneralAddress(myGenerals[slot1].address) &&
