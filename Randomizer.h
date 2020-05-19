@@ -4,6 +4,7 @@
 #include "Rom.h"
 #include <random>
 #include "Generals.h"
+#include "BattleRandomizer.h"
 
 namespace DoaERando {
 
@@ -29,6 +30,7 @@ public:
 
     void RandomizeTacticLevels();
     void RandomizeGenerals();
+    void RandomizeBattles();
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
@@ -40,6 +42,7 @@ private:
     ROM* myRom;
     Generator myGenerator;
     Generals myGenerals;
+    BattleRandomizer myBattleRandomizer;
     
 };
 

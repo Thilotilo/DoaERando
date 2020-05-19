@@ -10,6 +10,7 @@ namespace DoaERando {
 Randomizer::Randomizer(ROM* rom, int seed)
     : myRom(rom)
     , myGenerator(seed)
+    , myBattleRandomizer()
     , myGenerals(*rom)
 {
 }
@@ -212,6 +213,18 @@ void Randomizer::RandomizeGenerals()
     }
 }
 
+void Randomizer::RandomizeBattles()
+{
+    myBattleRandomizer.RandomizeZone1(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone2(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone3(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone4(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone5(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone6(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone7(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone8(myGenerals, myGenerator);
+    myBattleRandomizer.UpdateBattles(*myRom);
+}
 
 void Randomizer::ImproveInitialBattlesAndFlags()
 {
