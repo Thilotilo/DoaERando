@@ -154,7 +154,8 @@ void Generals::SetZonesForZone0(Generator& generator)
     {
         if (general.zone == 0)
         {
-            uniform_int_distribution<BYTE> zoneDistribution(1,8);
+            // Zone 1 already has too many generals, let's only allow zone 2 and above:
+            uniform_int_distribution<BYTE> zoneDistribution(2,8);
             general.zone = zoneDistribution(generator);
         }
     }
