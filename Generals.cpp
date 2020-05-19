@@ -2,11 +2,11 @@
 
 namespace DoaERando {
 
-const int UV10_ID = 0xB3; // This is a random NPC in the midst of generals
-const int LIU_BEI_ID = 0xA8;
-const int CAO_PI_ID = 0x71;
-const int SIMA_YI_ID = 0x88;
-const int SUN_QUAN_ID = 0x57;
+const BYTE UV10_ID = 0xB3; // This is a random NPC in the midst of generals
+const BYTE LIU_BEI_ID = 0xA8;
+const BYTE CAO_PI_ID = 0x71;
+const BYTE SIMA_YI_ID = 0x88;
+const BYTE SUN_QUAN_ID = 0x57;
 
 using namespace std;
 
@@ -173,6 +173,19 @@ bool Generals::isRestrictedGeneralAddress(int address)
     return false;
 }
 
+bool Generals::isStartingGeneralAddress(int address)
+{
+    for (auto &i : myStartingGeneralAddresses)
+    {
+        if (i == address)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 void Generals::ScaleForZone(Generator& generator)
 {
     for (auto& general : myGenerals)
@@ -243,10 +256,31 @@ void Generals::ScaleSpecialGenerals(Generator& generator)
 
 }
 
-const General& Generals::GetGeneralById(BYTE id)
+void Generals::SetStartingGenerals(vector<BYTE>& startingGeneralIds)
 {
-    int index = GetGeneralIndexById(id);
-    return myGenerals[index];
+    for (auto& generalId : startingGeneralIds)
+    {
+        int index = GetGeneralIndexById(generalId);
+        myStartingGeneralAddresses.push_back(myGenerals[index].address);
+    }
+}
+
+std::vector<BYTE> Generals::GetGeneralIdsFromZone(BYTE zone)
+{
+    std::vector<BYTE> generalIdsForZone;
+    for (auto& general : myGenerals)
+    {
+        if (isStartingGeneralAddress(general.address) || isRestrictedGeneralAddress(general.address))
+        {
+            continue;
+        }
+        if (general.zone == zone)
+        {
+            // The game likes to use the last id if there are multiples
+            generalIdsForZone.push_back(general.id + (general.count - 1));
+        }
+    }
+    return generalIdsForZone;
 }
 
 }

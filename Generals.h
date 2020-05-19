@@ -18,11 +18,12 @@ class Generals
         void SwapZones(int slot1, int slot2);
         void AdjustZone1Generals();
         void SetZonesForZone0(Generator& generator);
+        void SetStartingGenerals(std::vector<BYTE>& startingGeneralIds);
         void ScaleForZone(Generator& generator);
         void ScaleSpecialGenerals(Generator& generator);
         void UpdateGenerals();
 
-        const General& GetGeneralById(BYTE id);
+        std::vector<BYTE> GetGeneralIdsFromZone(BYTE zone);
 
         int size() {return myGenerals.size();}
 
@@ -35,9 +36,11 @@ class Generals
         void AddCopy(BYTE id);
         bool GeneralExists(BYTE id);
         bool isRestrictedGeneralAddress(int address);
+        bool isStartingGeneralAddress(int address);
 
         std::vector<General> myGenerals;
         std::vector<int> myRestrictedGeneralAddresses;
+        std::vector<int> myStartingGeneralAddresses;
         ROM& myRom;
 };
 
