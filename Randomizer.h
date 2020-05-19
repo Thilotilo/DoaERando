@@ -15,7 +15,7 @@ public:
     int GetGeneralLocation(BYTE id);
     void PrintName(BYTE id);
 
-    //void RandomizeStartingGenerals();
+    void RandomizeStartingGenerals();
 
     void FixSlot7Glitch();
     void ResurrectAllAfterDeath();

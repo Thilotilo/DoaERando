@@ -54,10 +54,13 @@ void Randomizer::PrintName(BYTE id)
     }
 }
 
-/*void Randomizer::RandomizeStartingGenerals()
+void Randomizer::RandomizeStartingGenerals()
 {
     printf("Randomizing Starting Generals...\n");
-    uniform_int_distribution<int> distribution(0x05, 0xD8);
+    uniform_int_distribution<int> distribution(0x05, 0xD7);
+
+    std::vector<BYTE> startingGenerals;
+    startingGenerals.push_back(0xA8);
 
     BYTE general = distribution(myGenerator);
     if (general != 0xB3 && general != 0xA6 && general != 0xA7 && general != 0xA8)
@@ -66,6 +69,7 @@ void Randomizer::PrintName(BYTE id)
         PrintName(general);
         printf(" as a starting general\n");
         myRom->WriteByte(0x35558, general);
+        startingGenerals.push_back(general);
         
     }
     general = distribution(myGenerator);
@@ -75,8 +79,11 @@ void Randomizer::PrintName(BYTE id)
         PrintName(general);
         printf(" as a starting general\n");
         myRom->WriteByte(0x35559, general);
+        startingGenerals.push_back(general);
     }
-}*/
+
+    myGenerals.SetStartingGenerals(startingGenerals);
+}
 
 void Randomizer::FixSlot7Glitch()
 {
