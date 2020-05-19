@@ -3,7 +3,7 @@ CC = g++
 BINDIR = .#bin
 
 DOAERANDO = DoaERando.exe
-$(DOAERANDO)_OBJS = Rom.cpp Randomizer.cpp main.cpp General.cpp Generals.cpp
+$(DOAERANDO)_OBJS = Rom.cpp Randomizer.cpp main.cpp General.cpp Generals.cpp BattleRandomizer.cpp
 TESTFILES += $(DOAERANDO)
 
 all: $(TESTFILES)
