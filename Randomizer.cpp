@@ -175,12 +175,21 @@ void Randomizer::RandomizeTacticLevels()
 
 void Randomizer::RandomizeGenerals()
 {
+    myGenerals.AdjustZone1Generals();
+    for (int i = 0; i < 9; ++i)
+    {
+        printf("Zone %d Generals: \n\t", i);
+        auto zoneGenerals = myGenerals.GetGeneralIdsFromZone(i);
+        for (auto& general : zoneGenerals)
+        {
+            PrintName(general);
+            printf("\n\t");
+        }
+        printf("\n");
+    }
+
     myGenerals.SetZonesForZone0(myGenerator);
     uniform_int_distribution<int> generalDistribution(0, myGenerals.size()-1);
-    for (int i = 0; i < 10000; ++i)
-    {
-        myGenerals.SwapIDs(generalDistribution(myGenerator), generalDistribution(myGenerator));
-    }
     for (int i = 0; i < 10000; ++i)
     {
         myGenerals.SwapZones(generalDistribution(myGenerator), generalDistribution(myGenerator));
@@ -188,6 +197,19 @@ void Randomizer::RandomizeGenerals()
     myGenerals.ScaleForZone(myGenerator);
     myGenerals.ScaleSpecialGenerals(myGenerator);
     myGenerals.UpdateGenerals();
+
+    printf("After Randomization:\n");
+    for (int i = 0; i < 9; ++i)
+    {
+        printf("Zone %d Generals: \n\t", i);
+        auto zoneGenerals = myGenerals.GetGeneralIdsFromZone(i);
+        for (auto& general : zoneGenerals)
+        {
+            PrintName(general);
+            printf("\n\t");
+        }
+        printf("\n");
+    }
 }
 
 
