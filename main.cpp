@@ -27,17 +27,17 @@ int main(void)
 
     // Optional items
     randomizer.ImproveMap();
-    randomizer.RandomizeGenerals();
-    for (uint8_t i=0; i<0xD9; ++i)
-    {
-        printf("General 0x%0x is ", i);
-        randomizer.PrintName(i);
-        printf("\n");
-    }
 
-    //randomizer.RandomizeZones();
+    // Randomized features
+    randomizer.RandomizeStartingGenerals();
+    randomizer.RandomizeGenerals();
+    randomizer.RandomizeBattles();
     randomizer.RandomizeTacticLevels();
-    //randomizer.RandomizeStartingGenerals();
+
+    // QoL and other non-random features
+    randomizer.IncreaseTacticGains();
+    randomizer.DoubleXpGain();
+    randomizer.DisableNonGeneralBattles();
     randomizer.ResurrectAllAfterDeath();
     randomizer.MakeAllGeneralsRecruitableAndEncounterable();
     randomizer.GivePartyMaxFoodFromNPC();
@@ -45,7 +45,7 @@ int main(void)
     randomizer.FixSlot7Glitch();
 
     printf("Saving file...\n");
-    rom.WriteRom("./RandoRoms/", 4, seed);
+    rom.WriteRom("./RandoRoms/", 5, seed);
 
     return 0;
 }
