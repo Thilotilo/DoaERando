@@ -147,6 +147,17 @@ void Randomizer::IncreaseTacticGains()
     printf("Increasing tactic gain 0x%X to %d\n", 15, tacticGain);
 }
 
+void Randomizer::DoubleXpGain()
+{
+    const int XP_MULTIPLIER_OFFSET = 0x39a28;
+    for (int i = 0; i < 8; ++i)
+    {
+        BYTE currentXpBoost = myRom->ReadByte(XP_MULTIPLIER_OFFSET + i);
+        BYTE increasedXpBoost = currentXpBoost * 2;
+        myRom->WriteByte(XP_MULTIPLIER_OFFSET + i, increasedXpBoost);
+    }
+}
+
 void Randomizer::SetGeneralRecruitable(BYTE id)
 {
     const int BASE_ADDRESS = 0x3b153;
