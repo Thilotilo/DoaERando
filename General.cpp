@@ -139,6 +139,7 @@ void General::DumpGeneral()
     printf("\tcount: %d\n", count);
     printf("\tSTR: %d\n", strength);
     printf("\tINT: %d\n", intelligence);
+    printf("\tAGI: %d\n", agility);
     printf("\tzone: %d\n", zone);
     printf("\tHP exp: %d, %d\n", enemySoldierExponent, allySoldierExponent);
     printf("\tDefense: %d\n", enemyDefenseId);
