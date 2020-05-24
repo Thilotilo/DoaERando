@@ -34,6 +34,8 @@ int main(void)
     randomizer.RandomizeBattles();
     randomizer.RandomizeTacticLevels();
 
+    randomizer.ItemShuffle();
+
     // QoL and other non-random features
     randomizer.IncreaseTacticGains();
     randomizer.DoubleXpGain();

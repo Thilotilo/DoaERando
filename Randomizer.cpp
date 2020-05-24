@@ -86,6 +86,97 @@ void Randomizer::RandomizeStartingGenerals()
     myGenerals.SetStartingGenerals(startingGenerals);
 }
 
+void Randomizer::ItemShuffle()
+{
+    std::vector<BYTE> chestContentsToRandomize;
+
+    // Grab starting items
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x3556C));
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x3556D));
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x35574));
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x35575));
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x3557C));
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x3557D));
+
+    // Grab hidden items
+    const int HIDDEN_ITEM_OFFSET = 0x30B10;
+    for (int i = HIDDEN_ITEM_OFFSET; i < HIDDEN_ITEM_OFFSET + 20; ++i)
+    {
+        BYTE item = myRom->ReadByte(i);
+        if (item != 0xFF) // I found a keyhole, i = 2
+        {
+            chestContentsToRandomize.push_back(item);
+        }
+    }
+
+    // Grab non-hidden items
+    const int ITEMS_OFFSET = 0x30914; // (Every 5th byte is the item ID) - data starts at 30910
+    const int ITEMS_OFFSET_END = 0x309F7;
+    for (int i = ITEMS_OFFSET; i < ITEMS_OFFSET_END; i += 5)
+    {
+        chestContentsToRandomize.push_back(myRom->ReadByte(i));
+    }
+
+    uniform_int_distribution<int> itemDistribution(0, chestContentsToRandomize.size() - 1);
+    for (int i = 0; i < 100000; ++i)
+    {
+        int index1 = itemDistribution(myGenerator);
+        int index2 = itemDistribution(myGenerator);
+
+        BYTE item1 = chestContentsToRandomize[index1];
+        BYTE item2 = chestContentsToRandomize[index2];
+
+        // Make sure that we're not swapping coins into starting inventory
+        if (!((index1 < 6 || index2 < 6) && (item1 < 0x10 || item2 < 0x10)))
+        {
+            chestContentsToRandomize[index1] = item2;
+            chestContentsToRandomize[index2] = item1;
+        }
+    }
+
+    int index = 0;
+
+    for (int i = 0; i < chestContentsToRandomize.size(); ++i)
+    {
+        if (i == 0)
+        {
+            printf ("Starting items:\n");
+        }
+        if (i == 6)
+        {
+            printf ("Hidden items:\n");
+        }
+        if (i == 25)
+        {
+            printf ("Normal chests:\n");
+        }
+        printf ("\tChest %d: 0x%02X\n", i, chestContentsToRandomize[i]);
+    }
+
+    // Write new starting items
+    myRom->WriteByte(0x3556C, chestContentsToRandomize[index++]);
+    myRom->WriteByte(0x3556D, chestContentsToRandomize[index++]);
+    myRom->WriteByte(0x35574, chestContentsToRandomize[index++]);
+    myRom->WriteByte(0x35575, chestContentsToRandomize[index++]);
+    myRom->WriteByte(0x3557C, chestContentsToRandomize[index++]);
+    myRom->WriteByte(0x3557D, chestContentsToRandomize[index++]);
+
+    // Write new hidden items
+    for (int i = HIDDEN_ITEM_OFFSET; i < HIDDEN_ITEM_OFFSET + 20; ++i)
+    {
+        BYTE item = myRom->ReadByte(i);
+        if (item != 0xFF) // I found a keyhole, i = 2
+        {
+            myRom->WriteByte(i, chestContentsToRandomize[index++]);
+        }
+    }
+
+    for (int i = ITEMS_OFFSET; i < ITEMS_OFFSET_END; i += 5)
+    {
+        myRom->WriteByte(i, chestContentsToRandomize[index++]);
+    }
+}
+
 void Randomizer::FixSlot7Glitch()
 {
     // Based on meteorstrike's old guide, patching to terminate inner tactic

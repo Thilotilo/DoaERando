@@ -18,6 +18,8 @@ public:
 
     void RandomizeStartingGenerals();
 
+    void ItemShuffle();
+
     void FixSlot7Glitch();
     void ResurrectAllAfterDeath();
     void GivePartyMaxFoodFromNPC();
