@@ -161,6 +161,22 @@ void Generals::SetZonesForZone0(Generator& generator)
     }
 }
 
+void Generals::SetAllGeneralsEncounterable()
+{
+    for (auto& general : myGenerals)
+    {
+        general.encounterable = true;
+    }
+}
+
+void Generals::SetAllGeneralsRecruitable()
+{
+    for (auto& general : myGenerals)
+    {
+        general.recruitable = true;
+    }
+}
+
 bool Generals::isRestrictedGeneralAddress(int address)
 {
     for (auto &i : myRestrictedGeneralAddresses)

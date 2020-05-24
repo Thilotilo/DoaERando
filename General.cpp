@@ -20,6 +20,8 @@ General::General(int address, BYTE id, ROM& rom)
     : address(address)
     , id(id)
     , count(1)
+    , encounterable(IsEncounterable(id, rom))
+    , recruitable(IsRecruitable(id, rom))
 {
     strength = rom.ReadByte(address + STRENGTH_OFFSET);
     intelligence = rom.ReadByte(address + INTELLIGENCE_OFFSET);
@@ -99,6 +101,64 @@ void General::UpdateGeneral(ROM& rom)
     rom.WriteByte(address + ALLY_SOLDIERS_OFFSET, allySoldierExponent);
     rom.WriteByte(address + TACTICS_LEVEL_OFFSET, enemyMaxTacticLevel);
     rom.WriteByte(address + AGILITY_OFFSET, agility);
+
+    for (BYTE i = id; i < id + count - 1; ++i)
+    {
+        WriteEncounterableBit(i, false, rom);
+        WriteRecruitableBit(i, false, rom);
+    }
+    WriteEncounterableBit(id + count - 1, encounterable, rom);
+    WriteRecruitableBit(id + count - 1, recruitable, rom);
+}
+
+bool General::IsEncounterable(BYTE id, ROM& rom)
+{
+    const int ENCOUNTERABLE_OFFSET = 0x35722;
+    const BYTE bitmask = 1 << (7 - (id % 8));
+    return ((rom.ReadByte(ENCOUNTERABLE_OFFSET + (id / 8)) & bitmask) != 0);
+}
+
+void General::WriteEncounterableBit(BYTE id, bool isEncounterable, ROM& rom)
+{
+    const int ENCOUNTERABLE_OFFSET = 0x35722;
+    const BYTE bitmask = 1 << (7 - (id % 8));
+    BYTE currentByte = rom.ReadByte(ENCOUNTERABLE_OFFSET + (id / 8));
+    BYTE newByte;
+    if (isEncounterable)
+    {
+        newByte = currentByte | bitmask;
+    }
+    else
+    {
+        newByte = currentByte & (~bitmask);
+    }
+
+    rom.WriteByte(ENCOUNTERABLE_OFFSET + (id / 8), newByte);
+}
+
+bool General::IsRecruitable(BYTE id, ROM& rom)
+{
+    const int RECRUITABLE_OFFSET = 0x3B153;
+    const BYTE bitmask = 1 << (7 - (id % 8));
+    return ((rom.ReadByte(RECRUITABLE_OFFSET + (id / 8)) & bitmask) != 0);
+}
+
+void General::WriteRecruitableBit(BYTE id, bool isRecruitable, ROM& rom)
+{
+    const int RECRUITABLE_OFFSET = 0x3B153;
+    const BYTE bitmask = 1 << (7 - (id % 8));
+    BYTE currentByte = rom.ReadByte(RECRUITABLE_OFFSET + (id / 8));
+    BYTE newByte;
+    if (isRecruitable)
+    {
+        newByte = currentByte | bitmask;
+    }
+    else
+    {
+        newByte = currentByte & (~bitmask);
+    }
+
+    rom.WriteByte(RECRUITABLE_OFFSET + (id / 8), newByte);
 }
 
 void General::ReadName(ROM& rom)
@@ -145,6 +205,8 @@ void General::DumpGeneral()
     printf("\tDefense: %d\n", enemyDefenseId);
     printf("\tMax Tactic Level: %d\n", enemyMaxTacticLevel);
     printf("\tWeapon: 0x%02X\n", weaponId);
+    printf("\tEncounterable? %d\n", encounterable);
+    printf("\tRecruitable? %d\n", recruitable);
 }
 
 }

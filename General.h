@@ -21,6 +21,8 @@ class General
         BYTE enemyMaxTacticLevel;
         BYTE agility;
         char name[20];
+        bool encounterable;
+        bool recruitable;
 
     General(int address, BYTE id, ROM& rom);
 
@@ -33,6 +35,10 @@ class General
 
     void DumpGeneral();
 
+    static bool IsEncounterable(BYTE id, ROM& rom);
+    static void WriteEncounterableBit(BYTE id, bool isEncounterable, ROM& rom);
+    static bool IsRecruitable(BYTE id, ROM& rom);
+    static void WriteRecruitableBit(BYTE id, bool isRecruitable, ROM& rom);
 };
 
 }

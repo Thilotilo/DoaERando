@@ -249,29 +249,10 @@ void Randomizer::DoubleXpGain()
     }
 }
 
-void Randomizer::SetGeneralRecruitable(BYTE id)
-{
-    const int BASE_ADDRESS = 0x3b153;
-    const BYTE bitmask = 1<<(7-(id%8));
-    BYTE newByte = myRom->ReadByte(BASE_ADDRESS + (id/8)) | bitmask;
-    myRom->WriteByte(BASE_ADDRESS + (id/8), newByte);
-}
-
-void Randomizer::SetGeneralEncounterable(BYTE id)
-{
-    const int BASE_ADDRESS = 0x35722;
-    const BYTE bitmask = 1<<(7-(id%8));
-    BYTE newByte = myRom->ReadByte(BASE_ADDRESS + (id/8)) | bitmask;
-    myRom->WriteByte(BASE_ADDRESS + (id/8), newByte);
-}
-
 void Randomizer::MakeAllGeneralsRecruitableAndEncounterable()
 {
-    for (BYTE id = 0x05; id < 0xD9; ++id)
-    {
-        SetGeneralRecruitable(id);
-        SetGeneralEncounterable(id);
-    }
+    myGenerals.SetAllGeneralsEncounterable();
+    myGenerals.SetAllGeneralsRecruitable();
 
     //Allow any General that appears in a town and isn't already on your party to show up.
     myRom->WriteByte(0x3E8F0, 0xC0); // Compare general config with 0xC0 rather than 0x80

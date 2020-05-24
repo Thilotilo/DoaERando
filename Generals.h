@@ -18,6 +18,8 @@ class Generals
         void SwapZones(int slot1, int slot2);
         void AdjustZone1Generals();
         void SetZonesForZone0(Generator& generator);
+        void SetAllGeneralsEncounterable();
+        void SetAllGeneralsRecruitable();
         void SetStartingGenerals(std::vector<BYTE>& startingGeneralIds);
         void ScaleForZone(Generator& generator);
         void ScaleSpecialGenerals(Generator& generator);
