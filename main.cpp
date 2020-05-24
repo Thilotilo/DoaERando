@@ -28,6 +28,9 @@ int main(void)
     // Optional items
     randomizer.ImproveMap();
 
+    // Need to do this before randomizing the starting generals
+    randomizer.MakeAllGeneralsRecruitableAndEncounterable();
+
     // Randomized features
     randomizer.RandomizeStartingGenerals();
     randomizer.RandomizeGenerals();
@@ -41,7 +44,6 @@ int main(void)
     randomizer.DoubleXpGain();
     randomizer.DisableNonGeneralBattles();
     randomizer.ResurrectAllAfterDeath();
-    randomizer.MakeAllGeneralsRecruitableAndEncounterable();
     randomizer.GivePartyMaxFoodFromNPC();
     randomizer.ModifyEncounterRate();
     randomizer.FixSlot7Glitch();

@@ -278,6 +278,7 @@ void Generals::SetStartingGenerals(vector<BYTE>& startingGeneralIds)
     {
         int index = GetGeneralIndexById(generalId);
         myStartingGeneralAddresses.push_back(myGenerals[index].address);
+        myGenerals[index].encounterable = false;
     }
 }
 
