@@ -25,6 +25,8 @@ public:
     void SwapBytes(int address1, int address2);
     void SwapBytesAtBank(int bank, int address1, int address2);
 
+    // Make some debugging easier
+    void PrintByteRange(int firstByte, int lastByte);
 private:
     std::vector<BYTE> myContents;
 };

@@ -67,5 +67,13 @@ void ROM::SwapBytesAtBank(int bank, int address1, int address2)
 
 }
 
+void ROM::PrintByteRange(int firstByte, int lastByte)
+{
+    for (int i = firstByte; i <= lastByte; ++i)
+    {
+        printf("0x%05X: 0x%02X\n", i, myContents[i]);
+    }
+}
+
 }
 
