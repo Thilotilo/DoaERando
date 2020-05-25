@@ -4,9 +4,11 @@ namespace DoaERando {
 
 const BYTE UV10_ID = 0xB3; // This is a random NPC in the midst of generals
 const BYTE LIU_BEI_ID = 0xA8;
+const BYTE CAO_CAO_ID = 0x70;
 const BYTE CAO_PI_ID = 0x71;
 const BYTE SIMA_YI_ID = 0x88;
 const BYTE SUN_QUAN_ID = 0x57;
+const BYTE SUN_CE_ID = 0x56;
 
 using namespace std;
 
@@ -270,6 +272,40 @@ void Generals::ScaleSpecialGenerals(Generator& generator)
     index = GetGeneralIndexById(SUN_QUAN_ID);
     myGenerals[index].enemyMaxTacticLevel = maxTacticLevel;
 
+}
+
+void Generals::RandomizeCaoCaoAndSunCe(Generator &generator)
+{
+    uniform_int_distribution<BYTE> skillDistribution(220,255);
+
+    // Scale the generals STR/INT/AGI to a high range (220-255)
+    int CaoCaoIndex = GetGeneralIndexById(CAO_CAO_ID);
+    myGenerals[CaoCaoIndex].strength = skillDistribution(generator);
+    myGenerals[CaoCaoIndex].intelligence = skillDistribution(generator);
+    myGenerals[CaoCaoIndex].agility = skillDistribution(generator);
+
+    int SunCeIndex = GetGeneralIndexById(SUN_CE_ID);
+    myGenerals[SunCeIndex].strength = skillDistribution(generator);
+    myGenerals[SunCeIndex].intelligence = skillDistribution(generator);
+    myGenerals[SunCeIndex].agility = skillDistribution(generator);
+
+    // Update the Sun Ce portrait to look like Sun Quan but different color
+    myRom.WriteByte(0x330CD, 0x4E); // Portrait Slices
+    myRom.WriteByte(0x330CE, 0x4F);
+    myRom.WriteByte(0x330CF, 0x50);
+    myRom.WriteByte(0x330D0, 0x51);
+    myRom.WriteByte(0x330D1, 0x52);
+    myRom.WriteByte(0x330D2, 0x53);
+    myRom.WriteByte(0x330D3, 0x07); // Portrait color
+
+    // Update the Cao Cao portrait to look like Cao Pi but different color
+    myRom.WriteByte(0x333AD, 0x42); // Portrait Slices
+    myRom.WriteByte(0x333AE, 0x43);
+    myRom.WriteByte(0x333AF, 0x44);
+    myRom.WriteByte(0x333B0, 0x45);
+    myRom.WriteByte(0x333B1, 0x46);
+    myRom.WriteByte(0x333B2, 0x47);
+    myRom.WriteByte(0x333B3, 0x07); // Portrait color
 }
 
 void Generals::SetStartingGenerals(vector<BYTE>& startingGeneralIds)

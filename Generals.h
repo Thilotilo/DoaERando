@@ -23,6 +23,7 @@ class Generals
         void SetStartingGenerals(std::vector<BYTE>& startingGeneralIds);
         void ScaleForZone(Generator& generator);
         void ScaleSpecialGenerals(Generator& generator);
+        void RandomizeCaoCaoAndSunCe(Generator &generator);
         void UpdateGenerals();
 
         std::vector<BYTE> GetGeneralIdsFromZone(BYTE zone);

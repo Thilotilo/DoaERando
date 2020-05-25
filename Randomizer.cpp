@@ -330,6 +330,7 @@ void Randomizer::RandomizeGenerals()
         myGenerals.SwapZones(generalDistribution(myGenerator), generalDistribution(myGenerator));
     }
     myGenerals.ScaleForZone(myGenerator);
+    myGenerals.RandomizeCaoCaoAndSunCe(myGenerator);
     myGenerals.ScaleSpecialGenerals(myGenerator);
     myGenerals.UpdateGenerals();
 
