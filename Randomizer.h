@@ -16,6 +16,7 @@ public:
     int GetGeneralLocation(BYTE id);
     void PrintName(BYTE id);
 
+    // IMPORTANT: MUST BE CALLED AFTER ImproveInitialBattlesAndFlags
     void RandomizeStartingGenerals();
 
     void ItemShuffle();

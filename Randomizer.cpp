@@ -63,27 +63,46 @@ void Randomizer::RandomizeStartingGenerals()
     std::vector<BYTE> startingGenerals;
     startingGenerals.push_back(0xA8);
 
-    BYTE general = distribution(myGenerator);
-    if (general != 0xB3 && general != 0xA6 && general != 0xA7 && general != 0xA8)
-    {
-        printf("Setting ");
-        PrintName(general);
-        printf(" as a starting general\n");
-        myRom->WriteByte(0x35558, general);
-        startingGenerals.push_back(general);
-        
-    }
-    general = distribution(myGenerator);
-    if (general != 0xB3 && general != 0xA6 && general != 0xA7 && general != 0xA8)
-    {
-        printf("Setting ");
-        PrintName(general);
-        printf(" as a starting general\n");
-        myRom->WriteByte(0x35559, general);
-        startingGenerals.push_back(general);
-    }
+    BYTE general1;
+    do {
+        general1 = distribution(myGenerator);
+    } while (general1 == 0xB3 || general1 == 0xA6 || general1 == 0xA7 || general1 == 0xA8);
+    printf("Setting ");
+    PrintName(general1);
+    printf(" as a starting general\n");
+    myRom->WriteByte(0x35558, general1);
+    startingGenerals.push_back(general1);
+
+    BYTE general2;
+    do {
+        general2 = distribution(myGenerator);
+    } while (general2 == 0xB3 || general2 == 0xA6 || general2 == 0xA7 || general2 == 0xA8 || general2 == general1);
+    printf("Setting ");
+    PrintName(general2);
+    printf(" as a starting general\n");
+    myRom->WriteByte(0x35559, general2);
+    startingGenerals.push_back(general2);
 
     myGenerals.SetStartingGenerals(startingGenerals);
+
+    // Set Starting generals to 0xCO
+    // This uses the extra bytes remaining from the ImproveInitialBattlesAndFlags method to store
+    // #$C0 to the starting generals.  We just move the BEQ down a few instructions.
+    std::vector<BYTE> loopingCode = {
+        0xA9, 0xC0,             // LDA #$C0
+        0x8D, 0x00, 0x63,       // STA $63--
+        0x8D, 0x00, 0x63,       // STA $63--
+        0xD0, 0x04,             // BNE ($9434)
+        // Zero out now-unused bytes
+        0x00, 0x00, 0x00, 0x00};
+    for (int i = 0; i < loopingCode.size(); ++i)
+    {
+        myRom->WriteByte(0x35436 + i, loopingCode[i]);
+    }
+
+    // Now, set the starting generals IDs in the bytes marked by -- above
+    myRom->WriteByte(0x35439, general1);
+    myRom->WriteByte(0x3543C, general2);
 }
 
 void Randomizer::ItemShuffle()
@@ -370,7 +389,7 @@ void Randomizer::ImproveInitialBattlesAndFlags()
         // This is designed to get us back on track. Write 1 to 0x6010, since we've overwritten that portion, then branch to existing code
         0xA9, 0x01,             // LDA #$01
         0x8D, 0x10, 0x60,       // STA $6010
-        0xD0, 0x0C,             // BEQ ($9434) - (The STA $6073 instruction)
+        0xD0, 0x0C,             // BNE ($9434) - (The STA $6073 instruction)
         // Zero out now-unused bytes
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     for (int i = 0; i < loopingCode.size(); ++i)
