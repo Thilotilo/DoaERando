@@ -47,6 +47,7 @@ int main(void)
     randomizer.GivePartyMaxFoodFromNPC();
     randomizer.ModifyEncounterRate();
     randomizer.FixSlot7Glitch();
+    randomizer.OnlyLaunchShuLuBuOnce();
 
     printf("Saving file...\n");
     rom.WriteRom("./RandoRoms/", 5, seed);

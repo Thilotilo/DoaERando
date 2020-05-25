@@ -191,6 +191,24 @@ void Randomizer::ResurrectAllAfterDeath()
     myRom->WriteByte(0x36149, 0xD9); // and an ID less than this
 }
 
+void Randomizer::OnlyLaunchShuLuBuOnce()
+{
+    // For whatever reason, the game checks Lu Bu's recruitment flags rather than
+    // the "battle active" flag to determine if we should launch the Shu Lu Bu battle.
+    // This causes problems in the rando when that Lu Bu's recruitment flags can be
+    // turned active even after defeating the Shu Battle.  We fix this by skipping the
+    // battle if the battle active flag is false rather than if Lu Bu's status is 00
+    // Thus, we're changing these instructions:
+    //   LDA $63B7
+    //   BPL $B3DD
+    // to
+    //   LDA $654F
+    //   BNE $B3DD
+    myRom->WriteByte(0x3B3D8, 0x4F); // $654F
+    myRom->WriteByte(0x3B3D9, 0x65);
+    myRom->WriteByte(0x3B3DA, 0xD0); // BNE
+}
+
 void Randomizer::GivePartyMaxFoodFromNPC()
 {
     printf("Feeding the armies well...\n");

@@ -22,6 +22,7 @@ public:
 
     void FixSlot7Glitch();
     void ResurrectAllAfterDeath();
+    void OnlyLaunchShuLuBuOnce();
     void GivePartyMaxFoodFromNPC();
     void ModifyEncounterRate();
 
