@@ -210,9 +210,9 @@ void Randomizer::OnlyLaunchShuLuBuOnce()
     // to
     //   LDA $654F
     //   BNE $B3DD
-    myRom->WriteByte(0x3B3D8, 0x4F); // $654F
-    myRom->WriteByte(0x3B3D9, 0x65);
-    myRom->WriteByte(0x3B3DA, 0xD0); // BNE
+    myRom->WriteByte(0x3B3D9, 0x4F); // $654F
+    myRom->WriteByte(0x3B3DA, 0x65);
+    myRom->WriteByte(0x3B3DB, 0xD0); // BNE
 }
 
 void Randomizer::GivePartyMaxFoodFromNPC()
