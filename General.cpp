@@ -92,7 +92,7 @@ void General::ScaleSoldiersForZone(Generator& generator)
 void General::UpdateGeneral(ROM& rom)
 {
     rom.WriteByte(address + STRENGTH_OFFSET, strength);
-    rom.WriteByte(address + INTELLIGENCE_OFFSET, agility);
+    rom.WriteByte(address + INTELLIGENCE_OFFSET, intelligence);
     rom.WriteByte(address + ZONE_OFFSET, zone);
     BYTE weaponPaletteByte = rom.ReadByte(address + WEAPON_OFFSET);
     weaponPaletteByte &= (~WEAPON_BITMASK);
