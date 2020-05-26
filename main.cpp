@@ -50,7 +50,7 @@ int main(void)
     randomizer.OnlyLaunchShuLuBuOnce();
 
     printf("Saving file...\n");
-    rom.WriteRom("./RandoRoms/", 7, seed);
+    rom.WriteRom("./RandoRoms/", 8, seed);
 
     return 0;
 }
