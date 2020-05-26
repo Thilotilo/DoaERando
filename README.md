@@ -17,6 +17,9 @@ Current Features:
 - Resurrect all after death.
 - 7th slot glitch patched
 
+Added in v0.0.41:
+- Fixed INT bug in 0.0.4
+
 Added in v0.0.4:
 - Added item shuffle
 - Gave Cao Cao & Sun Ce random stats and a portrait to live up to their name
