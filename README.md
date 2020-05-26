@@ -5,15 +5,26 @@ Current Features:
 - Open World
 - Randomized Zones
 - General Shuffle
+- Item Shuffle
 - Randomized Battles
 - Randomized Tactic levels
 - Randomized Starting Generals
 - Randomized and Improved Tactic Growth
 - Doubled XP gain
+- Sun Ce & Cao Cao have random stats and portraits worthy of their names.
 - No random encounters except on mountains, and all random encounters on mountains will have generals.
 - NPC in Lou Sang now gives 999999 food
 - Resurrect all after death.
 - 7th slot glitch patched
+
+Added in v0.0.4:
+- Added item shuffle
+- Gave Cao Cao & Sun Ce random stats and a portrait to live up to their name
+- Fixed several bugs
+    - Lu Bu Shu battle will now only happen once per game
+    - Generals with duplicate ids will now only show their recruitable version in random battles
+    - Starting generals will not appear in random encounters
+    - Starting generals will not appear on the overworld (unless they are fired/leave)
 
 Added in v0.0.3:
 - General Shuffle replaces General randomization (meaning more generals in late zones than early)
