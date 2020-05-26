@@ -86,23 +86,10 @@ void Randomizer::RandomizeStartingGenerals()
     myGenerals.SetStartingGenerals(startingGenerals);
 
     // Set Starting generals to 0xCO
-    // This uses the extra bytes remaining from the ImproveInitialBattlesAndFlags method to store
-    // #$C0 to the starting generals.  We just move the BEQ down a few instructions.
-    std::vector<BYTE> loopingCode = {
-        0xA9, 0xC0,             // LDA #$C0
-        0x8D, 0x00, 0x63,       // STA $63--
-        0x8D, 0x00, 0x63,       // STA $63--
-        0xD0, 0x04,             // BNE ($9434)
-        // Zero out now-unused bytes
-        0x00, 0x00, 0x00, 0x00};
-    for (int i = 0; i < loopingCode.size(); ++i)
-    {
-        myRom->WriteByte(0x35436 + i, loopingCode[i]);
-    }
-
-    // Now, set the starting generals IDs in the bytes marked by -- above
-    myRom->WriteByte(0x35439, general1);
-    myRom->WriteByte(0x3543C, general2);
+    // This uses the instructions from the ImproveInitialBattlesAndFlags method and places the
+    // general IDs for the starting generals in the appropriate bytes.
+    myRom->WriteByte(0x35434, general1);
+    myRom->WriteByte(0x35437, general2);
 }
 
 void Randomizer::ItemShuffle()
@@ -386,12 +373,26 @@ void Randomizer::ImproveInitialBattlesAndFlags()
         0xE8,                   // INX
         0xE0, 0x80,             // CPX #$80
         0xD0, 0xF5,             // BNE ($9416) - (The LDA $8700,X instruction)
-        // This is designed to get us back on track. Write 1 to 0x6010, since we've overwritten that portion, then branch to existing code
+        // Now let's write #C0 to 3 different addresses, Guan Suo and 2 others that will be assigned when
+        // we select starting generals (for now, we'll just write $6500 for the address).  This is already
+        // written to Guan Suo a few bytes past here.  We're just moving that write up with the others to save
+        // a couple of instruction bytes.
+        0xA9, 0xC0,             // LDA #$C0
+        0x8D, 0x00, 0x63,       // STA $6300 (LSB to be overwritten with starting general ID)
+        0x8D, 0x00, 0x63,       // STA $6300 (LSB to be overwritten with starting general ID)
+        0x8D, 0xA4, 0x63,       // STA $63A4 (Guan Suo)
+        // Here, we need to finish with the initialization code that we overwrote/moved.
+        // First, we need to write 1 to 0x6010, since we overwrote that portion
         0xA9, 0x01,             // LDA #$01
-        0x8D, 0x10, 0x60,       // STA $6010
-        0xD0, 0x0C,             // BNE ($9434) - (The STA $6073 instruction)
+        0x8D, 0x10, 0x60,       // STA $6010 (Chapter)
+        // Now we need to shift a couple of other writes around to handle the moved Guan Suo flag set.
+        0x8D, 0x73, 0x60,       // STA $6073 (Level)
+        0xA9, 0x0A,             // LDA #$0A
+        0x8D, 0xF8, 0x61,       // STA $61F8 (Max TP)
+        // Now we need to branch to the remainder of the init code
+        0xD0, 0x06,             // BNE ($9441) - (LDA #$00)
         // Zero out now-unused bytes
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     for (int i = 0; i < loopingCode.size(); ++i)
     {
         myRom->WriteByte(0x35424 + i, loopingCode[i]);
