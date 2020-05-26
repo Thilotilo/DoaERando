@@ -117,7 +117,7 @@ void Randomizer::ItemShuffle()
 
     // Grab non-hidden items
     const int ITEMS_OFFSET = 0x30914; // (Every 5th byte is the item ID) - data starts at 30910
-    const int ITEMS_OFFSET_END = 0x309F7;
+    const int ITEMS_OFFSET_END = 0x309E7;
     for (int i = ITEMS_OFFSET; i < ITEMS_OFFSET_END; i += 5)
     {
         chestContentsToRandomize.push_back(myRom->ReadByte(i));
