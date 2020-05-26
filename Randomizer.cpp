@@ -452,6 +452,13 @@ void Randomizer::ImproveMap()
     myRom->WriteByte(0x34782, 0x01);    // Automatically enable the bridge from Luo Yang to Chin
     myRom->WriteByte(0x34784, 0x01);    // Automatically enable the bridge from Nan Yang to Ji Zhou
     myRom->WriteByte(0x34788, 0x01);    // Automatically enable the bridge from Gui Yang to Wu
+    // Fix Luo Yang lookup.
+    // Right now, the version of Luo Yang we get is based upon the status of the Chin bridge.  Since
+    // we've permanently enabled it, that means we only get the restored Luo Yang castle, which means
+    // that we can't fight the original Luo Yang, nor can we recruit the general in it, nor can we
+    // use the Gold Key.  To fix this, we just want to change it to use the new Luo Yang gates to
+    // determine which version we want to load.
+    myRom->WriteByte(0x3BCF9, 0x77);
 }
 
 }
