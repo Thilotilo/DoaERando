@@ -20,6 +20,7 @@ public:
     void RandomizeStartingGenerals();
 
     void ItemShuffle();
+    void CaveShuffle();
 
     void FixSlot7Glitch();
     void ResurrectAllAfterDeath();

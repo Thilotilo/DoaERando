@@ -38,6 +38,7 @@ int main(void)
     randomizer.RandomizeTacticLevels();
 
     randomizer.ItemShuffle();
+    randomizer.CaveShuffle();
 
     // QoL and other non-random features
     randomizer.IncreaseTacticGains();

@@ -92,6 +92,165 @@ void Randomizer::RandomizeStartingGenerals()
     myRom->WriteByte(0x35437, general2);
 }
 
+static bool IsSingleExitCave(int offset)
+{
+    const int XU_ZHE_CAVE_OFFSET = 0x07;
+    const int GOLD_KEY_CAVE_OFFSET = 0x46;
+    const int NAN_YANG_CAVE_OFFSET = 0x63;
+    const int SALTPETER_CAVE_OFFSET = 0x99;
+
+    return (offset == XU_ZHE_CAVE_OFFSET ||
+            offset == GOLD_KEY_CAVE_OFFSET ||
+            offset == NAN_YANG_CAVE_OFFSET ||
+            offset == SALTPETER_CAVE_OFFSET);
+}
+
+static bool AreExitsFromSameCave(int offset1, int offset2)
+{
+    const int MT_GANG_TAI_ENTRANCE_OFFSET = 0x0B;
+    const int MT_GANG_TAI_EXIT_OFFSET = 0x1F;
+    const int WU_CAVE_EXIT_OFFSET = 0x26;
+    const int WU_CAVE_ENTRANCE_OFFSET = 0x39;
+    const int CHANG_AN_ENTRANCE_OFFSET = 0x58;
+    const int CHANG_AN_EXIT_OFFSET = 0x61;
+    const int WEI_CAVE_2_ENTRANCE_OFFSET = 0x6C;
+    const int WEI_CAVE_2_EXIT_OFFSET = 0x7B;
+    const int WEI_CAVE_1_EXIT_OFFSET = 0x7E;
+    const int WEI_CAVE_1_ENTRANCE_OFFSET = 0x93;
+
+    return ((offset1 == MT_GANG_TAI_ENTRANCE_OFFSET && offset2 == MT_GANG_TAI_EXIT_OFFSET) ||
+            (offset1 == MT_GANG_TAI_EXIT_OFFSET && offset2 == MT_GANG_TAI_ENTRANCE_OFFSET) ||
+            (offset1 == WU_CAVE_ENTRANCE_OFFSET && offset2 == WU_CAVE_EXIT_OFFSET) ||
+            (offset1 == WU_CAVE_EXIT_OFFSET && offset2 == WU_CAVE_ENTRANCE_OFFSET) ||
+            (offset1 == CHANG_AN_ENTRANCE_OFFSET && offset2 == CHANG_AN_EXIT_OFFSET) ||
+            (offset1 == CHANG_AN_EXIT_OFFSET && offset2 == CHANG_AN_ENTRANCE_OFFSET) ||
+            (offset1 == WEI_CAVE_2_ENTRANCE_OFFSET && offset2 == WEI_CAVE_2_EXIT_OFFSET) ||
+            (offset1 == WEI_CAVE_2_EXIT_OFFSET && offset2 == WEI_CAVE_2_ENTRANCE_OFFSET) ||
+            (offset1 == WEI_CAVE_1_ENTRANCE_OFFSET && offset2 == WEI_CAVE_1_EXIT_OFFSET) ||
+            (offset1 == WEI_CAVE_1_EXIT_OFFSET && offset2 == WEI_CAVE_1_ENTRANCE_OFFSET));
+}
+
+// TODO: Split this out into its own file, as we'll have more location shuffling logic in the future
+void Randomizer::CaveShuffle()
+{
+    // These are world map offsets
+    const int XU_ZHE_CAVE_OFFSET = 0x07;
+    const int MT_GANG_TAI_ENTRANCE_OFFSET = 0x0B;
+    const int MT_GANG_TAI_EXIT_OFFSET = 0x1F;
+    const int WU_CAVE_EXIT_OFFSET = 0x26;
+    const int WU_CAVE_ENTRANCE_OFFSET = 0x39;
+    const int GOLD_KEY_CAVE_OFFSET = 0x46;
+    const int CHANG_AN_ENTRANCE_OFFSET = 0x58;
+    const int CHANG_AN_EXIT_OFFSET = 0x61;
+    const int NAN_YANG_CAVE_OFFSET = 0x63;
+    const int WEI_CAVE_2_ENTRANCE_OFFSET = 0x6C;
+    const int WEI_CAVE_2_EXIT_OFFSET = 0x7B;
+    const int WEI_CAVE_1_EXIT_OFFSET = 0x7E;
+    const int WEI_CAVE_1_ENTRANCE_OFFSET = 0x93;
+    const int SALTPETER_CAVE_OFFSET = 0x99;
+
+    // Magic numbers are bad, but 8 million consts to start a method are obnoxious.
+    vector<vector<BYTE>> CaveWarpOffsets = {
+        {XU_ZHE_CAVE_OFFSET,          0x08, 0x09},
+        {MT_GANG_TAI_ENTRANCE_OFFSET, 0x0A},
+        {MT_GANG_TAI_EXIT_OFFSET,     0x1E},
+        {WU_CAVE_EXIT_OFFSET,         0x27},
+        {WU_CAVE_ENTRANCE_OFFSET,     0x38},
+        {GOLD_KEY_CAVE_OFFSET,        0x47, 0x48},
+        {CHANG_AN_ENTRANCE_OFFSET,    0x57, 0x59},
+        {CHANG_AN_EXIT_OFFSET,        0x60, 0x62},
+        {NAN_YANG_CAVE_OFFSET,        0x64, 0x65},
+        {WEI_CAVE_2_ENTRANCE_OFFSET,  0x6D, 0x7D},
+        {WEI_CAVE_2_EXIT_OFFSET,      0x7A, 0x7C},
+        {WEI_CAVE_1_EXIT_OFFSET,      0x7F, 0x80},
+        {WEI_CAVE_1_ENTRANCE_OFFSET,  0x94, 0x95},
+        {SALTPETER_CAVE_OFFSET,       0x9A, 0x9B}
+    };
+
+    vector<vector<BYTE>> ShuffledOffsets = CaveWarpOffsets;
+
+    for (int i = 0; i < 10000; ++i)
+    {
+        uniform_int_distribution<int> caveDistribution(0, ShuffledOffsets.size() - 1);
+        int location1 = caveDistribution(myGenerator);
+        int location2 = caveDistribution(myGenerator);
+        swap(ShuffledOffsets[location1], ShuffledOffsets[location2]);
+    }
+
+    // Now do sanity checks
+    // For now, let's prevent the following:
+    // 1) Wu Cave entrance should not be a single-entrance cave to prevent softlocks from canal
+    // 2) Mt Gang Tai Exit cannot be a single-entrance cave, and it's other side cannot come to
+    //    one of the Wei caves if the other is a Single Exit cave
+    // 3) Wei1 Exit & Wei2 Entrance can't be opposite ends of the same cave
+    // 4) Wei1 Exit & Wei2 Entrance can't both be single-entrance caves.
+    while (IsSingleExitCave(ShuffledOffsets[4][0]) ||
+           IsSingleExitCave(ShuffledOffsets[2][0]) ||
+           (AreExitsFromSameCave(ShuffledOffsets[2][0], ShuffledOffsets[9][0]) &&
+            IsSingleExitCave(ShuffledOffsets[11][0])) ||
+           (AreExitsFromSameCave(ShuffledOffsets[2][0], ShuffledOffsets[11][0]) &&
+            IsSingleExitCave(ShuffledOffsets[9][0])) ||
+           AreExitsFromSameCave(ShuffledOffsets[9][0], ShuffledOffsets[11][0]) ||
+           (IsSingleExitCave(ShuffledOffsets[9][0]) && IsSingleExitCave(ShuffledOffsets[11][0])))
+    {
+        uniform_int_distribution<int> caveDistribution(0, ShuffledOffsets.size() - 1);
+        int location1 = caveDistribution(myGenerator);
+        int location2 = caveDistribution(myGenerator);
+        swap(ShuffledOffsets[location1], ShuffledOffsets[location2]);
+    }
+
+    // Collect all the bytes we need to update
+    std::vector<std::vector<BYTE>> bytesToWrite;
+    for (int i = 0; i < ShuffledOffsets.size(); ++i)
+    {
+        printf("Putting cave id 0x%02X in the vanilla 0x%02X location\n",
+               ShuffledOffsets[i][0], CaveWarpOffsets[i][0]);
+        int lsb = myRom->ReadByte(0x1C210 + ShuffledOffsets[i][0]);
+        int msb = myRom->ReadByte(0x1C2C0 + ShuffledOffsets[i][0]);
+        int shuffledAddressInBank = (msb << 8) | lsb;
+
+        lsb = myRom->ReadByte(0x1C210 + CaveWarpOffsets[i][1]);
+        msb = myRom->ReadByte(0x1C2C0 + CaveWarpOffsets[i][1]);
+        int caveExitAddressInBank = (msb << 8) | lsb;
+
+        // This puts the destination of the shuffled world map address into the vanilla location
+        std::vector<BYTE> updateToWrite;
+        updateToWrite.push_back(CaveWarpOffsets[i][0]);
+        for (int j = 4; j < 9; ++j)
+        {
+            updateToWrite.push_back(myRom->ReadByteAtBank(0x7, shuffledAddressInBank + j));
+        }
+
+        bytesToWrite.push_back(updateToWrite);
+
+        // This puts the destination of the vanilla cave exits to the shuffled world map location
+        for (int j = 1; j < ShuffledOffsets[i].size(); ++j)
+        {
+            std::vector<BYTE> updatedCaveEntrance;
+            updatedCaveEntrance.push_back(ShuffledOffsets[i][j]);
+            for (int k = 4; k < 9; ++k)
+            {
+                updatedCaveEntrance.push_back(myRom->ReadByteAtBank(0x7, caveExitAddressInBank + k));
+            }
+            bytesToWrite.push_back(updatedCaveEntrance);
+        }
+    }
+
+    // Now write everything
+    for (auto& entry : bytesToWrite)
+    {
+        int lsb = myRom->ReadByte(0x1C210 + entry[0]);
+        int msb = myRom->ReadByte(0x1C2C0 + entry[0]);
+        int addressInBank = (msb << 8) | lsb;
+
+        for (int i = 1; i < entry.size(); ++i)
+        {
+            myRom->WriteByteAtBank(0x7, addressInBank + i + 3, entry[i]);
+        }
+    }
+}
+
+// TODO: Split this out into its own file, as we'll have more constraints as shuffling goes up
 void Randomizer::ItemShuffle()
 {
     std::vector<BYTE> chestContentsToRandomize;
