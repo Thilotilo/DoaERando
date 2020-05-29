@@ -48,7 +48,7 @@ void ROM::WriteByte(int address, BYTE byte)
 void ROM::WriteByteAtBank(int bank, int address, BYTE byte)
 {
     int baseOffset = address - 0x8000;
-    WriteByte(byte, 0x10 + (bank * 0x4000) + baseOffset);
+    WriteByte(0x10 + (bank * 0x4000) + baseOffset, byte);
 }
 
 void ROM::SwapBytes(int address1, int address2)
