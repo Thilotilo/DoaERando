@@ -6,6 +6,7 @@ Current Features:
 - Randomized Zones
 - General Shuffle
 - Item Shuffle
+- Cave Entrance Shuffle
 - Randomized Battles
 - Randomized Tactic levels
 - Randomized Starting Generals
@@ -16,6 +17,12 @@ Current Features:
 - NPC in Lou Sang now gives 999999 food
 - Resurrect all after death.
 - 7th slot glitch patched
+
+Added in v0.0.5:
+- Added cave entrance shuffle
+- Fixed bugs
+    - Burnt Luo Yang/Luo Yang battle is active again
+    - No more glitched or missing treasures.
 
 Added in v0.0.42:
 - Added item shuffle
