@@ -349,6 +349,44 @@ void Randomizer::FixSlot7Glitch()
     myRom->WriteByte(0x3B616, 0x90);
 }
 
+// The belief here is that the random crashes we get in the vanilla game
+//  are based upon an NMI running at an inopportune time.  Specifically,
+//  the subroutine we are modifying below would pull the top two stack
+//  bytes and then read them as a stack offset rather than just reading
+//  the pulled values.  This led to a potential interrupt between the
+//  pulls and the reads, at which point the reads would point to garbage
+//  data, and the routine would return to who knows where and execute.
+// We fix this by just reading the pulled data rather than the stack offset.
+// This has the added bonus of allowing us to ignore storing off X, the TSX
+//  and restoring X, since X is only used for the stack read.  Ultimately,
+//  it frees up 11 bytes starting at 0x3C51F that we can use for other
+//  purposes in the future.
+void Randomizer::FixNMIGlitch()
+{
+    // This should hopefully stop all of the crashes
+    std::vector<BYTE> loopingCode = {
+        0x68,               // PLA
+        0x85, 0xF3,         // STA $F3
+        0x68,               // PLA
+        0x85, 0xF4,         // STA $F4
+        // Now we're just shifting this section up to follow immediately
+        0xA0, 0x02,         // LDY #$02
+        0xB1, 0xF3,         // LDA ($F3),Y
+        0x48,               // PHA
+        0x88,               // DEY
+        0xB1, 0xF3,         // LDA ($F3),Y
+        0x48,               // PHA
+        0xA5, 0x45,         // LDA $45
+        0x4C, 0x80, 0xC4,   // JMP $C480
+        // Zero out remaining bytes from this logic
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
+    for (int i = 0; i < loopingCode.size(); ++i)
+    {
+        myRom->WriteByte(0x3C50B + i, loopingCode[i]);
+    }
+}
+
 void Randomizer::ResurrectAllAfterDeath()
 {
     printf("Resurrecting all after death...\n");

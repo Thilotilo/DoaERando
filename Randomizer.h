@@ -23,6 +23,7 @@ public:
     void CaveShuffle();
 
     void FixSlot7Glitch();
+    void FixNMIGlitch();
     void ResurrectAllAfterDeath();
     void OnlyLaunchShuLuBuOnce();
     void GivePartyMaxFoodFromNPC();

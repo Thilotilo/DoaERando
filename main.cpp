@@ -24,6 +24,7 @@ int main(void)
 
     // This is a non-negotiable - it changes no behavior, but enables other features.
     randomizer.ImproveInitialBattlesAndFlags();
+    randomizer.FixNMIGlitch();
 
     // Optional items
     randomizer.ImproveMap();
