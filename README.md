@@ -18,6 +18,9 @@ Current Features:
 - Resurrect all after death.
 - 7th slot glitch patched
 
+Added in v0.0.51:
+- Fixed the NMI glitch that causes all the random crashing (hopefully)
+
 Added in v0.0.5:
 - Added cave entrance shuffle
 - Fixed bugs
