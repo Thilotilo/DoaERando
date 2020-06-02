@@ -167,7 +167,7 @@ void General::ReadName(ROM& rom)
 {
     const int NAME_OFFSET = 20;
     int nameOffset = 0;
-    while (rom.ReadByte(address + nameOffset + NAME_OFFSET) != 0xFF)
+    while (rom.ReadByte(address + nameOffset + NAME_OFFSET) != 0xFF && nameOffset < 19)
     {
         char character = rom.ReadByte(address + nameOffset + NAME_OFFSET) + 'A' - 0x10;
         switch(rom.ReadByte(address + nameOffset + NAME_OFFSET))
