@@ -432,6 +432,17 @@ void Randomizer::ModifyEncounterRate()
     myRom->WriteByte(0x3F522, 0x00);
 }
 
+void Randomizer::DisableChapter1LockForSiShui()
+{
+    printf("Opening Si Shui fortress to Liu Bei...\n");
+    // Make only chapters below 1 (i.e., none) block entrance to Si Shui
+    myRom->WriteByte(0x3642B, 0x01);
+    // Don't disable Si Shui battle unless we enter in chapter 0 (i.e., never)
+    myRom->WriteByte(0x3643B, 0x00);
+    // Don't decrement the Y counter unless we are in a chapter below 1 (i.e., never)
+    myRom->WriteByte(0x3BE8B, 0x01);
+}
+
 void Randomizer::DisableNonGeneralBattles()
 {
     // With these changes, the odds of a general battle is 100%, but if there are no

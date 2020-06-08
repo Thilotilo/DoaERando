@@ -28,6 +28,7 @@ public:
     void OnlyLaunchShuLuBuOnce();
     void GivePartyMaxFoodFromNPC();
     void ModifyEncounterRate();
+    void DisableChapter1LockForSiShui();
 
     void SetGeneralRecruitable(BYTE id);
     void SetGeneralEncounterable(BYTE id);
