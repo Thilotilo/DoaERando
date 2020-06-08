@@ -34,6 +34,7 @@ class Generals
         int GetGeneralBankAddress(BYTE id);
         int ConvertRomAddressToBankAddress(int romAddress);
         int GetGeneralIndexById(BYTE id);
+        int GetGeneralIndexByAddress(int address);
         void ReadGenerals();
         void AddGeneral(BYTE id);
         void AddCopy(BYTE id);

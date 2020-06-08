@@ -256,6 +256,19 @@ int Generals::GetGeneralIndexById(BYTE id)
     return -1;
 }
 
+int Generals::GetGeneralIndexByAddress(int address)
+{
+    int i = 0;
+    for (i = 0; i < myGenerals.size(); ++i)
+    {
+        if (myGenerals[i].address == address)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void Generals::ScaleSpecialGenerals(Generator& generator)
 {
     uniform_int_distribution<BYTE> tacticDistribution(35, 51);
