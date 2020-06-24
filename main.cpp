@@ -50,6 +50,7 @@ int main(void)
     randomizer.ModifyEncounterRate();
     randomizer.FixSlot7Glitch();
     randomizer.OnlyLaunchShuLuBuOnce();
+    randomizer.DisableChapter1LockForSiShui();
 
     printf("Saving file...\n");
     rom.WriteRom("./RandoRoms/", 10, seed);
