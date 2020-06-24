@@ -35,39 +35,35 @@ General::General(int address, BYTE id, ROM& rom)
     ReadName(rom);
 }
 
-void General::ScaleWeaponForZone(Generator& generator)
+void General::ScaleWeaponForZone(RNG& rng)
 { 
     const BYTE MIN_WEAPON[9] = {0x00, 0x00, 0x04, 0x05, 0x06, 0x06, 0x09, 0x0B, 0x0E};
     const BYTE MAX_WEAPON[9] = {0x13, 0x05, 0x05, 0x06, 0x06, 0x07, 0x09, 0x0D, 0x13};
 
-    uniform_int_distribution<BYTE> weaponDistribution(MIN_WEAPON[zone], MAX_WEAPON[zone]);
-    weaponId = weaponDistribution(generator);
+    weaponId = rng.GetRandomByte(MIN_WEAPON[zone], MAX_WEAPON[zone]);
 }
 
-void General::ScaleArmorForZone(Generator& generator)
+void General::ScaleArmorForZone(RNG& rng)
 { 
     const BYTE MIN_ARMOR[9] = {0x0, 0x0, 0x4, 0x5, 0x4, 0x7, 0xA, 0xC, 0xE};
     const BYTE MAX_ARMOR[9] = {0xF, 0x3, 0x5, 0x6, 0x5, 0x7, 0xB, 0xF, 0xF};
 
-    uniform_int_distribution<BYTE> armorDistribution(MIN_ARMOR[zone], MAX_ARMOR[zone]);
-    enemyDefenseId = armorDistribution(generator);
+    enemyDefenseId = rng.GetRandomByte(MIN_ARMOR[zone], MAX_ARMOR[zone]);
 }
 
-void General::ScaleMaxTacticForZone(Generator& generator)
+void General::ScaleMaxTacticForZone(RNG& rng)
 { 
     const BYTE MAX_TACTIC[9] = {50, 10, 15, 20, 25, 30, 35, 40, 50};
 
-    uniform_int_distribution<BYTE> tacticDistribution(0, MAX_TACTIC[zone]);
-    enemyMaxTacticLevel = tacticDistribution(generator);
+    enemyMaxTacticLevel = rng.GetRandomByte(0, MAX_TACTIC[zone]);
 }
 
-void General::ScaleSoldiersForZone(Generator& generator)
+void General::ScaleSoldiersForZone(RNG& rng)
 { 
     const BYTE MIN_SOLDIERS[9] = {1,   10,  24, 33, 48, 53, 64, 82,  99};
     const BYTE MAX_SOLDIERS[9] = {101, 27,  32, 47, 61, 60, 79, 111, 121};
 
-    uniform_int_distribution<BYTE> soldierDistribution(MIN_SOLDIERS[zone], MAX_SOLDIERS[zone]);
-    BYTE randomizedSoldiers = soldierDistribution(generator);
+    BYTE randomizedSoldiers = rng.GetRandomByte(MIN_SOLDIERS[zone], MAX_SOLDIERS[zone]);
     {
         if (allySoldierExponent & 0x80)
         {

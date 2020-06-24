@@ -9,7 +9,7 @@ namespace DoaERando {
 
 Randomizer::Randomizer(ROM* rom, int seed)
     : myRom(rom)
-    , myGenerator(seed)
+    , myRNG(seed)
     , myBattleRandomizer()
     , myGenerals(*rom)
 {
@@ -58,14 +58,13 @@ void Randomizer::PrintName(BYTE id)
 void Randomizer::RandomizeStartingGenerals()
 {
     printf("Randomizing Starting Generals...\n");
-    uniform_int_distribution<int> distribution(0x05, 0xD7);
 
     std::vector<BYTE> startingGenerals;
     startingGenerals.push_back(0xA8);
 
     BYTE general1;
     do {
-        general1 = distribution(myGenerator);
+        general1 = myRNG.GetRandomByte(0x05, 0xD7);
     } while (general1 == 0xB3 || general1 == 0xA6 || general1 == 0xA7 || general1 == 0xA8);
     printf("Setting ");
     PrintName(general1);
@@ -75,7 +74,7 @@ void Randomizer::RandomizeStartingGenerals()
 
     BYTE general2;
     do {
-        general2 = distribution(myGenerator);
+        general2 = myRNG.GetRandomByte(0x05, 0xD7);
     } while (general2 == 0xB3 || general2 == 0xA6 || general2 == 0xA7 || general2 == 0xA8 || general2 == general1);
     printf("Setting ");
     PrintName(general2);
@@ -171,9 +170,8 @@ void Randomizer::CaveShuffle()
 
     for (int i = 0; i < 10000; ++i)
     {
-        uniform_int_distribution<int> caveDistribution(0, ShuffledOffsets.size() - 1);
-        int location1 = caveDistribution(myGenerator);
-        int location2 = caveDistribution(myGenerator);
+        int location1 = myRNG.GetRandomInt(0, ShuffledOffsets.size() - 1);
+        int location2 = myRNG.GetRandomInt(0, ShuffledOffsets.size() - 1);
         swap(ShuffledOffsets[location1], ShuffledOffsets[location2]);
     }
 
@@ -193,9 +191,8 @@ void Randomizer::CaveShuffle()
            AreExitsFromSameCave(ShuffledOffsets[9][0], ShuffledOffsets[11][0]) ||
            (IsSingleExitCave(ShuffledOffsets[9][0]) && IsSingleExitCave(ShuffledOffsets[11][0])))
     {
-        uniform_int_distribution<int> caveDistribution(0, ShuffledOffsets.size() - 1);
-        int location1 = caveDistribution(myGenerator);
-        int location2 = caveDistribution(myGenerator);
+        int location1 = myRNG.GetRandomInt(0, ShuffledOffsets.size() - 1);
+        int location2 = myRNG.GetRandomInt(0, ShuffledOffsets.size() - 1);
         swap(ShuffledOffsets[location1], ShuffledOffsets[location2]);
     }
 
@@ -282,11 +279,10 @@ void Randomizer::ItemShuffle()
         chestContentsToRandomize.push_back(myRom->ReadByte(i));
     }
 
-    uniform_int_distribution<int> itemDistribution(0, chestContentsToRandomize.size() - 1);
     for (int i = 0; i < 100000; ++i)
     {
-        int index1 = itemDistribution(myGenerator);
-        int index2 = itemDistribution(myGenerator);
+        int index1 = myRNG.GetRandomIndexFromByteVector(chestContentsToRandomize);
+        int index2 = myRNG.GetRandomIndexFromByteVector(chestContentsToRandomize);
 
         BYTE item1 = chestContentsToRandomize[index1];
         BYTE item2 = chestContentsToRandomize[index2];
@@ -457,15 +453,13 @@ void Randomizer::IncreaseTacticGains()
     // Here, we're going to randomize each 1/16 chance value to be between
     // 5-10, with the last slot being 15-20.
     const int TACTIC_GAINS_OFFSET = 0x3B666;
-    uniform_int_distribution<BYTE> standardDistribution(5,10);
-    uniform_int_distribution<BYTE> majorGainDistribution(15,20);
     for (int i = 0; i < 15; ++i)
     {
-        BYTE tacticGain = standardDistribution(myGenerator);
+        BYTE tacticGain = myRNG.GetRandomByte(5, 10);
         myRom->WriteByte(TACTIC_GAINS_OFFSET + i, tacticGain);
         printf("Increasing tactic gain 0x%X to %d\n", i, tacticGain);
     }
-    BYTE tacticGain = majorGainDistribution(myGenerator);
+    BYTE tacticGain = myRNG.GetRandomByte(15, 20);
     myRom->WriteByte(TACTIC_GAINS_OFFSET + 15, tacticGain);
     printf("Increasing tactic gain 0x%X to %d\n", 15, tacticGain);
 }
@@ -493,8 +487,6 @@ void Randomizer::MakeAllGeneralsRecruitableAndEncounterable()
 
 void Randomizer::RandomizeTacticLevels()
 {
-    std::uniform_int_distribution<int> levelSlot(1, 49);
-
     const int TACTIC_LEVEL_OFFSET = 0x3b880;
     printf("Old Tactic Levels:\n");
     for(int i = 1; i < 50; ++i)
@@ -503,8 +495,8 @@ void Randomizer::RandomizeTacticLevels()
     }
     for (int i = 0; i < 10000; ++i)
     {
-        int levelSlot1 = levelSlot(myGenerator);
-        int levelSlot2 = levelSlot(myGenerator);
+        int levelSlot1 = myRNG.GetRandomByte(1, 49);
+        int levelSlot2 = myRNG.GetRandomByte(1, 49);
 
         myRom->SwapBytes(TACTIC_LEVEL_OFFSET + levelSlot1, TACTIC_LEVEL_OFFSET + levelSlot2);
     }
@@ -531,15 +523,16 @@ void Randomizer::RandomizeGenerals()
         printf("\n");
     }
 
-    myGenerals.SetZonesForZone0(myGenerator);
-    uniform_int_distribution<int> generalDistribution(0, myGenerals.size()-1);
+    myGenerals.SetZonesForZone0(myRNG);
     for (int i = 0; i < 10000; ++i)
     {
-        myGenerals.SwapZones(generalDistribution(myGenerator), generalDistribution(myGenerator));
+        myGenerals.SwapZones(
+            myRNG.GetRandomInt(0, myGenerals.size() - 1),
+            myRNG.GetRandomInt(0, myGenerals.size() - 1));
     }
-    myGenerals.ScaleForZone(myGenerator);
-    myGenerals.RandomizeCaoCaoAndSunCe(myGenerator);
-    myGenerals.ScaleSpecialGenerals(myGenerator);
+    myGenerals.ScaleForZone(myRNG);
+    myGenerals.RandomizeCaoCaoAndSunCe(myRNG);
+    myGenerals.ScaleSpecialGenerals(myRNG);
     myGenerals.UpdateGenerals();
 
     printf("After Randomization:\n");
@@ -558,14 +551,14 @@ void Randomizer::RandomizeGenerals()
 
 void Randomizer::RandomizeBattles()
 {
-    myBattleRandomizer.RandomizeZone1(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone2(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone3(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone4(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone5(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone6(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone7(myGenerals, myGenerator);
-    myBattleRandomizer.RandomizeZone8(myGenerals, myGenerator);
+    myBattleRandomizer.RandomizeZone1(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone2(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone3(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone4(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone5(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone6(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone7(myGenerals, myRNG);
+    myBattleRandomizer.RandomizeZone8(myGenerals, myRNG);
     myBattleRandomizer.UpdateBattles(*myRom);
 }
 

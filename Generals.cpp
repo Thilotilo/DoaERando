@@ -150,15 +150,14 @@ void Generals::SwapZones(int slot1, int slot2)
     }
 }
 
-void Generals::SetZonesForZone0(Generator& generator)
+void Generals::SetZonesForZone0(RNG& rng)
 {
     for (auto& general : myGenerals)
     {
         if (general.zone == 0)
         {
             // Zone 1 already has too many generals, let's only allow zone 2 and above:
-            uniform_int_distribution<BYTE> zoneDistribution(2,8);
-            general.zone = zoneDistribution(generator);
+            general.zone = rng.GetRandomByte(2, 8);
         }
     }
 }
@@ -204,7 +203,7 @@ bool Generals::isStartingGeneralAddress(int address)
 }
 
 
-void Generals::ScaleForZone(Generator& generator)
+void Generals::ScaleForZone(RNG& rng)
 {
     for (auto& general : myGenerals)
     {
@@ -212,10 +211,10 @@ void Generals::ScaleForZone(Generator& generator)
             general.id != SIMA_YI_ID &&
             general.id != SUN_QUAN_ID)
         {
-            general.ScaleWeaponForZone(generator);
-            general.ScaleArmorForZone(generator);
-            general.ScaleMaxTacticForZone(generator);
-            general.ScaleSoldiersForZone(generator);
+            general.ScaleWeaponForZone(rng);
+            general.ScaleArmorForZone(rng);
+            general.ScaleMaxTacticForZone(rng);
+            general.ScaleSoldiersForZone(rng);
         }
     }
 }
@@ -269,38 +268,31 @@ int Generals::GetGeneralIndexByAddress(int address)
     return -1;
 }
 
-void Generals::ScaleSpecialGenerals(Generator& generator)
+void Generals::ScaleSpecialGenerals(RNG& rng)
 {
-    uniform_int_distribution<BYTE> tacticDistribution(35, 51);
-
-    BYTE maxTacticLevel = tacticDistribution(generator);
     int index = GetGeneralIndexById(CAO_PI_ID);
-    myGenerals[index].enemyMaxTacticLevel = maxTacticLevel;
+    myGenerals[index].enemyMaxTacticLevel = rng.GetRandomByte(35, 50);
     
-    maxTacticLevel = tacticDistribution(generator);
     index = GetGeneralIndexById(SIMA_YI_ID);
-    myGenerals[index].enemyMaxTacticLevel = maxTacticLevel;
+    myGenerals[index].enemyMaxTacticLevel = rng.GetRandomByte(35, 50);
 
-    maxTacticLevel = tacticDistribution(generator);
     index = GetGeneralIndexById(SUN_QUAN_ID);
-    myGenerals[index].enemyMaxTacticLevel = maxTacticLevel;
+    myGenerals[index].enemyMaxTacticLevel = rng.GetRandomByte(35, 50);
 
 }
 
-void Generals::RandomizeCaoCaoAndSunCe(Generator &generator)
+void Generals::RandomizeCaoCaoAndSunCe(RNG& rng)
 {
-    uniform_int_distribution<BYTE> skillDistribution(220,255);
-
     // Scale the generals STR/INT/AGI to a high range (220-255)
     int CaoCaoIndex = GetGeneralIndexById(CAO_CAO_ID);
-    myGenerals[CaoCaoIndex].strength = skillDistribution(generator);
-    myGenerals[CaoCaoIndex].intelligence = skillDistribution(generator);
-    myGenerals[CaoCaoIndex].agility = skillDistribution(generator);
+    myGenerals[CaoCaoIndex].strength = rng.GetRandomByte(220, 255);
+    myGenerals[CaoCaoIndex].intelligence = rng.GetRandomByte(220, 255);
+    myGenerals[CaoCaoIndex].agility = rng.GetRandomByte(220, 255);
 
     int SunCeIndex = GetGeneralIndexById(SUN_CE_ID);
-    myGenerals[SunCeIndex].strength = skillDistribution(generator);
-    myGenerals[SunCeIndex].intelligence = skillDistribution(generator);
-    myGenerals[SunCeIndex].agility = skillDistribution(generator);
+    myGenerals[SunCeIndex].strength = rng.GetRandomByte(220, 255);
+    myGenerals[SunCeIndex].intelligence = rng.GetRandomByte(220, 255);
+    myGenerals[SunCeIndex].agility = rng.GetRandomByte(220, 255);
 
     // Update the Sun Ce portrait to look like Sun Quan but different color
     myRom.WriteByte(0x330CD, 0x4E); // Portrait Slices

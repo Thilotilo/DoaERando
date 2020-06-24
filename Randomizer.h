@@ -2,7 +2,7 @@
 #define __RANDOMIZER_H__
 
 #include "Rom.h"
-#include <random>
+#include "RNG.h"
 #include "Generals.h"
 #include "BattleRandomizer.h"
 
@@ -52,7 +52,7 @@ public:
 private:
     Randomizer() = delete;
     ROM* myRom;
-    Generator myGenerator;
+    RNG myRNG;
     Generals myGenerals;
     BattleRandomizer myBattleRandomizer;
     

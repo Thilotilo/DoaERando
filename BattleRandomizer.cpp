@@ -100,15 +100,14 @@ bool BattleRandomizer::PlaceGeneralInBattle(BYTE id, int battleId)
     return false;
 }
 
-void BattleRandomizer::FillBattlesRandomly(vector<BYTE> generalIds, vector<int> battleIds, Generator& generator)
+void BattleRandomizer::FillBattlesRandomly(vector<BYTE> generalIds, vector<int> battleIds, RNG& rng)
 {
     for (auto& battleId : battleIds)
     {
         int startingIndex = 5 - myBattles[battleId].slotsRemaining;
         for (int i = startingIndex; i < 5; ++i)
         {
-            uniform_int_distribution<int> distribution(0,9);
-            int value = distribution(generator);
+            int value = rng.GetRandomInt(0, 9);
             // 60% chance of a general unless this is slot 0, in which case it's 100%
             if (value < 6 || i == 0)
             {
@@ -116,8 +115,7 @@ void BattleRandomizer::FillBattlesRandomly(vector<BYTE> generalIds, vector<int> 
                 bool success = false;
                 while (!success)
                 {
-                    uniform_int_distribution<int> generalDistribution(0, generalIds.size() - 1);
-                    BYTE generalToInsert = generalIds[generalDistribution(generator)];
+                    BYTE generalToInsert = rng.GetRandomValueFromByteVector(generalIds);
                     success = PlaceGeneralInBattle(generalToInsert, battleId);
                 }
             }
@@ -133,7 +131,7 @@ void BattleRandomizer::FillBattlesRandomly(vector<BYTE> generalIds, vector<int> 
     }
 }
 
-void BattleRandomizer::FillBattleWithOnlyGenerals(vector<BYTE> generalIds, int battleId, Generator& generator)
+void BattleRandomizer::FillBattleWithOnlyGenerals(vector<BYTE> generalIds, int battleId, RNG& rng)
 {
     int startingIndex = 5 - myBattles[battleId].slotsRemaining;
     for (int i = startingIndex; i < 5; ++i)
@@ -141,15 +139,14 @@ void BattleRandomizer::FillBattleWithOnlyGenerals(vector<BYTE> generalIds, int b
         bool success = false;
         while (!success)
         {
-            uniform_int_distribution<int> generalDistribution(0, generalIds.size() - 1);
-            BYTE generalToInsert = generalIds[generalDistribution(generator)];
+            BYTE generalToInsert = rng.GetRandomValueFromByteVector(generalIds);
             success = PlaceGeneralInBattle(generalToInsert, battleId);
         }
     }
     myBattles[battleId].OrganizeBattle();
 }
 
-void BattleRandomizer::RandomizeZone1(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone1(Generals& generals, RNG& rng)
 {
     // Zone 1 special condition is that we want the following:
     // 3 generals, 1 at each of the 3 locations
@@ -158,16 +155,14 @@ void BattleRandomizer::RandomizeZone1(Generals& generals, Generator& generator)
 
     std::vector<BYTE> generalIds = generals.GetGeneralIdsFromZone(1);
 
-    uniform_int_distribution<int> distribution(0, generalIds.size() - 1);
-
-    BYTE SpecialGeneral1 = generalIds[distribution(generator)];
+    BYTE SpecialGeneral1 = rng.GetRandomValueFromByteVector(generalIds);
     BYTE SpecialGeneral2;
     BYTE SpecialGeneral3;
     do {
-        SpecialGeneral2 = generalIds[distribution(generator)];
+        SpecialGeneral2 = rng.GetRandomValueFromByteVector(generalIds);
     } while (SpecialGeneral2 == SpecialGeneral1);
     do {
-        SpecialGeneral3 = generalIds[distribution(generator)];
+        SpecialGeneral3 = rng.GetRandomValueFromByteVector(generalIds);
     } while (SpecialGeneral3 == SpecialGeneral2 || SpecialGeneral3 == SpecialGeneral1);
 
     // Assign the special generals to each battle
@@ -195,8 +190,7 @@ void BattleRandomizer::RandomizeZone1(Generals& generals, Generator& generator)
     // Make sure every general goes to a relevant battle
     for (auto& id : nonSpecialGeneralIds)
     {
-        uniform_int_distribution<int> battleDistribution(0,2);
-        int battleId = battleDistribution(generator);
+        int battleId = rng.GetRandomInt(0, 2);
         while (!PlaceGeneralInBattle(id, battleId))
         {
             battleId = ((battleId + 1) % 3);
@@ -205,16 +199,16 @@ void BattleRandomizer::RandomizeZone1(Generals& generals, Generator& generator)
 
     std::vector<int> battlesToFill = {0x00, 0x01, 0x02, 0x04};
     // Now fill first 4 battles with generals/rebel forces
-    FillBattlesRandomly(nonSpecialGeneralIds, battlesToFill, generator);
+    FillBattlesRandomly(nonSpecialGeneralIds, battlesToFill, rng);
 
     // We want the front door to have filled generals.
-    FillBattleWithOnlyGenerals(nonSpecialGeneralIds, 0x05, generator);
+    FillBattleWithOnlyGenerals(nonSpecialGeneralIds, 0x05, rng);
 
     // Battle 3, which is the back door, will not have any other generals
     myBattles[0x03].OrganizeBattle();
 }
 
-void BattleRandomizer::RandomizeZone2(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone2(Generals& generals, RNG& rng)
 {
     // We may want to add Lu Bu logic into this one, but for now, the only special
     // logic for this zone is that we won't let Luo Yang be the sole location for
@@ -222,16 +216,13 @@ void BattleRandomizer::RandomizeZone2(Generals& generals, Generator& generator)
 
     std::vector<BYTE> generalIds = generals.GetGeneralIdsFromZone(2);
 
-    uniform_int_distribution<int> distribution(0, generalIds.size() - 1);
-
     // Luo Yang (0A) is bugged right now, and we don't fight the battle, so don't make it the
     // only location for a general.
     vector<int> battlesToFill = {0x06, 0x07, 0x08, 0x09, /*0x0A, */0x0B, 0x0C, 0x0D};
     // Make sure every general goes to a relevant battle
     for (auto& id : generalIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -244,10 +235,10 @@ void BattleRandomizer::RandomizeZone2(Generals& generals, Generator& generator)
     // want to fill the Luo Yang battle in case we can fight it.
     battlesToFill.push_back(0x0A);
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(generalIds, battlesToFill, generator);
+    FillBattlesRandomly(generalIds, battlesToFill, rng);
 }
 
-void BattleRandomizer::RandomizeZone3(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone3(Generals& generals, RNG& rng)
 {
     // We may want to add special logic to handle Yuan Shu's assassination/joining of
     // Yuan Shao in Ji Zhou, but for now, we're just ignoring that.  There are no
@@ -255,14 +246,11 @@ void BattleRandomizer::RandomizeZone3(Generals& generals, Generator& generator)
 
     std::vector<BYTE> generalIds = generals.GetGeneralIdsFromZone(3);
 
-    uniform_int_distribution<int> distribution(0, generalIds.size() - 1);
-
     vector<int> battlesToFill = {0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13};
     // Make sure every general goes to a relevant battle
     for (auto& id : generalIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -272,10 +260,10 @@ void BattleRandomizer::RandomizeZone3(Generals& generals, Generator& generator)
     }
 
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(generalIds, battlesToFill, generator);
+    FillBattlesRandomly(generalIds, battlesToFill, rng);
 }
 
-void BattleRandomizer::RandomizeZone4(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone4(Generals& generals, RNG& rng)
 {
     // We may want to add Yuan Shu joining Yuan Shao logic here in the future, but
     // for now, the only special consideration we're giving here is that we want the
@@ -286,9 +274,7 @@ void BattleRandomizer::RandomizeZone4(Generals& generals, Generator& generator)
     
     std::vector<BYTE> generalIds = generals.GetGeneralIdsFromZone(4);
 
-    uniform_int_distribution<int> distribution(0, generalIds.size() - 1);
-
-    BYTE SpecialGeneral = generalIds[distribution(generator)];
+    BYTE SpecialGeneral = rng.GetRandomValueFromByteVector(generalIds);
     
     // Assign the special generals to each battle
     PlaceGeneralInBattle(SpecialGeneral, 0x48);
@@ -299,8 +285,7 @@ void BattleRandomizer::RandomizeZone4(Generals& generals, Generator& generator)
     // Make sure every general goes to a relevant battle
     for (auto& id : generalIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -315,10 +300,10 @@ void BattleRandomizer::RandomizeZone4(Generals& generals, Generator& generator)
     battlesToFill.push_back(0x17); // Yuan Shang Battle
     battlesToFill.push_back(0x48); // Ambush
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(generalIds, battlesToFill, generator);
+    FillBattlesRandomly(generalIds, battlesToFill, rng);
 }
 
-void BattleRandomizer::RandomizeZone5(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone5(Generals& generals, RNG& rng)
 {
     // Ideally, we want to add a special consideration for 2 battles here.  We would like
     // the Chang Sha battles to have the Huang Zhong/Wei Yan equivalents at the town, and
@@ -334,8 +319,7 @@ void BattleRandomizer::RandomizeZone5(Generals& generals, Generator& generator)
     // Make sure every general goes to a relevant battle
     for (auto& id : generalIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -348,10 +332,10 @@ void BattleRandomizer::RandomizeZone5(Generals& generals, Generator& generator)
     // can't trigger it yet, but let's fill it anyway (only with repeat generals, of course)
     battlesToFill.push_back(0x4A);
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(generalIds, battlesToFill, generator);
+    FillBattlesRandomly(generalIds, battlesToFill, rng);
 }
 
-void BattleRandomizer::RandomizeZone6(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone6(Generals& generals, RNG& rng)
 {
     // Ideally, we want to add a special consideration for the Luo battle here.  We would like
     // it to yield the Ma Chao/Ma Dai equivalents when accepting their offer at the town,  but
@@ -366,8 +350,7 @@ void BattleRandomizer::RandomizeZone6(Generals& generals, Generator& generator)
     // Make sure every general goes to a relevant battle
     for (auto& id : generalIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -377,10 +360,10 @@ void BattleRandomizer::RandomizeZone6(Generals& generals, Generator& generator)
     }
 
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(generalIds, battlesToFill, generator);
+    FillBattlesRandomly(generalIds, battlesToFill, rng);
 }
 
-void BattleRandomizer::RandomizeZone7(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone7(Generals& generals, RNG& rng)
 {
     // There are a few special considerations here.
     // 1) The Wu Ling/Ling Ling refights (28 & 29) are difficult to trigger with the current
@@ -414,8 +397,7 @@ void BattleRandomizer::RandomizeZone7(Generals& generals, Generator& generator)
     // Make sure every general goes to a relevant battle
     for (auto& id : otherGeneralIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -430,10 +412,10 @@ void BattleRandomizer::RandomizeZone7(Generals& generals, Generator& generator)
     battlesToFill.push_back(0x2C);
 
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(otherGeneralIds, battlesToFill, generator);
+    FillBattlesRandomly(otherGeneralIds, battlesToFill, rng);
 }
 
-void BattleRandomizer::RandomizeZone8(Generals& generals, Generator& generator)
+void BattleRandomizer::RandomizeZone8(Generals& generals, RNG& rng)
 {
     // There are a few special considerations here.
     // 1) There are Chen Jiao (40) and Xu Huang(41) battles that are not triggerable, but
@@ -472,8 +454,7 @@ void BattleRandomizer::RandomizeZone8(Generals& generals, Generator& generator)
     // Make sure every general goes to a relevant battle
     for (auto& id : otherGeneralIds)
     {
-        uniform_int_distribution<int> battleDistribution(0, battlesToFill.size() - 1);
-        int battleIndex = battleDistribution(generator);
+        int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
         while (!PlaceGeneralInBattle(id, battleId))
         {
@@ -487,7 +468,7 @@ void BattleRandomizer::RandomizeZone8(Generals& generals, Generator& generator)
     battlesToFill.push_back(0x41);
 
     // Now fill all battles with generals/rebel forces
-    FillBattlesRandomly(otherGeneralIds, battlesToFill, generator);
+    FillBattlesRandomly(otherGeneralIds, battlesToFill, rng);
 }
 
 

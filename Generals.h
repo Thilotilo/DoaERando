@@ -2,6 +2,7 @@
 #define __GENERALS_H__
 
 #include "Rom.h"
+#include "RNG.h"
 #include "General.h"
 
 #include <vector>
@@ -17,13 +18,13 @@ class Generals
         void SwapIDs(int slot1, int slot2);
         void SwapZones(int slot1, int slot2);
         void AdjustZone1Generals();
-        void SetZonesForZone0(Generator& generator);
+        void SetZonesForZone0(RNG& rng);
         void SetAllGeneralsEncounterable();
         void SetAllGeneralsRecruitable();
         void SetStartingGenerals(std::vector<BYTE>& startingGeneralIds);
-        void ScaleForZone(Generator& generator);
-        void ScaleSpecialGenerals(Generator& generator);
-        void RandomizeCaoCaoAndSunCe(Generator &generator);
+        void ScaleForZone(RNG& rng);
+        void ScaleSpecialGenerals(RNG& rng);
+        void RandomizeCaoCaoAndSunCe(RNG& rng);
         void UpdateGenerals();
 
         std::vector<BYTE> GetGeneralIdsFromZone(BYTE zone);

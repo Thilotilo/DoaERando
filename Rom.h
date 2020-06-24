@@ -8,8 +8,6 @@
 
 namespace DoaERando {
 
-typedef std::mt19937_64 Generator;
-
 typedef uint8_t BYTE;
 
 class ROM
