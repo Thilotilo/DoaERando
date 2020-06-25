@@ -61,7 +61,7 @@ void General::ScaleMaxTacticForZone(RNG& rng)
 void General::ScaleSoldiersForZone(RNG& rng)
 { 
     const BYTE MIN_SOLDIERS[9] = {1,   10,  24, 33, 48, 53, 64, 82,  99};
-    const BYTE MAX_SOLDIERS[9] = {101, 27,  32, 47, 61, 60, 79, 111, 121};
+    const BYTE MAX_SOLDIERS[9] = {121, 27,  32, 47, 61, 60, 79, 111, 121};
 
     BYTE randomizedSoldiers = rng.GetRandomByte(MIN_SOLDIERS[zone], MAX_SOLDIERS[zone]);
     {
