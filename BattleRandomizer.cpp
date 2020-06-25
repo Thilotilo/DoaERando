@@ -1,4 +1,5 @@
 #include "BattleRandomizer.h"
+#include "GeneralIds.h"
 
 using namespace std;
 
@@ -375,8 +376,6 @@ void BattleRandomizer::RandomizeZone7(Generals& generals, RNG& rng)
 
     std::vector<BYTE> generalIds = generals.GetGeneralIdsFromZone(7);
 
-    const BYTE SUN_QUAN_ID = 0x57;
-
     // Assign Sun Quan to his battle
     PlaceGeneralInBattle(SUN_QUAN_ID, 0x36);
 
@@ -426,9 +425,6 @@ void BattleRandomizer::RandomizeZone8(Generals& generals, RNG& rng)
     //    and only in those fights.
 
     std::vector<BYTE> generalIds = generals.GetGeneralIdsFromZone(8);
-
-    const BYTE CAO_PI_ID = 0x71;
-    const BYTE SIMA_YI_ID = 0x88;
 
     // Assign Cao Pi & Sima Yi to their battles
     PlaceGeneralInBattle(CAO_PI_ID, 0x39);

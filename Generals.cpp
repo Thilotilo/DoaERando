@@ -1,14 +1,7 @@
 #include "Generals.h"
+#include "GeneralIds.h"
 
 namespace DoaERando {
-
-const BYTE UV10_ID = 0xB3; // This is a random NPC in the midst of generals
-const BYTE LIU_BEI_ID = 0xA8;
-const BYTE CAO_CAO_ID = 0x70;
-const BYTE CAO_PI_ID = 0x71;
-const BYTE SIMA_YI_ID = 0x88;
-const BYTE SUN_QUAN_ID = 0x57;
-const BYTE SUN_CE_ID = 0x56;
 
 using namespace std;
 
@@ -103,11 +96,6 @@ void Generals::AdjustZone1Generals()
     // These are generals that are not found in zone 1 but are marked as zone 1, making
     //  zone 1 over populated:
 
-    const BYTE ZHOU_CHAO_ID = 0x05;
-    const BYTE WANG_GUI_ID = 0x09;
-    const BYTE SUN_GAN_ID = 0x9E;
-    const BYTE HUO_HU_ID = 0xB8;
-    const BYTE YANG_JIN_ID = 0xB9;
     // Zhou Chao is in Chang An - he belongs in chapter 3
     int zhouChaoIndex = GetGeneralIndexById(ZHOU_CHAO_ID);
     myGenerals[zhouChaoIndex].zone = 3;
