@@ -29,6 +29,7 @@ public:
     void GivePartyMaxFoodFromNPC();
     void ModifyEncounterRate();
     void DisableChapter1LockForSiShui();
+    void RemoveZhugeLiangFetchQuest();
 
     void SetGeneralRecruitable(BYTE id);
     void SetGeneralEncounterable(BYTE id);

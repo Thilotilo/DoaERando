@@ -439,6 +439,14 @@ void Randomizer::DisableChapter1LockForSiShui()
     myRom->WriteByte(0x3BE8B, 0x01);
 }
 
+void Randomizer::RemoveZhugeLiangFetchQuest()
+{
+    // Put Zhuge Jin in the house from this chapter and on:
+    myRom->WriteByte(0x36A0C, 0x01);
+    // Instead of shifting to get the bit indicating if ZGL should show up initially, just set it.
+    myRom->WriteByte(0x36A26, 0x38); // SEC - the next instruction in BCS
+}
+
 void Randomizer::DisableNonGeneralBattles()
 {
     // With these changes, the odds of a general battle is 100%, but if there are no
