@@ -54,7 +54,7 @@ int main(void)
     randomizer.RemoveZhugeLiangFetchQuest();
 
     printf("Saving file...\n");
-    rom.WriteRom("./RandoRoms/", 10, seed);
+    rom.WriteRom("./RandoRoms/", 11, seed);
 
     return 0;
 }
