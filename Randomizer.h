@@ -49,6 +49,9 @@ public:
     void ImproveInitialBattlesAndFlags();
     void ImproveMap();
 
+    // Newest General Shuffle
+    void SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& ids);
+    void NewGeneralAndBattleShuffle();
 
 private:
     Randomizer() = delete;

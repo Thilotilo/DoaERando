@@ -1,7 +1,9 @@
 #include "Randomizer.h"
 #include <stdio.h>
+#include <algorithm>
 #include "Generals.h"
 #include "General.h"
+#include "GeneralIds.h"
 
 using namespace std;
 
@@ -668,6 +670,437 @@ void Randomizer::ImproveMap()
     // use the Gold Key.  To fix this, we just want to change it to use the new Luo Yang gates to
     // determine which version we want to load.
     myRom->WriteByte(0x3BCF9, 0x77);
+}
+
+// New General Shuffle Logic:
+
+static void PullIdFromVector(BYTE id, vector<BYTE>& ids)
+{
+    ids.erase(std::remove(ids.begin(), ids.end(), id), ids.end());
+}
+
+static void PullLuBuIds(vector<BYTE>& ids)
+{
+    // Remove all 4 Lu Bu bytes.
+    PullIdFromVector(LU_BU_GEMSWORD_ID, ids);
+    PullIdFromVector(LU_BU_NAN_YANG_ID, ids);
+    PullIdFromVector(LU_BU_JI_ZHOU_ID, ids);
+    PullIdFromVector(LU_BU_SHU_ID, ids);
+}
+
+void Randomizer::SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& ids)
+{
+    myGenerals.SetAndScaleGeneralForZone(generalId, 0, myRNG);
+    myGenerals.SetGeneralEncounterable(generalId, false);
+    myGenerals.SetGeneralRecruitable(generalId, false);
+    PullIdFromVector(generalId, ids);
+}
+
+void Randomizer::NewGeneralAndBattleShuffle()
+{
+    vector<BYTE> ids = myGenerals.GetAllGeneralIds();
+    printf("%ld generals to start\n", ids.size());
+    PullLuBuIds(ids);
+
+    // Randomize Pang Tong
+    vector<BYTE> strategistIds = {PANG_TONG_ID, ZHANG_ZHAO_ID, LU_XUN_ID};
+    BYTE strategist = myRNG.GetRandomValueFromByteVector(strategistIds);
+    // override with Pang Tong for now, since we don't have a working replacement
+    strategist = PANG_TONG_ID;
+    // RandomizePangTong(strategist)
+    SetGeneralForZone0AndRemove(strategist, ids);
+    myGenerals.ScaleGeneralAllyHpForZone(strategist, 0, myRNG);
+    myBattleRandomizer.PlaceGeneralInBattle(strategist, 0x4B);
+
+    // Next thing is to pull out all of the Generals we don't want to randomize
+    SetGeneralForZone0AndRemove(LIU_BEI_ID, ids); // Since he always starts in standard mode
+    SetGeneralForZone0AndRemove(ZHUGE_LIANG_ID, ids); // Since we always want him where he is
+    PullIdFromVector(SIMA_YI_ID, ids); // We don't randomize these
+    PullIdFromVector(CAO_PI_ID, ids);
+    PullIdFromVector(SUN_QUAN_ID, ids);
+    // However, we want to go ahead and scale those generals tactics;
+    myGenerals.ScaleSpecialGenerals(myRNG);
+
+    // We can pull these one by one as the required code is modified, but for
+    // now, we can hardcode all of the already hardcoded talk-and-join generals
+    // to be their vanilla characters.  We're going to put them before the
+    // removal of the random starting generals, but they will be moved to the
+    // random pool as they get implemented.
+
+    SetGeneralForZone0AndRemove(SONG_YONG_ID, ids);
+    SetGeneralForZone0AndRemove(SONG_REN_ID, ids);
+    SetGeneralForZone0AndRemove(MI_ZHE_ID, ids);
+    SetGeneralForZone0AndRemove(CHEN_DENG_ID, ids);
+    SetGeneralForZone0AndRemove(LIU_FENG_ID, ids);
+    SetGeneralForZone0AndRemove(HUO_HU_ID, ids);
+    SetGeneralForZone0AndRemove(GUAN_PING_ID, ids);
+    SetGeneralForZone0AndRemove(YANG_JIN_ID, ids);
+    SetGeneralForZone0AndRemove(WANG_GUI_ID, ids);
+    SetGeneralForZone0AndRemove(ZHOU_CHAO_ID, ids);
+    SetGeneralForZone0AndRemove(XU_ZHE_ID, ids);
+    SetGeneralForZone0AndRemove(ZHOU_CANG_ID, ids);
+    SetGeneralForZone0AndRemove(MA_SU_ID, ids);
+    SetGeneralForZone0AndRemove(MA_LIANG_ID, ids);
+    SetGeneralForZone0AndRemove(ZHAO_YUN_ID, ids);
+    SetGeneralForZone0AndRemove(GUAN_XING_ID, ids);
+    SetGeneralForZone0AndRemove(ZHANG_BAO_ID, ids);
+    SetGeneralForZone0AndRemove(JIANG_WEI_ID, ids);
+
+    // Huang Zhong & Wei Yan have zone 5 enemy stats but zone 0 ally HP
+    // Both are hardcoded to only appear at Chang Sha
+    myGenerals.SetAndScaleGeneralForZone(HUANG_ZHONG_ID, 5, myRNG);
+    PullIdFromVector(HUANG_ZHONG_ID, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(HUANG_ZHONG_ID, 0x1F);
+    myGenerals.SetAndScaleGeneralForZone(WEI_YAN_ID, 5, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(WEI_YAN_ID, 0, myRNG);
+    PullIdFromVector(WEI_YAN_ID, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(WEI_YAN_ID, 0x1F);
+
+    // Same logic with Ma Chao & Ma Dai, but both are at Luo
+    myGenerals.SetAndScaleGeneralForZone(MA_CHAO_ID, 6, myRNG);
+    PullIdFromVector(MA_CHAO_ID, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(MA_CHAO_ID, 0x24);
+    myGenerals.SetAndScaleGeneralForZone(MA_DAI_ID, 6, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(MA_DAI_ID, 0, myRNG);
+    PullIdFromVector(MA_DAI_ID, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(MA_DAI_ID, 0x24);
+
+    // Assign Warlords to appropriate castles (vanilla for standard)
+    myBattleRandomizer.PlaceGeneralInBattle(SUN_QUAN_ID, 0x36);
+    myBattleRandomizer.PlaceGeneralInBattle(CAO_PI_ID, 0x39);
+    myBattleRandomizer.PlaceGeneralInBattle(CAO_PI_ID, 0x3D);
+    myBattleRandomizer.PlaceGeneralInBattle(SIMA_YI_ID, 0x4E);
+    myBattleRandomizer.PlaceGeneralInBattle(SIMA_YI_ID, 0x3E);
+    myBattleRandomizer.PlaceGeneralInBattle(SIMA_YI_ID, 0x47);
+
+    // Grab starting generals from the rest
+    // Scoping just for readability
+    {
+        BYTE startingGeneral1 = myRNG.GetRandomValueFromByteVector(ids);
+        SetGeneralForZone0AndRemove(startingGeneral1, ids);
+        BYTE startingGeneral2 = myRNG.GetRandomValueFromByteVector(ids);
+        SetGeneralForZone0AndRemove(startingGeneral2, ids);
+
+        std::vector<BYTE> startingGenerals;
+        startingGenerals.push_back(0xA8);
+
+        printf("Setting ");
+        PrintName(startingGeneral1);
+        printf(" as a starting general\n");
+        myRom->WriteByte(0x35558, startingGeneral1);
+        startingGenerals.push_back(startingGeneral1);
+
+        printf("Setting ");
+        PrintName(startingGeneral2);
+        printf(" as a starting general\n");
+        myRom->WriteByte(0x35559, startingGeneral2);
+        startingGenerals.push_back(startingGeneral2);
+
+        myGenerals.SetStartingGenerals(startingGenerals);
+
+        // Set Starting generals to 0xCO
+        // This uses the instructions from the ImproveInitialBattlesAndFlags method and places the
+        // general IDs for the starting generals in the appropriate bytes.
+        myRom->WriteByte(0x35434, startingGeneral1);
+        myRom->WriteByte(0x35437, startingGeneral2);
+    }
+
+    // Add The non-gemsword Lu Bus back to the mix, prevent them from being recruitable:
+    ids.push_back(LU_BU_NAN_YANG_ID);
+    myGenerals.SetGeneralRecruitable(LU_BU_NAN_YANG_ID, false);
+    ids.push_back(LU_BU_JI_ZHOU_ID);
+    myGenerals.SetGeneralRecruitable(LU_BU_JI_ZHOU_ID, false);
+    ids.push_back(LU_BU_SHU_ID);
+    myGenerals.SetGeneralRecruitable(LU_BU_SHU_ID, false);
+
+    // Randomize all of the ids
+    for (int i = 0; i < 100000; ++i)
+    {
+        int index1 = myRNG.GetRandomIndexFromByteVector(ids);
+        int index2 = myRNG.GetRandomIndexFromByteVector(ids);
+        swap(ids[index1], ids[index2]);
+    }
+
+    ids.push_back(LU_BU_GEMSWORD_ID);
+    myGenerals.SetGeneralRecruitable(LU_BU_GEMSWORD_ID, false);
+
+    printf("%ld generals remaining\n", ids.size());
+    // Assign zones as desired (6, 12, 12, 12, 12, 24, 36, remainder)
+    vector<BYTE> zone1Generals(ids.cbegin(), ids.cbegin() + 6);
+    vector<BYTE> zone2Generals(ids.cbegin() + 6, ids.cbegin() + 18);
+    vector<BYTE> zone3Generals(ids.cbegin() + 18, ids.cbegin() + 30);
+    vector<BYTE> zone4Generals(ids.cbegin() + 30, ids.cbegin() + 42);
+    vector<BYTE> zone5Generals(ids.cbegin() + 42, ids.cbegin() + 54);
+    vector<BYTE> zone6Generals(ids.cbegin() + 54, ids.cbegin() + 78);
+    vector<BYTE> zone7Generals(ids.cbegin() + 78, ids.cbegin() + 114);
+    vector<BYTE> zone8Generals(ids.cbegin() + 114, ids.cend());
+
+    vector<vector<BYTE>> generalsForZone {zone1Generals, zone2Generals,
+                                          zone3Generals, zone4Generals,
+                                          zone5Generals, zone6Generals,
+                                          zone7Generals, zone8Generals};
+
+    for (int i = 0; i < generalsForZone.size(); ++i)
+    {
+        for (auto& generalId : generalsForZone[i])
+        {
+            myGenerals.SetAndScaleGeneralForZone(generalId, i + 1, myRNG);
+        }
+    }
+    // Now lets do some special logic for Sun Ce & Cao Cao:
+    myGenerals.RandomizeCaoCaoAndSunCe(myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(CAO_CAO_ID, 0, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(SUN_CE_ID, 0, myRNG);
+
+    //
+    // Do Zone logic for each zone, passing in a list of generals for each zone
+    printf("1.\n");
+    myBattleRandomizer.RandomizeZone1(zone1Generals, myRNG);
+    printf("2.\n");
+    myBattleRandomizer.RandomizeZone2(zone2Generals, myRNG);
+    printf("3.\n");
+    myBattleRandomizer.RandomizeZone3(zone3Generals, myRNG);
+    printf("4.\n");
+    myBattleRandomizer.RandomizeZone4(zone4Generals, myRNG);
+    printf("5.\n");
+    myBattleRandomizer.RandomizeZone5(zone5Generals, myRNG);
+    printf("6.\n");
+    myBattleRandomizer.RandomizeZone6(zone6Generals, myRNG);
+    printf("7.\n");
+    myBattleRandomizer.RandomizeZone7(zone7Generals, myRNG);
+    printf("8.\n");
+    myBattleRandomizer.RandomizeZone8(zone8Generals, myRNG);
+    printf("9.\n");
+
+    myGenerals.UpdateGenerals();
+
+    printf("After Randomization:\n");
+    for (int i = 0; i < 9; ++i)
+    {
+        printf("Zone %d Generals: \n\t", i);
+        auto zoneGenerals = myGenerals.GetGeneralIdsFromZone(i);
+        for (auto& general : zoneGenerals)
+        {
+            PrintName(general);
+            printf("\n\t");
+        }
+        printf("\n");
+    }
+
+    myBattleRandomizer.UpdateBattles(*myRom);
+/* PREVIOUS PSEUDOISH CODE:
+    vector<BYTE> ids; // Fill this with all of the generals
+    pullLuBus(ids);
+    // Get list of generals
+
+    // GetRandomValue (ZhangZhao, PangTong, LiuXun*)
+    // RandomizePangTong(value)
+    // PangTongBattle.AddGeneral(value)
+    // Remove PangTong General
+    BYTE pangTongSlotId = PickPangTongSlot(!warlordMode); // Parameter is warlord mode to determine if Liu Xun is on the list
+    RandomizePangTong(pangTongSlotId);
+    Remove(ids, pangTongSlotId);
+    General& pangTongGeneral = myGenerals.getGeneralById(pangTongSlotId);
+    pangTongGeneral.randomizeForZone(0);
+    pangTongGeneral.encounterable = false;
+    pangTongGeneral.recruitable = false;
+    pangTongGeneral.allyHp = GetRandomByte(0x01, 0x7F);
+
+    //
+    // Pull out generals we don't want to put in the pool
+    if (warlordMode)
+    {
+        // (All warlord-related generals here in warlord mode)
+        Remove(ids, ...);
+    }
+    else
+    {
+        // Remove (SimaYi, CaoPi, SunQuan)
+        // Remove (LiuBei)
+        // Remove (ZGL)
+        remove(ids, SIMA_YI_ID);
+        remove(ids, CAO_PI_ID);
+        remove(ids, SUN_QUAN_ID);
+        remove(ids, ZHUGE_LIANG_ID);
+        remove(ids, LIU_BEI_ID);
+    }
+
+    // Pull out 2 starting generals and place them, Scale them for zone 0
+    BYTE startingGeneral1 = PullRandomByteFromVector(ids);
+    BYTE startingGeneral2 = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(startingGeneral1, 0);
+    myGenerals.randomizeGeneralForZone(startingGeneral2, 0);
+    // Pull out 22 generals and place them in a talk+place situation, scale them for zone 0
+
+    BYTE generalId1 = PullRandomByteFromVector(ids);
+    BYTE generalId2 = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId1, 0);
+    myGenerals.randomizeGeneralForZone(generalId2, 0);
+    myNpcRandomizer.randomizeSongYongAndSongRen(generalId1, generalId2);
+
+    BYTE generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId);
+    myNpcRandomizer.randomizeMiZhe(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeChenDing(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeYangJin(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeWangGui(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeZhouChao(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeZhaoYun(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeXuZhe(generalId);
+
+    generalId = getRandomGeneralId();
+    myNpcRandomizer.RandomizerXuZheBridgeTrigger(getRandomGeneral())
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeGuanPing(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeLiuFeng(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeZhouCang(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeHuoHu(generalId);
+
+    generalId = getRandomGeneralId();
+    myNpcRandomizer.RandomizeHanZhongBridgeTrigger(getRandomGeneral())
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeZhangBao(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeGuanXing(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeJiangWei(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeQingZhouGeneral(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizeLiuKuiFortGeneral(generalId);
+
+    generalId = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId, 0);
+    myNpcRandomizer.randomizePirateGeneral(generalId);
+
+    // Pull out Huang Zhong/Wei Yan generals, place them in Chang Sha, and in Chang Sha Battle, scale them for zone 5,
+    //  but scale ally hp for zone 0
+    generalId1 = PullRandomByteFromVector(ids);
+    generalId2 = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId1, 5);
+    myGenerals.randomizeGeneralForZone(generalId2, 5);
+    myNpcRandomizer.randomizeHuangZhongAndWeiYan(generalId1, generalId2);
+    General& huangZhongGeneral = myGenerals.getGeneralById(generalId1);
+    huangZhongGeneral.allyHp = GetRandomByte(0x01, 0x7F);
+    myBattleRandomizer.PlaceGeneralInBattle(generalId1, CHANG_SHA_BATTLE);
+    General& weiYanGeneral = myGenerals.getGeneralById(generalId2);
+    weiYanGeneral.allyHp = GetRandomByte(0x01, 0x7F);
+    myBattleRandomizer.PlaceGeneralInBattle(generalId2, CHANG_SHA_BATTLE);
+
+    // Pull out Ma Chao/Ma Dai generals, place them in Luo Battle, and Luo Trigger.  Scale them for zone 6,
+    //  but scale ally hp for zone 0
+    generalId1 = PullRandomByteFromVector(ids);
+    generalId2 = PullRandomByteFromVector(ids);
+    myGenerals.randomizeGeneralForZone(generalId1, 6);
+    myGenerals.randomizeGeneralForZone(generalId2, 6);
+    myNpcRandomizer.RandomizeMaChaoAndMaDai(generalId1, generalId2);
+    General& maChaoGeneral = myGenerals.getGeneralById(generalId1);
+    maChaoGeneral.allyHp = GetRandomByte(0x01, 0x7F);
+    myBattleRandomizer.PlaceGeneralInBattle(generalId1, LUO_BATTLE);
+    General& maDaiGeneral = myGenerals.getGeneralById(generalId2);
+    maDaiGeneral.allyHp = GetRandomByte(0x01, 0x7F);
+    myBattleRandomizer.PlaceGeneralInBattle(generalId2, LUO_BATTLE);
+
+
+    //
+    // Randomize starting Warlord as appropriate (tiger leveling for Warlord, zone 0 for standard)
+    if (warlordMode)
+    {
+        ...
+    }
+    else
+    {
+        // We still want to randomize Liu Bei
+        General& liuBeiGeneral = myGenerals.getGeneralById(LIU_BEI_ID);
+        liuBeiGeneral.randomizeForZone(0);
+    }
+    // Assign Warlords to appropriate castles (vanilla for standard)
+    PlaceGeneralInBattle(CAO_PI_ID, 0x39);
+    PlaceGeneralInBattle(CAO_PI_ID, 0x3D);
+    PlaceGeneralInBattle(SIMA_YI_ID, 0x4E);
+    PlaceGeneralInBattle(SIMA_YI_ID, 0x3E);
+    PlaceGeneralInBattle(SIMA_YI_ID, 0x47);
+
+    //
+    // Put non-gemsword Lu Bus back into battle
+    addNonGemswordLuBus();
+    // Randomize the remaining generals order
+    randomizeIds(ids);
+    // Place gemsword Lu Bu in back to force him into zone 8
+    ids.push_back(GEMSWORD_LU_BU_ID);
+
+    // Assign zones as desired (6, 12, 12, 12, 12, 24, 36, remainder)
+    SetZonesForGenerals(ids, 6, 12, 12, 12, 12, 24, 36);
+    //
+    // Do Zone logic for each zone, passing in a list of generals for each zone
+    myBattleRandomizer.RandomizeZone1(vector<BYTE>(ids.cbegin(), ids.cbegin() + 6), myGenerator);
+    myBattleRandomizer.RandomizeZone2(vector<BYTE>(ids.cbegin() + 6, ids.cbegin() + 18), myGenerator);
+    myBattleRandomizer.RandomizeZone3(vector<BYTE>(ids.cbegin() + 18, ids.cbegin() + 30), myGenerator);
+    myBattleRandomizer.RandomizeZone4(vector<BYTE>(ids.cbegin() + 30, ids.cbegin() + 42), myGenerator);
+    myBattleRandomizer.RandomizeZone5(vector<BYTE>(ids.cbegin() + 42, ids.cbegin() + 54), myGenerator);
+    myBattleRandomizer.RandomizeZone6(vector<BYTE>(ids.cbegin() + 54, ids.cbegin() + 78), myGenerator);
+    myBattleRandomizer.RandomizeZone7(vector<BYTE>(ids.cbegin() + 78, ids.cbegin() + 114), myGenerator);
+    myBattleRandomizer.RandomizeZone8(vector<BYTE>(ids.cbegin() + 114, ids.cend()), myGenerator);
+    //
+    // Move the Gui Yang battle location to Gui Yang front
+    MoveGuiYangBattleToFront();
+    // Remove Zhao Fan from Gui Yang
+    RemoveGuiYangThroneBattle();
+    //
+    // Read first general from Ma Yuan Yi
+    generalId = myBattleRandomizer.getStartingGeneral(MA_YUAN_YI_BATTLE)
+    // Set Ma Yuan Yi NPC data to be first general
+    myNpcRandomizer.setMaYuanYiGeneral(generalId);
+    //
+    // Read first general from Lu Meng
+    generalId = myBattleRandomizer.getStartingGeneral(LU_MENG_BATTLE)
+    // Set Lu Meng NPC data to be first general
+    myNpcRandomizer.setLuMengGeneral(generalId);
+    //
+    // Read first general from Yuan Shang
+    generalId = myBattleRandomizer.getStartingGeneral(YUAN_SHANG_BATTLE)
+    // Set Yuan Shang NPC data to be first general.
+    myNpcRandomizer.setYuanShangGeneral(generalId);
+*/
 }
 
 }
