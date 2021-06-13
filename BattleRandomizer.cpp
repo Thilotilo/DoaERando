@@ -700,8 +700,6 @@ void BattleRandomizer::RandomizeZone8(std::vector<BYTE>& generalIds, RNG& rng)
     // 1) There are Chen Jiao (40) and Xu Huang(41) battles that are not triggerable, but
     //    we'll fill them anyway (with duplicates of course)
 
-    printf("%d: ", generalIds.size());
-    for (auto& id : generalIds) printf("%02X ", id);
     // Other than the battles mentioned above, we can now fill the battles like normal.
     vector<int> battlesToFill = {0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
                                  0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x4E};
