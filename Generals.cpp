@@ -329,4 +329,14 @@ std::vector<BYTE> Generals::GetGeneralIdsFromZone(BYTE zone)
     return generalIdsForZone;
 }
 
+std::vector<BYTE> Generals::GetAllGeneralIds()
+{
+    std::vector<BYTE> generalIds;
+    for (auto& general : myGenerals)
+    {
+        // The game likes to use the last id if there are multiples
+        generalIds.push_back(general.id + (general.count - 1));
+    }
+    return generalIds;
+}
 }

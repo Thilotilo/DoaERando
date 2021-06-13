@@ -28,6 +28,7 @@ class Generals
         void UpdateGenerals();
 
         std::vector<BYTE> GetGeneralIdsFromZone(BYTE zone);
+        std::vector<BYTE> GetAllGeneralIds();
 
         int size() {return myGenerals.size();}
 
