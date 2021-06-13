@@ -13,6 +13,8 @@ int main(void)
     ifstream fin("./config/seed.cfg");
     uint64_t seed;
     fin >> seed;
+    ifstream modeFile("./config/newShuffle");
+    bool useNewShuffle = modeFile.good();
     Randomizer randomizer(&rom, seed);
 
     for (uint8_t i=0; i<0xD9; ++i)
@@ -33,9 +35,19 @@ int main(void)
     randomizer.MakeAllGeneralsRecruitableAndEncounterable();
 
     // Randomized features
-    randomizer.RandomizeStartingGenerals();
-    randomizer.RandomizeGenerals();
-    randomizer.RandomizeBattles();
+    if (useNewShuffle)
+    {
+        printf("Using new shuffle algorithm...\n");
+        randomizer.NewGeneralAndBattleShuffle();
+    }
+    else
+    {
+        printf("Using old shuffle algorithm...\n");
+        randomizer.RandomizeStartingGenerals();
+        randomizer.RandomizeGenerals();
+        randomizer.RandomizeBattles();
+    }
+
     randomizer.RandomizeTacticLevels();
 
     randomizer.ItemShuffle();
@@ -54,7 +66,7 @@ int main(void)
     randomizer.RemoveZhugeLiangFetchQuest();
 
     printf("Saving file...\n");
-    rom.WriteRom("./RandoRoms/", 11, seed);
+    rom.WriteRom("./RandoRoms/", 14, seed);
 
     return 0;
 }
