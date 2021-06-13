@@ -32,6 +32,16 @@ class BattleRandomizer
         void RandomizeZone6(Generals& generals, RNG& rng);
         void RandomizeZone7(Generals& generals, RNG& rng);
         void RandomizeZone8(Generals& generals, RNG& rng);
+        // Newer version - no need for passing the Generals struct around.  These assume
+        // that the ids passed in are aleady randomized.
+        void RandomizeZone1(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone2(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone3(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone4(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone5(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone6(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone7(std::vector<BYTE>& generalIds, RNG& rng);
+        void RandomizeZone8(std::vector<BYTE>& generalIds, RNG& rng);
         void UpdateBattles(ROM& rom);
         
     private:
