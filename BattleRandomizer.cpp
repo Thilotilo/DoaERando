@@ -113,11 +113,19 @@ void BattleRandomizer::FillBattlesRandomly(vector<BYTE> generalIds, vector<int> 
             if (value < 6 || i == 0)
             {
                 // Get General
+                int tries = 20;
                 bool success = false;
-                while (!success)
+                while (!success && tries-- > 0)
                 {
                     BYTE generalToInsert = rng.GetRandomValueFromByteVector(generalIds);
                     success = PlaceGeneralInBattle(generalToInsert, battleId);
+                }
+                if (!success)
+                {
+                    // There are no more generals in this zone.
+                    // Set Rebel Force instead
+                    myBattles[battleId].generals[i] = 0x04;
+                    myBattles[battleId].slotsRemaining--;
                 }
             }
             // 40% chance of a rebel force
