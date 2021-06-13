@@ -30,6 +30,10 @@ class Generals
         std::vector<BYTE> GetGeneralIdsFromZone(BYTE zone);
         std::vector<BYTE> GetAllGeneralIds();
 
+        // New features added to account for the improved general shuffle
+        void SetAndScaleGeneralForZone(BYTE generalId, BYTE zone, RNG& rng);
+        void ScaleGeneralAllyHpForZone(BYTE generalId, BYTE zone, RNG& rng);
+
         int size() {return myGenerals.size();}
 
     private:

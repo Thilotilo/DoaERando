@@ -32,6 +32,7 @@ class General
     void ScaleArmorForZone(RNG& rng);
     void ScaleMaxTacticForZone(RNG& rng);
     void ScaleSoldiersForZone(RNG& rng);
+    void ScaleAllySoldiersForAnotherZone(int zone, RNG& rng);
     void UpdateGeneral(ROM& rom);
 
     void DumpGeneral();

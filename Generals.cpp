@@ -207,6 +207,22 @@ void Generals::ScaleForZone(RNG& rng)
     }
 }
 
+void Generals::SetAndScaleGeneralForZone(BYTE generalId, BYTE zone, RNG& rng)
+{
+    int generalIndex = GetGeneralIndexById(generalId);
+    myGenerals[generalIndex].zone = zone;
+    myGenerals[generalIndex].ScaleWeaponForZone(rng);
+    myGenerals[generalIndex].ScaleArmorForZone(rng);
+    myGenerals[generalIndex].ScaleMaxTacticForZone(rng);
+    myGenerals[generalIndex].ScaleSoldiersForZone(rng);
+}
+
+void Generals::ScaleGeneralAllyHpForZone(BYTE generalId, BYTE zone, RNG& rng)
+{
+    int generalIndex = GetGeneralIndexById(generalId);
+    myGenerals[generalIndex].ScaleAllySoldiersForAnotherZone(zone, rng);
+}
+
 void Generals::UpdateGenerals()
 {
     const int GENERAL_ADDRESSES_LSB_START = 0x32610;
