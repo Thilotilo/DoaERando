@@ -33,6 +33,8 @@ class Generals
         // New features added to account for the improved general shuffle
         void SetAndScaleGeneralForZone(BYTE generalId, BYTE zone, RNG& rng);
         void ScaleGeneralAllyHpForZone(BYTE generalId, BYTE zone, RNG& rng);
+        void SetGeneralEncounterable(BYTE generalId, bool encounterable);
+        void SetGeneralRecruitable(BYTE generalId, bool recruitable);
 
         int size() {return myGenerals.size();}
 

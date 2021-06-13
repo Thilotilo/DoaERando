@@ -223,6 +223,18 @@ void Generals::ScaleGeneralAllyHpForZone(BYTE generalId, BYTE zone, RNG& rng)
     myGenerals[generalIndex].ScaleAllySoldiersForAnotherZone(zone, rng);
 }
 
+void Generals::SetGeneralEncounterable(BYTE generalId, bool encounterable)
+{
+    int generalIndex = GetGeneralIndexById(generalId);
+    myGenerals[generalIndex].encounterable = encounterable;
+}
+
+void Generals::SetGeneralRecruitable(BYTE generalId, bool recruitable)
+{
+    int generalIndex = GetGeneralIndexById(generalId);
+    myGenerals[generalIndex].recruitable = recruitable;
+}
+
 void Generals::UpdateGenerals()
 {
     const int GENERAL_ADDRESSES_LSB_START = 0x32610;
