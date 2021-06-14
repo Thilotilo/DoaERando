@@ -672,6 +672,23 @@ void Randomizer::ImproveMap()
     myRom->WriteByte(0x3BCF9, 0x77);
 }
 
+void Randomizer::MoveGuiYangBattle()
+{
+    // First, set the flags to clear the throne room battle
+    // We only want to set two bits, so let's read and then set those 2 bits only
+    auto flags = myRom->ReadByte(0x34761);
+    // bit 1 = Gui Yang battle started
+    // bit 2 = Gui Yang battle won
+    flags |= 0x06;
+    myRom->WriteByte(0x34761, flags);
+
+    // Next, we're going to move the Gui Yang battle to the castle entrance
+    myRom->WriteByte(0x30C2B, 0x09); // Vertical offset in block
+    myRom->WriteByte(0x30C83, 0x12); // Vertical block
+    myRom->WriteByte(0x30CDB, 0x03); // Horizontal offset in block
+    myRom->WriteByte(0x30D33, 0x0E); // Horizontal block
+}
+
 // New General Shuffle Logic:
 
 static void PullIdFromVector(BYTE id, vector<BYTE>& ids)

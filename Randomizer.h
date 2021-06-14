@@ -48,6 +48,7 @@ public:
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();
     void ImproveMap();
+    void MoveGuiYangBattle();
 
     // Newest General Shuffle
     void SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& ids);

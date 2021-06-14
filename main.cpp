@@ -64,6 +64,7 @@ int main(void)
     randomizer.OnlyLaunchShuLuBuOnce();
     randomizer.DisableChapter1LockForSiShui();
     randomizer.RemoveZhugeLiangFetchQuest();
+    randomizer.MoveGuiYangBattle();
 
     printf("Saving file...\n");
     rom.WriteRom("./RandoRoms/", 14, seed);
