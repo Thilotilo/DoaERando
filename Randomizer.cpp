@@ -14,6 +14,7 @@ Randomizer::Randomizer(ROM* rom, int seed)
     , myRNG(seed)
     , myBattleRandomizer()
     , myGenerals(*rom)
+    , myNPCManipulator(*rom)
 {
 }
 
@@ -724,7 +725,7 @@ void Randomizer::NewGeneralAndBattleShuffle()
     BYTE strategist = myRNG.GetRandomValueFromByteVector(strategistIds);
     // override with Pang Tong for now, since we don't have a working replacement
     strategist = PANG_TONG_ID;
-    // RandomizePangTong(strategist)
+    myNPCManipulator.ReplacePangTong(strategist);
     SetGeneralForZone0AndRemove(strategist, ids);
     myGenerals.ScaleGeneralAllyHpForZone(strategist, 0, myRNG);
     myBattleRandomizer.PlaceGeneralInBattle(strategist, 0x4B);
@@ -744,43 +745,100 @@ void Randomizer::NewGeneralAndBattleShuffle()
     // removal of the random starting generals, but they will be moved to the
     // random pool as they get implemented.
 
-    SetGeneralForZone0AndRemove(SONG_YONG_ID, ids);
-    SetGeneralForZone0AndRemove(SONG_REN_ID, ids);
-    SetGeneralForZone0AndRemove(MI_ZHE_ID, ids);
-    SetGeneralForZone0AndRemove(CHEN_DENG_ID, ids);
-    SetGeneralForZone0AndRemove(LIU_FENG_ID, ids);
-    SetGeneralForZone0AndRemove(HUO_HU_ID, ids);
-    SetGeneralForZone0AndRemove(GUAN_PING_ID, ids);
-    SetGeneralForZone0AndRemove(YANG_JIN_ID, ids);
-    SetGeneralForZone0AndRemove(WANG_GUI_ID, ids);
-    SetGeneralForZone0AndRemove(ZHOU_CHAO_ID, ids);
-    SetGeneralForZone0AndRemove(XU_ZHE_ID, ids);
-    SetGeneralForZone0AndRemove(ZHOU_CANG_ID, ids);
-    SetGeneralForZone0AndRemove(MA_SU_ID, ids);
-    SetGeneralForZone0AndRemove(MA_LIANG_ID, ids);
+    BYTE SongYongId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(SongYongId, ids);
+    BYTE SongRenId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(SongRenId, ids);
+    myNPCManipulator.ReplaceSongYongAndSongRen(SongYongId, SongRenId);
+
+    BYTE MiZhuId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(MiZhuId, ids);
+    myNPCManipulator.ReplaceMiZhu(MiZhuId);
+
+    BYTE ChenDengId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(ChenDengId, ids);
+    myNPCManipulator.ReplaceChenDeng(ChenDengId);
+
+    BYTE LiuFengId = LIU_FENG_ID;
+    SetGeneralForZone0AndRemove(LiuFengId, ids);
+    myNPCManipulator.ReplaceLiuFeng(LiuFengId);
+
+    BYTE HuoHuId = HUO_HU_ID;
+    SetGeneralForZone0AndRemove(HuoHuId, ids);
+    myNPCManipulator.ReplaceHuoHu(HuoHuId);
+
+    BYTE GuanPingId = GUAN_PING_ID;
+    SetGeneralForZone0AndRemove(GuanPingId, ids);
+    myNPCManipulator.ReplaceGuanPing(GuanPingId);
+
+    BYTE YangJinId = YANG_JIN_ID;
+    SetGeneralForZone0AndRemove(YangJinId, ids);
+    myNPCManipulator.ReplaceYangJin(YangJinId);
+
+    BYTE WangGuiId = WANG_GUI_ID;
+    SetGeneralForZone0AndRemove(WangGuiId, ids);
+    myNPCManipulator.ReplaceWangGui(WangGuiId);
+
+    BYTE ZhouChaoId = ZHOU_CHAO_ID;
+    SetGeneralForZone0AndRemove(ZhouChaoId, ids);
+    myNPCManipulator.ReplaceZhouChao(ZhouChaoId);
+
+    BYTE XuZheId = XU_ZHE_ID;
+    SetGeneralForZone0AndRemove(XuZheId, ids);
+    myNPCManipulator.ReplaceXuZhe(XuZheId);
+
+    BYTE ZhouCangId = ZHOU_CANG_ID;
+    SetGeneralForZone0AndRemove(ZhouCangId, ids);
+    myNPCManipulator.ReplaceZhouCang(ZhouCangId);
+
+    BYTE MaSuId = MA_SU_ID;
+    SetGeneralForZone0AndRemove(MaSuId, ids);
+    myNPCManipulator.ReplaceMaSu(MaSuId);
+
+    BYTE MaLiangId = MA_LIANG_ID;
+    SetGeneralForZone0AndRemove(MaLiangId, ids);
+    myNPCManipulator.ReplaceMaLiang(MaLiangId);
+
+    BYTE ZhaoYunId = ZHAO_YUN_ID;
     SetGeneralForZone0AndRemove(ZHAO_YUN_ID, ids);
-    SetGeneralForZone0AndRemove(GUAN_XING_ID, ids);
-    SetGeneralForZone0AndRemove(ZHANG_BAO_ID, ids);
-    SetGeneralForZone0AndRemove(JIANG_WEI_ID, ids);
+    myNPCManipulator.ReplaceZhaoYun(ZhaoYunId);
+
+    BYTE GuanXingId = GUAN_XING_ID;
+    SetGeneralForZone0AndRemove(GuanXingId, ids);
+    myNPCManipulator.ReplaceGuanXing(GuanXingId);
+
+    BYTE ZhangBaoId = ZHANG_BAO_ID;
+    SetGeneralForZone0AndRemove(ZhangBaoId, ids);
+    myNPCManipulator.ReplaceZhangBao(ZhangBaoId);
+
+    BYTE JiangWeiId = JIANG_WEI_ID;
+    SetGeneralForZone0AndRemove(JiangWeiId, ids);
+    myNPCManipulator.ReplaceJiangWei(JiangWeiId);
 
     // Huang Zhong & Wei Yan have zone 5 enemy stats but zone 0 ally HP
     // Both are hardcoded to only appear at Chang Sha
-    myGenerals.SetAndScaleGeneralForZone(HUANG_ZHONG_ID, 5, myRNG);
-    PullIdFromVector(HUANG_ZHONG_ID, ids);
-    myBattleRandomizer.PlaceGeneralInBattle(HUANG_ZHONG_ID, 0x1F);
-    myGenerals.SetAndScaleGeneralForZone(WEI_YAN_ID, 5, myRNG);
-    myGenerals.ScaleGeneralAllyHpForZone(WEI_YAN_ID, 0, myRNG);
-    PullIdFromVector(WEI_YAN_ID, ids);
-    myBattleRandomizer.PlaceGeneralInBattle(WEI_YAN_ID, 0x1F);
+    BYTE HuangZhongId = HUANG_ZHONG_ID;
+    BYTE WeiYanId = WEI_YAN_ID;
+    myGenerals.SetAndScaleGeneralForZone(HuangZhongId, 5, myRNG);
+    PullIdFromVector(HuangZhongId, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(HuangZhongId, 0x1F);
+    myGenerals.SetAndScaleGeneralForZone(WeiYanId, 5, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(WeiYanId, 0, myRNG);
+    PullIdFromVector(WeiYanId, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(WeiYanId, 0x1F);
+    myNPCManipulator.ReplaceHuangZhongAndWeiYan(HuangZhongId, WeiYanId);
 
     // Same logic with Ma Chao & Ma Dai, but both are at Luo
-    myGenerals.SetAndScaleGeneralForZone(MA_CHAO_ID, 6, myRNG);
-    PullIdFromVector(MA_CHAO_ID, ids);
-    myBattleRandomizer.PlaceGeneralInBattle(MA_CHAO_ID, 0x24);
-    myGenerals.SetAndScaleGeneralForZone(MA_DAI_ID, 6, myRNG);
-    myGenerals.ScaleGeneralAllyHpForZone(MA_DAI_ID, 0, myRNG);
-    PullIdFromVector(MA_DAI_ID, ids);
-    myBattleRandomizer.PlaceGeneralInBattle(MA_DAI_ID, 0x24);
+    BYTE MaChaoId = MA_CHAO_ID;
+    BYTE MaDaiId = MA_DAI_ID;
+    myGenerals.SetAndScaleGeneralForZone(MaChaoId, 6, myRNG);
+    PullIdFromVector(MaChaoId, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(MaChaoId, 0x24);
+    myGenerals.SetAndScaleGeneralForZone(MaDaiId, 6, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(MaDaiId, 0, myRNG);
+    PullIdFromVector(MaDaiId, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(MaDaiId, 0x24);
+    myNPCManipulator.ReplaceMaChaoAndMaDai(MaChaoId, MaDaiId);
 
     // Assign Warlords to appropriate castles (vanilla for standard)
     myBattleRandomizer.PlaceGeneralInBattle(SUN_QUAN_ID, 0x36);

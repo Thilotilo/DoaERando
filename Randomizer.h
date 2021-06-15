@@ -5,6 +5,7 @@
 #include "RNG.h"
 #include "Generals.h"
 #include "BattleRandomizer.h"
+#include "NPCManipulator.h"
 
 namespace DoaERando {
 
@@ -60,6 +61,7 @@ private:
     RNG myRNG;
     Generals myGenerals;
     BattleRandomizer myBattleRandomizer;
+    NPCManipulator myNPCManipulator;
     
 };
 
