@@ -31,6 +31,7 @@ public:
     void ModifyEncounterRate();
     void DisableChapter1LockForSiShui();
     void RemoveZhugeLiangFetchQuest();
+    void MakeZhangBaoAndGuanXingAvailable();
 
     void SetGeneralRecruitable(BYTE id);
     void SetGeneralEncounterable(BYTE id);

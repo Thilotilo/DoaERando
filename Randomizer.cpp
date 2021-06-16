@@ -450,6 +450,21 @@ void Randomizer::RemoveZhugeLiangFetchQuest()
     myRom->WriteByte(0x36A26, 0x38); // SEC - the next instruction in BCS
 }
 
+void Randomizer::MakeZhangBaoAndGuanXingAvailable()
+{
+    // In the special Chang Sha castle execution, it clears out
+    // Guan Yu & Guan Xing's sprites if $6552 b5 hasn't been set.
+    // There's no real value in having Guan Yu, so to prevent
+    // modifying the code as much as possible, we simply clear out
+    // Guan Yu twice
+    // Replace the Guan Xing address to clear with Guan Yu
+    myRom->WriteByte(0x36DAE, 0x03);
+    // Same concept with Zhang Fei, but even more important because
+    // We MUST keep Zhang Fei out, lest he conflict with Liu Bei
+    // Replace the Zhang Bao address to clear with Zhang Fei
+    myRom->WriteByte(0x36BBB, 0x0B);
+}
+
 void Randomizer::DisableNonGeneralBattles()
 {
     // With these changes, the odds of a general battle is 100%, but if there are no
