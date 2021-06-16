@@ -19,56 +19,20 @@ public:
     void ReplaceSongYongAndSongRen(BYTE generalId1, BYTE generalId2);
     void ReplaceMiZhu(BYTE generalId);
     void ReplaceChenDeng(BYTE generalId);
-
-    void ReplaceYangJin(BYTE generalId)
-    {
-    }
-
-    void ReplaceWangGui(BYTE generalId)
-    {
-    }
-
-    void ReplaceZhouChao(BYTE generalId)
-    {
-    }
-
-    void ReplaceZhaoYun(BYTE generalId)
-    {
-    }
-
-    void ReplaceXuZhe(BYTE generalId)
-    {
-    }
+    void ReplaceYangJin(BYTE generalId);
+    void ReplaceWangGui(BYTE generalId);
+    void ReplaceZhouChao(BYTE generalId);
+    void ReplaceZhaoYun(BYTE generalId);
+    void ReplaceXuZhe(BYTE generalId);
+    void ReplaceGuanPing(BYTE generalId);
+    void ReplaceLiuFeng(BYTE generalId);
+    void ReplaceZhouCang(BYTE generalId);
+    void ReplaceHuoHu(BYTE generalId);
+    void ReplaceMaSu(BYTE generalId);
+    void ReplaceMaLiang(BYTE generalId);
+    void ReplaceHuangZhongAndWeiYan(BYTE generalId1, BYTE generalId2);
 
     void ReplaceXuZheBridgeTrigger(BYTE generalId)
-    {
-    }
-
-    void ReplaceGuanPing(BYTE generalId)
-    {
-    }
-
-    void ReplaceLiuFeng(BYTE generalId)
-    {
-    }
-
-    void ReplaceZhouCang(BYTE generalId)
-    {
-    }
-
-    void ReplaceHuoHu(BYTE generalId)
-    {
-    }
-
-    void ReplaceMaSu(BYTE generalId)
-    {
-    }
-
-    void ReplaceMaLiang(BYTE generalId)
-    {
-    }
-
-    void ReplaceHuangZhongAndWeiYan(BYTE generalId1, BYTE generalId2)
     {
     }
 
@@ -84,17 +48,9 @@ public:
     {
     }
 
-    void ReplaceZhangBao(BYTE generalId)
-    {
-    }
-
-    void ReplaceGuanXing(BYTE generalId)
-    {
-    }
-
-    void ReplaceJiangWei(BYTE generalId)
-    {
-    }
+    void ReplaceZhangBao(BYTE generalId);
+    void ReplaceGuanXing(BYTE generalId);
+    void ReplaceJiangWei(BYTE generalId);
 
 
 private:
