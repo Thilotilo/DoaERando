@@ -91,10 +91,17 @@ void General::ScaleAllySoldiersForAnotherZone(int zone, RNG& rng)
     const BYTE MAX_SOLDIERS[9] = {121, 27,  32, 47, 61, 60, 79, 111, 121};
 
     BYTE randomizedSoldiers = rng.GetRandomByte(MIN_SOLDIERS[zone], MAX_SOLDIERS[zone]);
-    printf("Changing %s's ally soldier exponent from %d to %d\n", name,
-                                                                  allySoldierExponent,
-                                                                  randomizedSoldiers);
-    allySoldierExponent = randomizedSoldiers;
+    if (allySoldierExponent & 0x80)
+    {
+        printf("Tiger detected, not modifying ally soldiers\n");
+    }
+    else
+    {
+        printf("Changing %s's ally soldier exponent from %d to %d\n", name,
+                                                                      allySoldierExponent,
+                                                                      randomizedSoldiers);
+        allySoldierExponent = randomizedSoldiers;
+    }
 }
 
 void General::UpdateGeneral(ROM& rom)
