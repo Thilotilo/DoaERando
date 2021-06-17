@@ -41,7 +41,10 @@ void NPCManipulator::ReplaceZhouChao(BYTE generalId)
 
 void NPCManipulator::ReplaceZhaoYun(BYTE generalId)
 {
+    // NPC Data
     myRom.WriteByte(0x313B7, generalId);
+    // This is the check for the Zhou Letr
+    myRom.WriteByte(0x38BBF, generalId);
 }
 
 void NPCManipulator::ReplaceXuZhe(BYTE generalId)

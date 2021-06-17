@@ -827,7 +827,7 @@ void Randomizer::NewGeneralAndBattleShuffle()
     myNPCManipulator.ReplaceMaLiang(MaLiangId);
 
     BYTE ZhaoYunId = myRNG.GetRandomValueFromByteVector(ids);
-    SetGeneralForZone0AndRemove(ZHAO_YUN_ID, ids);
+    SetGeneralForZone0AndRemove(ZhaoYunId, ids);
     myNPCManipulator.ReplaceZhaoYun(ZhaoYunId);
 
     BYTE GuanXingId = myRNG.GetRandomValueFromByteVector(ids);
