@@ -758,6 +758,7 @@ void Randomizer::NewGeneralAndBattleShuffle()
     BYTE MaChaoId = MA_CHAO_ID;
     BYTE MaDaiId = MA_DAI_ID;
     myGenerals.SetAndScaleGeneralForZone(MaChaoId, 6, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(MaChaoId, 0, myRNG);
     PullIdFromVector(MaChaoId, ids);
     myBattleRandomizer.PlaceGeneralInBattle(MaChaoId, 0x24);
     myGenerals.SetAndScaleGeneralForZone(MaDaiId, 6, myRNG);
@@ -847,6 +848,7 @@ void Randomizer::NewGeneralAndBattleShuffle()
     BYTE HuangZhongId = myRNG.GetRandomValueFromByteVector(ids);
     BYTE WeiYanId = myRNG.GetRandomValueFromByteVector(ids);
     myGenerals.SetAndScaleGeneralForZone(HuangZhongId, 5, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(HuangZhongId, 0, myRNG);
     PullIdFromVector(HuangZhongId, ids);
     myBattleRandomizer.PlaceGeneralInBattle(HuangZhongId, 0x1F);
     myGenerals.SetAndScaleGeneralForZone(WeiYanId, 5, myRNG);
