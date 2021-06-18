@@ -833,11 +833,11 @@ void Randomizer::NewGeneralAndBattleShuffle()
     // Huang Zhong & Wei Yan have zone 5 enemy stats but zone 0 ally HP
     // Both are hardcoded to only appear at Chang Sha
     BYTE HuangZhongId = myRNG.GetRandomValueFromByteVector(ids);
-    BYTE WeiYanId = myRNG.GetRandomValueFromByteVector(ids);
     myGenerals.SetAndScaleGeneralForZone(HuangZhongId, 5, myRNG);
     myGenerals.ScaleGeneralAllyHpForZone(HuangZhongId, 0, myRNG);
     PullIdFromVector(HuangZhongId, ids);
     myBattleRandomizer.PlaceGeneralInBattle(HuangZhongId, 0x1F);
+    BYTE WeiYanId = myRNG.GetRandomValueFromByteVector(ids);
     myGenerals.SetAndScaleGeneralForZone(WeiYanId, 5, myRNG);
     myGenerals.ScaleGeneralAllyHpForZone(WeiYanId, 0, myRNG);
     PullIdFromVector(WeiYanId, ids);
