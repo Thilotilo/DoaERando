@@ -754,19 +754,6 @@ void Randomizer::NewGeneralAndBattleShuffle()
     // However, we want to go ahead and scale those generals tactics;
     myGenerals.ScaleSpecialGenerals(myRNG);
 
-    // Same logic with Ma Chao & Ma Dai, but both are at Luo
-    BYTE MaChaoId = MA_CHAO_ID;
-    BYTE MaDaiId = MA_DAI_ID;
-    myGenerals.SetAndScaleGeneralForZone(MaChaoId, 6, myRNG);
-    myGenerals.ScaleGeneralAllyHpForZone(MaChaoId, 0, myRNG);
-    PullIdFromVector(MaChaoId, ids);
-    myBattleRandomizer.PlaceGeneralInBattle(MaChaoId, 0x24);
-    myGenerals.SetAndScaleGeneralForZone(MaDaiId, 6, myRNG);
-    myGenerals.ScaleGeneralAllyHpForZone(MaDaiId, 0, myRNG);
-    PullIdFromVector(MaDaiId, ids);
-    myBattleRandomizer.PlaceGeneralInBattle(MaDaiId, 0x24);
-    myNPCManipulator.ReplaceMaChaoAndMaDai(MaChaoId, MaDaiId);
-
     // We can pull these one by one as the required code is modified, but for
     // now, we can hardcode all of the already hardcoded talk-and-join generals
     // to be their vanilla characters.  We're going to put them before the
@@ -856,6 +843,19 @@ void Randomizer::NewGeneralAndBattleShuffle()
     PullIdFromVector(WeiYanId, ids);
     myBattleRandomizer.PlaceGeneralInBattle(WeiYanId, 0x1F);
     myNPCManipulator.ReplaceHuangZhongAndWeiYan(HuangZhongId, WeiYanId);
+
+    // Same logic with Ma Chao & Ma Dai, but both are at Luo
+    BYTE MaChaoId = myRNG.GetRandomValueFromByteVector(ids);
+    myGenerals.SetAndScaleGeneralForZone(MaChaoId, 6, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(MaChaoId, 0, myRNG);
+    PullIdFromVector(MaChaoId, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(MaChaoId, 0x24);
+    BYTE MaDaiId = myRNG.GetRandomValueFromByteVector(ids);
+    myGenerals.SetAndScaleGeneralForZone(MaDaiId, 6, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(MaDaiId, 0, myRNG);
+    PullIdFromVector(MaDaiId, ids);
+    myBattleRandomizer.PlaceGeneralInBattle(MaDaiId, 0x24);
+    myNPCManipulator.ReplaceMaChaoAndMaDai(MaChaoId, MaDaiId);
 
     // Assign Warlords to appropriate castles (vanilla for standard)
     myBattleRandomizer.PlaceGeneralInBattle(SUN_QUAN_ID, 0x36);

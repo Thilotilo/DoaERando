@@ -103,4 +103,11 @@ void NPCManipulator::ReplaceJiangWei(BYTE generalId)
     myRom.WriteByte(0x314EB, generalId);
 }
 
+void NPCManipulator::ReplaceMaChaoAndMaDai(BYTE generalId1, BYTE generalId2)
+{
+    // These bytes determine the IDs of the 2 generals to join
+    myRom.WriteByte(0x371D6, generalId1);
+    myRom.WriteByte(0x371E4, generalId2);
+}
+
 }

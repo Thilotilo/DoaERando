@@ -44,10 +44,10 @@ public:
     {
     }
 
-    void ReplaceMaChaoAndMaDai(BYTE generalId1, BYTE generalId2)
     {
     }
 
+    void ReplaceMaChaoAndMaDai(BYTE generalId1, BYTE generalId2);
     void ReplaceZhangBao(BYTE generalId);
     void ReplaceGuanXing(BYTE generalId);
     void ReplaceJiangWei(BYTE generalId);
