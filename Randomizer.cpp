@@ -735,11 +735,9 @@ void Randomizer::NewGeneralAndBattleShuffle()
     printf("%ld generals to start\n", ids.size());
     PullLuBuIds(ids);
 
-    // Randomize Pang Tong
-    vector<BYTE> strategistIds = {PANG_TONG_ID, ZHANG_ZHAO_ID, LU_XUN_ID};
+    // Randomize Pang Tong among generals that can have 240+ INT
+    vector<BYTE> strategistIds = {ZHUGE_LIANG_ID, CAO_CAO_ID, SUN_CE_ID, PANG_TONG_ID, ZHANG_ZHAO_ID, LU_XUN_ID};
     BYTE strategist = myRNG.GetRandomValueFromByteVector(strategistIds);
-    // override with Pang Tong for now, since we don't have a working replacement
-    strategist = PANG_TONG_ID;
     myNPCManipulator.ReplacePangTong(strategist);
     SetGeneralForZone0AndRemove(strategist, ids);
     myGenerals.ScaleGeneralAllyHpForZone(strategist, 0, myRNG);
