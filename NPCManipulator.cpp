@@ -110,4 +110,37 @@ void NPCManipulator::ReplaceMaChaoAndMaDai(BYTE generalId1, BYTE generalId2)
     myRom.WriteByte(0x371E4, generalId2);
 }
 
+void NPCManipulator::ReplacePangTong(BYTE generalId)
+{
+    // Set the flags for the new general after the "Pang Tong went out
+    // with his soldiers" Text
+    myRom.WriteByte(0x36EAF, generalId);
+    // Read the new general's recruitment flags, which are used to determine
+    // whether to launch the battle.
+    myRom.WriteByte(0x3B3C5, generalId);
+    // Actual replacement for who joined our army after the battle
+    myRom.WriteByte(0x36ECC, generalId);
+    // Text replace for Pang Tong went out with his soldiers
+    myRom.WriteByte(0x2EA09, generalId);
+    // Text replace for Pang Tong joined our army
+    myRom.WriteByte(0x2EA62, generalId);
+}
+
+void NPCManipulator::ReplaceZhugeLiang(BYTE generalId)
+{
+    // Replace 2 versions of Zhuge Liang in his house.
+    // This is the lying down version
+    myRom.WriteByte(0x312C5, generalId);
+    // This is the standing up version
+    myRom.WriteByte(0x312D3, generalId);
+    // Replace Zhuge Liang in Gui Yang
+    myRom.WriteByte(0x31343, generalId);
+    // Text replace for "X is sleeping"
+    myRom.WriteByte(0x2B9B2, generalId);
+    // Text replace for "My brother X is not home"
+    myRom.WriteByte(0x2B8F7, generalId);
+    // Text replace for "X has joined them!"
+    myRom.WriteByte(0x2BAE5, generalId);
+}
+
 }
