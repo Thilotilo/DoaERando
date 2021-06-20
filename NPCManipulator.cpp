@@ -27,6 +27,8 @@ void NPCManipulator::ReplaceChenDeng(BYTE generalId)
 void NPCManipulator::ReplaceYangJin(BYTE generalId)
 {
     myRom.WriteByte(0x319FA, generalId);
+    // This replaces the text in the general's introduction
+    myRom.WriteByte(0x2A354, generalId);
 }
 
 void NPCManipulator::ReplaceWangGui(BYTE generalId)
@@ -45,6 +47,8 @@ void NPCManipulator::ReplaceZhaoYun(BYTE generalId)
     myRom.WriteByte(0x313B7, generalId);
     // This is the check for the Zhou Letr
     myRom.WriteByte(0x38BBF, generalId);
+    // Update text for receiving the Zhou Letr
+    myRom.WriteByte(0x2DE5A, generalId);
 }
 
 void NPCManipulator::ReplaceXuZhe(BYTE generalId)
