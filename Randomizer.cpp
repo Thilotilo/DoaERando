@@ -895,6 +895,10 @@ void Randomizer::NewGeneralAndBattleShuffle()
         // general IDs for the starting generals in the appropriate bytes.
         myRom->WriteByte(0x35434, startingGeneral1);
         myRom->WriteByte(0x35437, startingGeneral2);
+        // This is a special case to prevent Guan Suo from getting
+        // set to $C0 - just replace the Guan Suo write with a
+        // starting general a second time
+        myRom->WriteByte(0x3543A, startingGeneral2);
     }
 
     // Add The non-gemsword Lu Bus back to the mix, prevent them from being recruitable:
