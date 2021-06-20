@@ -747,7 +747,6 @@ void Randomizer::NewGeneralAndBattleShuffle()
 
     // Next thing is to pull out all of the Generals we don't want to randomize
     SetGeneralForZone0AndRemove(LIU_BEI_ID, ids); // Since he always starts in standard mode
-    SetGeneralForZone0AndRemove(ZHUGE_LIANG_ID, ids); // Since we always want him where he is
     PullIdFromVector(SIMA_YI_ID, ids); // We don't randomize these
     PullIdFromVector(CAO_PI_ID, ids);
     PullIdFromVector(SUN_QUAN_ID, ids);
@@ -829,6 +828,10 @@ void Randomizer::NewGeneralAndBattleShuffle()
     BYTE JiangWeiId = myRNG.GetRandomValueFromByteVector(ids);
     SetGeneralForZone0AndRemove(JiangWeiId, ids);
     myNPCManipulator.ReplaceJiangWei(JiangWeiId);
+
+    BYTE ZhugeLiangId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(ZhugeLiangId, ids);
+    myNPCManipulator.ReplaceZhugeLiang(ZhugeLiangId);
 
     // Huang Zhong & Wei Yan have zone 5 enemy stats but zone 0 ally HP
     // Both are hardcoded to only appear at Chang Sha
