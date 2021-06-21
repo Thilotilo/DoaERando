@@ -44,6 +44,10 @@ public:
     void ReplacePangTong(BYTE generalId);
     void ReplaceZhugeLiang(BYTE generalId);
 
+    // NOTE: This will replace the id of the first general in the cave's
+    // NPC Data.  If the cave is reconfigured, after this is called, then
+    // the replacment will be overwritten.
+    void PlaceGeneralInQingZhouCave(BYTE generalId);
     void ReplaceHanZhongBridgeTrigger(BYTE generalId);
 
 private:

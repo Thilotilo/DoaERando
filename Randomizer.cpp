@@ -905,6 +905,12 @@ void Randomizer::NewGeneralAndBattleShuffle()
     myBattleRandomizer.PlaceGeneralInBattle(MaDaiId, 0x24);
     myNPCManipulator.ReplaceMaChaoAndMaDai(MaChaoId, MaDaiId);
 
+    // This is the newly available general in the Qing
+    // Zhou cave that doesn't exist in vanilla
+    BYTE QingZhouCaveGeneralId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(QingZhouCaveGeneralId, ids);
+    myNPCManipulator.PlaceGeneralInQingZhouCave(QingZhouCaveGeneralId);
+
     // Assign Warlords to appropriate castles (vanilla for standard)
     myBattleRandomizer.PlaceGeneralInBattle(SUN_QUAN_ID, 0x36);
     myBattleRandomizer.PlaceGeneralInBattle(CAO_PI_ID, 0x39);
@@ -1032,6 +1038,25 @@ void Randomizer::NewGeneralAndBattleShuffle()
     }
 
     myBattleRandomizer.UpdateBattles(*myRom);
+
+    // Here's where we do some other events with deadlock checking.
+    // At the moment, there is only one - the Han Zhong Bridge
+    // Trigger general.
+    vector<BYTE> BridgeTriggerIds = myGenerals.GetAllGeneralIds();
+    PullLuBuIds(BridgeTriggerIds);
+    // Remove any Lu Bus that can't ever be in our party
+    PullIdFromVector(LU_BU_NAN_YANG_ID, BridgeTriggerIds);
+    PullIdFromVector(LU_BU_JI_ZHOU_ID, BridgeTriggerIds);
+    PullIdFromVector(LU_BU_SHU_ID, BridgeTriggerIds);
+    // Remove Liu Bei, as he can leave the party
+    PullIdFromVector(LIU_BEI_ID, BridgeTriggerIds);
+    // Remove the Bridge-locked general
+    PullIdFromVector(QingZhouCaveGeneralId, BridgeTriggerIds);
+
+    // Set the Bridge trigger general
+    BYTE HanZhongBridgeTriggerId = myRNG.GetRandomValueFromByteVector(BridgeTriggerIds);
+    myNPCManipulator.ReplaceHanZhongBridgeTrigger(HanZhongBridgeTriggerId);
+
 /* PREVIOUS PSEUDOISH CODE:
     vector<BYTE> ids; // Fill this with all of the generals
     pullLuBus(ids);
