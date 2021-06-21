@@ -55,6 +55,7 @@ public:
     // Newest General Shuffle
     void SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& ids);
     void NewGeneralAndBattleShuffle();
+    void ReconfigureQingZhouCave();
 
 private:
     Randomizer() = delete;

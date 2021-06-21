@@ -38,6 +38,7 @@ int main(void)
     if (useNewShuffle)
     {
         printf("Using new shuffle algorithm...\n");
+        randomizer.ReconfigureQingZhouCave();
         randomizer.NewGeneralAndBattleShuffle();
         randomizer.MakeZhangBaoAndGuanXingAvailable();
     }

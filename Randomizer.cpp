@@ -729,6 +729,53 @@ void Randomizer::SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& 
     PullIdFromVector(generalId, ids);
 }
 
+void Randomizer::ReconfigureQingZhouCave()
+{
+    // This closes the Qing Zhou Exit
+    myRom->WriteByte(0x19BD1, 0x62);
+    myRom->WriteByte(0x19BD9, 0x80);
+
+    // This prevents the Qing Zhou cave from disappearing after defeating
+    // the Yellow Scarves.
+    // Easiest way for now is just to replace the "inactive" write
+    // to the flag with the "active" write (00 -> 01)
+    myRom->WriteByte(0x3639F, 0x01);
+
+    // We want to force bridge creation again.  Since we care about this trigger,
+    // overwrite any previous updates that make the bridge permanently available.
+    myRom->WriteByte(0x34781, 0x00);
+
+    // Update the cave NPC data to lose the yellow scarves and instead have a single
+    // Talk-and-join general.  With this update and the new use of the cave, we
+    // now no longer need special code to execute when we load this map, so we
+    // save 2 additional bytes on top of the 14 bytes we save by decreasing the
+    // character count by 2
+    std::vector<BYTE> caveNPCData {
+        // NPC in cave -> actual NPC to be set by the manipulator, so we just
+        // set it to 0 for now.
+        0x1B, 0x04, 0x83, 0x03, 0x19, 0x19, 0x00,
+        0x27, 0x03, 0x88, 0x04, 0x69, 0x69, 0x02, // Brigand guarding bridge
+        0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Cleared NPC Data
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Cleared NPC Data
+        // Since there's no longer any code to execute, we need to clear
+        // those extra 2 bytes too (plus the original FF)
+        0x00, 0x00, 0x00
+    };
+
+    for (int i = 0; i < caveNPCData.size(); ++i)
+    {
+        myRom->WriteByte(0x31188 + i, caveNPCData[i]);
+    }
+
+    // Remove now-unused code for loading the Qing Zhou cave so we can reclaim
+    // it for other nefarious purposes.
+    const size_t NUM_EVENT_BYTES_TO_CLEAR = 22;
+    for (size_t i = 0; i < NUM_EVENT_BYTES_TO_CLEAR; ++i)
+    {
+        myRom->WriteByte(0x363BF + i, 0x00);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();
