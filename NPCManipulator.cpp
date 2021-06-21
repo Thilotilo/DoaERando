@@ -147,4 +147,14 @@ void NPCManipulator::ReplaceZhugeLiang(BYTE generalId)
     myRom.WriteByte(0x2BAE5, generalId);
 }
 
+void NPCManipulator::ReplaceHanZhongBridgeTrigger(BYTE generalId)
+{
+    // Replace the general that the brigand looks for
+    myRom.WriteByte(0x363DB, generalId);
+    // Replace the general in the NPC text identifying the trigger general
+    myRom.WriteByte(0x2BEE2, generalId);
+    // Replace "Isn't that bridge working yet" text
+    myRom.WriteByte(0x2D6BD, generalId);
+}
+
 }

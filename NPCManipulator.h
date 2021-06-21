@@ -36,9 +36,6 @@ public:
     {
     }
 
-    void ReplaceHanZhongBridgeTrigger(BYTE generalId)
-    {
-    }
 
     void ReplaceMaChaoAndMaDai(BYTE generalId1, BYTE generalId2);
     void ReplaceZhangBao(BYTE generalId);
@@ -47,6 +44,7 @@ public:
     void ReplacePangTong(BYTE generalId);
     void ReplaceZhugeLiang(BYTE generalId);
 
+    void ReplaceHanZhongBridgeTrigger(BYTE generalId);
 
 private:
 
