@@ -42,6 +42,7 @@ int main(void)
         randomizer.ReconfigureLiuKuiTentGeneral();
         randomizer.NewGeneralAndBattleShuffle();
         randomizer.MakeZhangBaoAndGuanXingAvailable();
+        randomizer.MakeZone0GeneralsUnfirable();
     }
     else
     {

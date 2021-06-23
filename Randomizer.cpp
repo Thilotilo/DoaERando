@@ -801,6 +801,34 @@ void Randomizer::ReconfigureLiuKuiTentGeneral()
     }
 }
 
+void Randomizer::MakeZone0GeneralsUnfirable()
+{
+    std::vector<BYTE> newCode {
+        // $60AF contains the general id
+        0xAC, 0xAF, 0x60,   // LDY $60AF
+        0xA9, 0x02,         // LDA #$02
+        // E3C8 returns byte A of the general info of the general id in Y
+        0x20, 0xC8, 0xE3,   // JSR $E3C8
+        0xF0, 0x05,         // BEQ ($94E5) - the "can't fire" response
+        0xD0, 0x09,         // BNE ($94EB) - the confirmation dialog
+        // Now finish padding the rest of the overwritten code
+        0x00, 0x00, 0x00
+    };
+
+    for (int i = 0; i < newCode.size(); ++i)
+    {
+        myRom->WriteByte(0x394E6 + i, newCode[i]);
+    }
+
+    // Remove the old unfirable generals list so we can reclaim
+    // it for other nefarious purposes.
+    const size_t NUM_EVENT_BYTES_TO_CLEAR = 17;
+    for (size_t i = 0; i < NUM_EVENT_BYTES_TO_CLEAR; ++i)
+    {
+        myRom->WriteByte(0x39587 + i, 0x00);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

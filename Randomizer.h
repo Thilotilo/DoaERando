@@ -57,6 +57,7 @@ public:
     void NewGeneralAndBattleShuffle();
     void ReconfigureQingZhouCave();
     void ReconfigureLiuKuiTentGeneral();
+    void MakeZone0GeneralsUnfirable();
 
 private:
     Randomizer() = delete;
