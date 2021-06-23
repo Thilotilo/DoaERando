@@ -154,6 +154,13 @@ void NPCManipulator::PlaceGeneralInQingZhouCave(BYTE generalId)
     myRom.WriteByte(0x3118E, generalId);
 }
 
+void NPCManipulator::PlaceGeneralInLiuKuiTent(BYTE generalId)
+{
+    // This replaces the 1st general in the NPC data
+    // for the Qing Zhou cave
+    myRom.WriteByte(0x31426, generalId);
+}
+
 void NPCManipulator::ReplaceHanZhongBridgeTrigger(BYTE generalId)
 {
     // Replace the general that the brigand looks for

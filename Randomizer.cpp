@@ -776,6 +776,31 @@ void Randomizer::ReconfigureQingZhouCave()
     }
 }
 
+void Randomizer::ReconfigureLiuKuiTentGeneral()
+{
+    std::vector<BYTE> tentNPCData {
+        // Configure NPC info ->actual NPC ID to be set by the manipulator,
+        // So we just set it to 0 for now
+        0x13, 0x04, 0x97, 0x1C, 0x19, 0x19, 0x00,
+        // Since there's no longer any code to execute, we need to clear
+        // those extra 2 bytes too (plus move the original FF)
+        0xFF, 0x00, 0x00
+    };
+
+    for (int i = 0; i < tentNPCData.size(); ++i)
+    {
+        myRom->WriteByte(0x31420 + i, tentNPCData[i]);
+    }
+
+    // Remove now-unused code for loading the NPC so we can reclaim
+    // it for other nefarious purposes.
+    const size_t NUM_EVENT_BYTES_TO_CLEAR = 11;
+    for (size_t i = 0; i < NUM_EVENT_BYTES_TO_CLEAR; ++i)
+    {
+        myRom->WriteByte(0x36EE0 + i, 0x00);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();
@@ -910,6 +935,12 @@ void Randomizer::NewGeneralAndBattleShuffle()
     BYTE QingZhouCaveGeneralId = myRNG.GetRandomValueFromByteVector(ids);
     SetGeneralForZone0AndRemove(QingZhouCaveGeneralId, ids);
     myNPCManipulator.PlaceGeneralInQingZhouCave(QingZhouCaveGeneralId);
+
+    // This is the newly available general in the Liu Kui
+    // Tent that doesn't exist in vanilla
+    BYTE LiuKuiTentGeneralId = myRNG.GetRandomValueFromByteVector(ids);
+    SetGeneralForZone0AndRemove(LiuKuiTentGeneralId, ids);
+    myNPCManipulator.PlaceGeneralInLiuKuiTent(LiuKuiTentGeneralId);
 
     // Assign Warlords to appropriate castles (vanilla for standard)
     myBattleRandomizer.PlaceGeneralInBattle(SUN_QUAN_ID, 0x36);

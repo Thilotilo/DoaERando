@@ -48,6 +48,9 @@ public:
     // NPC Data.  If the cave is reconfigured, after this is called, then
     // the replacment will be overwritten.
     void PlaceGeneralInQingZhouCave(BYTE generalId);
+    // NOTE: If the general is reconfigured after this is called,
+    // the id will be replaced.
+    void PlaceGeneralInLiuKuiTent(BYTE generalId);
     void ReplaceHanZhongBridgeTrigger(BYTE generalId);
 
 private:

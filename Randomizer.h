@@ -56,6 +56,7 @@ public:
     void SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& ids);
     void NewGeneralAndBattleShuffle();
     void ReconfigureQingZhouCave();
+    void ReconfigureLiuKuiTentGeneral();
 
 private:
     Randomizer() = delete;
