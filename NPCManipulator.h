@@ -53,6 +53,8 @@ public:
     void PlaceGeneralInLiuKuiTent(BYTE generalId);
     void ReplaceHanZhongBridgeTrigger(BYTE generalId);
 
+    void FixLongNameTexts();
+
 private:
 
     ROM& myRom;

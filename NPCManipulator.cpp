@@ -179,4 +179,12 @@ void NPCManipulator::ReplaceHanZhongBridgeTrigger(BYTE generalId)
     myRom.WriteByte(0x2D6BD, generalId);
 }
 
+void NPCManipulator::FixLongNameTexts()
+{
+    // I'm X. I am happy to serve
+    // This fails for long names, so we put
+    // X on the next line, and all is happy
+    myRom.WriteByte(0x29684, 0xE0);
+}
+
 }

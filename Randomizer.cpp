@@ -1116,6 +1116,9 @@ void Randomizer::NewGeneralAndBattleShuffle()
     BYTE HanZhongBridgeTriggerId = myRNG.GetRandomValueFromByteVector(BridgeTriggerIds);
     myNPCManipulator.ReplaceHanZhongBridgeTrigger(HanZhongBridgeTriggerId);
 
+    // Fix the text boxes that cause long names to break stuff
+    myNPCManipulator.FixLongNameTexts();
+
 /* PREVIOUS PSEUDOISH CODE:
     vector<BYTE> ids; // Fill this with all of the generals
     pullLuBus(ids);
