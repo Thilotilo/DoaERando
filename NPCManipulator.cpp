@@ -22,6 +22,14 @@ void NPCManipulator::ReplaceChenDeng(BYTE generalId)
     myRom.WriteByte(0x311C0, generalId);
     // This replaces the name given by Chen Deng's father
     myRom.WriteByte(0x2963D, generalId);
+    // This is a temporary fix for extra long names before
+    // we overhaul the text stuff.
+    // It rewrites (so)n to s(on) so that it can create a
+    // newline before the general name.
+    myRom.WriteByte(0x29639, 0x2E);
+    myRom.WriteByte(0x2963A, 0xE0);
+    myRom.WriteByte(0x2963B, 0xEC);
+    myRom.WriteByte(0x2963C, 0xD2);
 }
 
 void NPCManipulator::ReplaceYangJin(BYTE generalId)
