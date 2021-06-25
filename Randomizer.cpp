@@ -263,6 +263,21 @@ void Randomizer::ItemShuffle()
     chestContentsToRandomize.push_back(myRom->ReadByte(0x3557C));
     chestContentsToRandomize.push_back(myRom->ReadByte(0x3557D));
 
+    // Add Zhao Yun's sister's item
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x368DC));
+
+    // Add Intro Letr item (We'll put gemsword behind this item)
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x366DD));
+
+    // Add Silver Key item
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x3680F));
+
+    // Add Gunpowder Item
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x368A2));
+
+    // Add Qing Long Item
+    chestContentsToRandomize.push_back(myRom->ReadByte(0x37333));
+
     // Grab hidden items
     const int HIDDEN_ITEM_OFFSET = 0x30B10;
     for (int i = HIDDEN_ITEM_OFFSET; i < HIDDEN_ITEM_OFFSET + 20; ++i)
@@ -290,8 +305,13 @@ void Randomizer::ItemShuffle()
         BYTE item1 = chestContentsToRandomize[index1];
         BYTE item2 = chestContentsToRandomize[index2];
 
-        // Make sure that we're not swapping coins into starting inventory
-        if (!((index1 < 6 || index2 < 6) && (item1 < 0x10 || item2 < 0x10)))
+        // 3 Conditions we have to verify
+        // 1) Make sure that we're not swapping coins into starting inventory or talk-and-speak inventory
+        // 2) Make sure that the Silver Key is not behind Zhao Yun's sister
+        // 3) Make sure that the Zhou Letr isn't in Guang Zong.
+        if (!((index1 < 11 || index2 < 11) && (item1 < 0x10 || item2 < 0x10)) // 1
+            || (index1 == 14 && item2 == 0x22) || (index2 == 14 && item1 == 0x22) // 2
+            || (index1 == 8 && item2 == 0x18) || (index2 == 8 && item2 == 0x18)) // 3
         {
             chestContentsToRandomize[index1] = item2;
             chestContentsToRandomize[index2] = item1;
@@ -308,9 +328,13 @@ void Randomizer::ItemShuffle()
         }
         if (i == 6)
         {
+            printf ("Talk-and-get items:\n");
+        }
+        if (i == 11)
+        {
             printf ("Hidden items:\n");
         }
-        if (i == 25)
+        if (i == 30)
         {
             printf ("Normal chests:\n");
         }
@@ -324,6 +348,21 @@ void Randomizer::ItemShuffle()
     myRom->WriteByte(0x35575, chestContentsToRandomize[index++]);
     myRom->WriteByte(0x3557C, chestContentsToRandomize[index++]);
     myRom->WriteByte(0x3557D, chestContentsToRandomize[index++]);
+
+    // Write new Zhou Letr item
+    myRom->WriteByte(0x368DC, chestContentsToRandomize[index++]);
+
+    // Write new Intro Letr item
+    myRom->WriteByte(0x366DD, chestContentsToRandomize[index++]);
+
+    // Write new Silver Key item
+    myRom->WriteByte(0x3680F, chestContentsToRandomize[index++]);
+
+    // Write new Gunpowder Item
+    myRom->WriteByte(0x368A2, chestContentsToRandomize[index++]);
+
+    // Write new Qing Long Item
+    myRom->WriteByte(0x37333, chestContentsToRandomize[index++]);
 
     // Write new hidden items
     for (int i = HIDDEN_ITEM_OFFSET; i < HIDDEN_ITEM_OFFSET + 20; ++i)
