@@ -96,8 +96,12 @@ void NPCManipulator::ReplaceMaLiang(BYTE generalId)
 
 void NPCManipulator::ReplaceHuangZhongAndWeiYan(BYTE generalId1, BYTE generalId2)
 {
+    // This is the NPC data
     myRom.WriteByte(0x31772, generalId1);
     myRom.WriteByte(0x31779, generalId2);
+    // This is for the post-battle flags change
+    myRom.WriteByte(0x3B062, generalId1);
+    myRom.WriteByte(0x3B065, generalId2);
 }
 
 void NPCManipulator::ReplaceZhangBao(BYTE generalId)
