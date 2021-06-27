@@ -893,6 +893,23 @@ void Randomizer::RemoveUneededEntranceTriggerCode()
 
 }
 
+void Randomizer::UpdateLiuBeiTurnInTrigger()
+{
+    // 2 things we're fixing at the moment.
+    // 1) Increment chapter rather than overwrite it when we turn in Liu Bei
+    // 2) Don't modify the Si Shui battle flag.
+
+    // Increment chapter.  This actually leaves 2 meaningless bytes before it
+    // (LDA #$02), but fixing that is a pretty heavy cleanup, so we'll just
+    // let it do the uneeded work.
+    myRom->WriteByte(0x362CE, 0xEE);
+
+    // Si Shui fix.  This also wastes 3 bytes, but it's easier to just write 0
+    // to the same location twice rather than shift all the code.
+    myRom->WriteByte(0x36301, 0x9E);
+    myRom->WriteByte(0x36302, 0x60);
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

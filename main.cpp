@@ -44,6 +44,7 @@ int main(void)
         randomizer.NewGeneralAndBattleShuffle();
         randomizer.MakeZhangBaoAndGuanXingAvailable();
         randomizer.MakeZone0GeneralsUnfirable();
+        randomizer.UpdateLiuBeiTurnInTrigger();
     }
     else
     {

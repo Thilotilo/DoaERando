@@ -59,6 +59,7 @@ public:
     void ReconfigureLiuKuiTentGeneral();
     void MakeZone0GeneralsUnfirable();
     void RemoveUneededEntranceTriggerCode();
+    void UpdateLiuBeiTurnInTrigger();
 
 private:
     Randomizer() = delete;
