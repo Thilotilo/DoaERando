@@ -868,6 +868,31 @@ void Randomizer::MakeZone0GeneralsUnfirable()
     }
 }
 
+// This is here simply to remove code executed on
+// entrance triggers, since we don't actually need
+// many of these, and it frees up space to do so.
+void Randomizer::RemoveUneededEntranceTriggerCode()
+{
+    // Tie Men Xia - we don't want to remove NPCs, so the
+    // code is unneeded
+    // Remove the "code executed" bit
+    BYTE execByte = myRom->ReadByte(0x31A2D);
+    execByte &= 0xDF; // clear bit 5
+    myRom->WriteByte(0x31A2D, execByte);
+    // Blank out both the code-to-execute pointer (moving the
+    // FF terminator as well) and the actual code
+    myRom->WriteByte(0x31A31, 0xFF);
+    myRom->WriteByte(0x31A32, 0x00);
+    myRom->WriteByte(0x31A33, 0x00);
+
+    const size_t NUM_EVENT_BYTES_TO_CLEAR = 15;
+    for (size_t i = 0; i < NUM_EVENT_BYTES_TO_CLEAR; ++i)
+    {
+        myRom->WriteByte(0x3536E, 0x00);
+    }
+
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

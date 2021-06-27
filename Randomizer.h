@@ -58,6 +58,7 @@ public:
     void ReconfigureQingZhouCave();
     void ReconfigureLiuKuiTentGeneral();
     void MakeZone0GeneralsUnfirable();
+    void RemoveUneededEntranceTriggerCode();
 
 private:
     Randomizer() = delete;
