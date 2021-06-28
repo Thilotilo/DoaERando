@@ -35,6 +35,8 @@ class Generals
         void ScaleGeneralAllyHpForZone(BYTE generalId, BYTE zone, RNG& rng);
         void SetGeneralEncounterable(BYTE generalId, bool encounterable);
         void SetGeneralRecruitable(BYTE generalId, bool recruitable);
+        void SetGeneralWeapon(BYTE generalId, BYTE weapon);
+        void SetGeneralDefense(BYTE generalId, BYTE defense);
 
         int size() {return myGenerals.size();}
 

@@ -1240,6 +1240,11 @@ void Randomizer::NewGeneralAndBattleShuffle()
     myGenerals.ScaleGeneralAllyHpForZone(CAO_CAO_ID, 0, myRNG);
     myGenerals.ScaleGeneralAllyHpForZone(SUN_CE_ID, 0, myRNG);
 
+    // Give the gemsword Lu Bu the max gear possible to increase
+    // gemsword value
+    myGenerals.SetGeneralWeapon(LU_BU_GEMSWORD_ID, 0x13);
+    myGenerals.SetGeneralDefense(LU_BU_GEMSWORD_ID, 0x0F);
+
     //
     // Do Zone logic for each zone, passing in a list of generals for each zone
     printf("1.\n");

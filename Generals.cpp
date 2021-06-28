@@ -235,6 +235,18 @@ void Generals::SetGeneralRecruitable(BYTE generalId, bool recruitable)
     myGenerals[generalIndex].recruitable = recruitable;
 }
 
+void Generals::SetGeneralWeapon(BYTE generalId, BYTE weapon)
+{
+    int generalIndex = GetGeneralIndexById(generalId);
+    myGenerals[generalIndex].weaponId = weapon;
+}
+
+void Generals::SetGeneralDefense(BYTE generalId, BYTE defense)
+{
+    int generalIndex = GetGeneralIndexById(generalId);
+    myGenerals[generalIndex].enemyDefenseId = defense;
+}
+
 void Generals::UpdateGenerals()
 {
     const int GENERAL_ADDRESSES_LSB_START = 0x32610;
