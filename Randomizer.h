@@ -46,6 +46,7 @@ public:
     void DisableNonGeneralBattles();
     void IncreaseTacticGains();
     void DoubleXpGain();
+    void MakeIronOreUseful();
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();

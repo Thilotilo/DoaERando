@@ -910,6 +910,104 @@ void Randomizer::UpdateLiuBeiTurnInTrigger()
     myRom->WriteByte(0x36302, 0x60);
 }
 
+void Randomizer::MakeIronOreUseful()
+{
+    // Blacksmith now returns a random top tier weapon (Qing Long, Qing Guang, Nu Long, Halberd)
+    std::vector<BYTE> possibleGear = {0x4F, 0x50, 0x51, 0x52};
+    BYTE gear = myRNG.GetRandomValueFromByteVector(possibleGear);
+
+    printf("Giving the blacksmith weapon 0x%02X...\n", gear);
+
+    std::vector<BYTE> newCode {
+        0xA9, 0x1D,         // LDA #$1D
+        0x85, 0xF2,         // STA $F2
+        // This subroutine checks the party inventory for the item in $F2,
+        // removes it if it finds it, and sets C to indicate if it was found.
+        0x20, 0x39, 0x9E,   // JSR $3E39
+        0x90, 0x1A,         // BCC ($B150)
+        // If we found the item, set bit 3 of 6731 (indicates we have turned in
+        // the ore), and set the bit indicating that the weapons were stolen in
+        // vanilla
+        0xAD, 0x31, 0x67,   // LDA $6731
+        0x09, 0x08,         // ORA #$08
+        0x8D, 0x31, 0x67,   // STA $6731
+        // This subroutine gets B from bits 2-0 and X from bits 4-3.  It then sets
+        // the bit B at $655X.
+        // Here, 0x1A would be B = 2, X = 3, so it sets bit 5 of $6553
+        0xA9, 0x1A,         // LDA #$1A
+        0x20, 0xC6, 0x9C,   // JSR $9CC6
+        // This is the dialog subroutine.  The dialogue is determined by the 2
+        // bytes following the call, the first referring to the id, and the
+        // second referring to the bank
+        0x20, 0x0D, 0xD1,   // JSR $D10D
+        0x14, 0x02,         // Text set below
+        // This subroutine places the item in A into the inventory.  Since we
+        // just lost the iron ore, we don't have to worry about space issues
+        0xA9, gear,         // LDA #(gearId)
+        0x20, 0x6F, 0xE9,   // JSR $E96F
+        // Get us out of here
+        0x4C, 0xA6, 0xC4,   // JMP $C4A6 (switches back to bank E, then returns)
+
+        // This is the path if we don't have the ore in our inventory
+        0xAD, 0x31, 0x67,   // LDA $6731
+        0x29, 0x08,         // ORA #$08
+        0xF0, 0x08,         // BEQ ($B15F)
+        // We're here if we turned in the ore before
+        0x20, 0x0D, 0xD1,   // JSR $D10D
+        0x15, 0x02,         // Text set below
+        0x4C, 0xA6, 0xC4,   // JMP $C4A6
+        // We're here if we have never turned the ore in
+        0x20, 0x0D, 0xD1,   // JSR $D10D
+        0x13, 0x02,         // Text set below
+        0x4C, 0xA6, 0xC4,   // JMP $C4A6
+
+        // Zero out the remaining unused bytes (0x11 of them)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00
+    };
+
+    for (int i = 0; i < newCode.size(); ++i)
+    {
+        myRom->WriteByte(0x3713D + i, newCode[i]);
+    }
+
+    // Now let's update some text strings:
+    std::vector<BYTE> blacksmithText {
+        // Bank 2 Text 0x13 - Text if you haven't turned in the ore and don't have the ore
+        0x11,0x2D,0x38,0x3D,0x36,0x0A,0x3C,0x34,0x0A,0x2E,0x3E,0x3C,0x34,0x0A,0x18,0x2D,0x3E,0x3D,0xFB, // Bring me some Iron (19 bytes)
+        0x1E,0x2D,0x34,0x0A,0x30,0x3D,0x33,0x0A,0x35,0x3E,0x2D,0x2F,0x64,0x3D,0x34,0xFB, // Ore and fortune (16 bytes)
+        0x66,0x38,0x3B,0x3B,0x0A,0x2E,0x3C,0x38,0x3B,0x34,0x0A,0x64,0x3F,0x3E,0x3D,0xFB, // Will smile upon (16 bytes)
+        0x2F,0x37,0x34,0x34,0xEC, // thee. (5 bytes)
+        // Bank 2 Text 0x14 - Text if you have iron ore.
+        0x23,0x37,0x30,0x3D,0x3A,0x0A,0x68,0x3E,0x64,0x0A,0x35,0x3E,0x2D,0x0A,0x2F,0x37,0x34,0xFB, // Thank you for the (18 bytes)
+        0x3E,0x2D,0x34,0x63,0x0A,0x18,0x0A,0x37,0x30,0x65,0x34,0x0A,0x3C,0x30,0x33,0x34,0xFB, // ore. I have made (17 bytes)
+        0xF1,gear,0xEC, // [WEAPON]. (3 bytes)
+        // Bank 3 Text 0x15 - Text if you have turned in the ore and don't have ore in your inventory
+        0x18,0x0A,0x30,0x3C,0x0A,0x2D,0x34,0x2F,0x38,0x2D,0x34,0x33,0x63,0xFB, // I am retired. (14 bytes)
+        0x1F,0x3B,0x34,0x30,0x2E,0x34,0x0A,0x3B,0x34,0x30,0x65,0x34,0xEC, // Please leave. (13 bytes)
+        // Bank 3 Text 0x16 - Now unused (1 byte)
+        0xFF,
+    };
+
+    for (unsigned int i = 0; i < blacksmithText.size(); ++i)
+    {
+        myRom->WriteByte(0x2C613 + i, blacksmithText[i]);
+    }
+
+    // Free the currently unused bytes
+    unsigned int numFreedBytes = 0x2C777 - 0x2C613 - blacksmithText.size();
+    for (unsigned int i = 0; i < numFreedBytes; ++i)
+    {
+        myRom->WriteByte(0x2C613 + blacksmithText.size() + i, 0x00);
+    }
+
+    // Finally update the pointers to the new text
+    myRom->WriteByte(0x2C024, 0x3B);
+    myRom->WriteByte(0x2C025, 0x61);
+    myRom->WriteByte(0x2C026, 0x7D);
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

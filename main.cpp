@@ -61,6 +61,7 @@ int main(void)
 
     // QoL and other non-random features
     randomizer.IncreaseTacticGains();
+    randomizer.MakeIronOreUseful();
     randomizer.DoubleXpGain();
     randomizer.DisableNonGeneralBattles();
     randomizer.ResurrectAllAfterDeath();
