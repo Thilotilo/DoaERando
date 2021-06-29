@@ -18,10 +18,10 @@ void ROM::ReadRom(std::string file)
         );
 }
 
-void ROM::WriteRom(std::string path, int version, int seed)
+void ROM::WriteRom(std::string path, int major, int minor, int patch, int seed)
 {
     ostringstream oss;
-    oss << path << "/DoaERando_" << version << "_" << seed << ".nes";
+    oss << path << "/DoaERando_v" << major << "_" << minor << "_" << patch << "_seed" << seed << ".nes";
     cout << "Writing to file " << oss.str() << endl;
     ofstream fout(oss.str(), ios::out | ios::binary);
     if (fout.fail()) throw 0;

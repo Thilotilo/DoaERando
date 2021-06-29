@@ -14,7 +14,7 @@ class ROM
 {
 public:
     void ReadRom(std::string file);
-    void WriteRom(std::string path, int version, int seed);
+    void WriteRom(std::string path, int major, int minor, int patch, int seed);
 
     BYTE ReadByte(int address);
     BYTE ReadByteAtBank(int bank, int address);

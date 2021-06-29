@@ -6,6 +6,10 @@
 using namespace DoaERando;
 using namespace std;
 
+#define MAJOR_RELEASE 1
+#define MINOR_RELEASE 0
+#define PATCH 0
+
 int main(void)
 {
     ROM rom;
@@ -77,7 +81,7 @@ int main(void)
     randomizer.MoveGuiYangBattle();
 
     printf("Saving file...\n");
-    rom.WriteRom("./RandoRoms/", 14, seed);
+    rom.WriteRom("./RandoRoms/", MAJOR_RELEASE, MINOR_RELEASE, PATCH, seed);
 
     return 0;
 }
