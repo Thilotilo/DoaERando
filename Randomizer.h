@@ -49,6 +49,7 @@ public:
     void MakeIronOreUseful();
     void MoveGemswordToSimaHuisHut();
     void MakeIntroLetterUseful();
+    void LetWangGuiTravelToYangZhou();
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();

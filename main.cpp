@@ -64,6 +64,7 @@ int main(void)
     randomizer.MakeIronOreUseful();
     randomizer.MoveGemswordToSimaHuisHut();
     randomizer.MakeIntroLetterUseful();
+    randomizer.LetWangGuiTravelToYangZhou();
     randomizer.DoubleXpGain();
     randomizer.DisableNonGeneralBattles();
     randomizer.ResurrectAllAfterDeath();

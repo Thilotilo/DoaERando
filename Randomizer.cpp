@@ -1142,6 +1142,46 @@ void Randomizer::MakeIntroLetterUseful()
     }
 }
 
+void Randomizer::LetWangGuiTravelToYangZhou()
+{
+    // Because Yang Zhou doesn't have event code, we can't just do 1 NPC swap, we actually
+    // have to do 2 in order to have room for event code
+    myRom->WriteByte(0x31922, 0x14); // Text Bank 1 YTile 04
+    myRom->WriteByte(0x31923, 0x07); // YZone 07
+    myRom->WriteByte(0x31924, 0x19); // Move around, XTile 09
+    myRom->WriteByte(0x31925, 0x3E); // Trigger code + XZone 1E
+    myRom->WriteByte(0x31926, 0x18); // Set text 1
+    myRom->WriteByte(0x31927, 0x18); // Set text 2
+    BYTE WangGuiId = myRom->ReadByte(0x31976);
+    myRom->WriteByte(0x31928, WangGuiId);
+    // Trigger code at 0x97E0
+    myRom->WriteByte(0x31929, 0xE0);
+    myRom->WriteByte(0x3192A, 0x97);
+    // Terminator
+    myRom->WriteByte(0x3192B, 0xFF);
+    // Remaining zeros from the other NPCs
+    for (unsigned int i = 0; i < 0x5; ++i)
+    {
+        myRom->WriteByte(0x3192C + i, 0x00);
+    }
+
+    // Trigger code written at 0x97E0 = 0x357F0
+    std::vector<BYTE> eventCode {
+        // Check if we've obtained Yang Jin
+        0xA9, 0x02,       // LDA #$02
+        0x20, 0xA0, 0x9C, // JSR $9CA0
+        0xB0, 0x05,       // BCC (RTS loc)
+        0xA9, 0x00,       // LDA #$00
+        0x8D, 0x06, 0x05, // STA $0506
+        0x60,             // RTS
+    };
+
+    for (unsigned int i = 0; i < eventCode.size(); ++i)
+    {
+        myRom->WriteByte(0x357F0 + i, eventCode[i]);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();
