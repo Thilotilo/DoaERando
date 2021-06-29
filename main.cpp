@@ -45,8 +45,6 @@ int main(void)
         randomizer.MakeZhangBaoAndGuanXingAvailable();
         randomizer.MakeZone0GeneralsUnfirable();
         randomizer.UpdateLiuBeiTurnInTrigger();
-        randomizer.MoveGemswordToSimaHuisHut();
-        randomizer.MakeIntroLetterUseful();
     }
     else
     {
@@ -64,6 +62,8 @@ int main(void)
     // QoL and other non-random features
     randomizer.IncreaseTacticGains();
     randomizer.MakeIronOreUseful();
+    randomizer.MoveGemswordToSimaHuisHut();
+    randomizer.MakeIntroLetterUseful();
     randomizer.DoubleXpGain();
     randomizer.DisableNonGeneralBattles();
     randomizer.ResurrectAllAfterDeath();
