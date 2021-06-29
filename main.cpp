@@ -45,6 +45,8 @@ int main(void)
         randomizer.MakeZhangBaoAndGuanXingAvailable();
         randomizer.MakeZone0GeneralsUnfirable();
         randomizer.UpdateLiuBeiTurnInTrigger();
+        randomizer.MoveGemswordToSimaHuisHut();
+        randomizer.MakeIntroLetterUseful();
     }
     else
     {

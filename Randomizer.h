@@ -61,6 +61,8 @@ public:
     void MakeZone0GeneralsUnfirable();
     void RemoveUneededEntranceTriggerCode();
     void UpdateLiuBeiTurnInTrigger();
+    void MoveGemswordToSimaHuisHut();
+    void MakeIntroLetterUseful();
 
 private:
     Randomizer() = delete;

@@ -1008,6 +1008,140 @@ void Randomizer::MakeIronOreUseful()
     myRom->WriteByte(0x2C026, 0x7D);
 }
 
+void Randomizer::MoveGemswordToSimaHuisHut()
+{
+    // Move the actual gemsword
+    myRom->WriteByte(0x30A12, 0x01);
+    myRom->WriteByte(0x30A52, 0x01);
+    myRom->WriteByte(0x30A92, 0x0A);
+    myRom->WriteByte(0x30AD2, 0x1E);
+
+    // Remove the gemsword room in Luo Yang
+    // (Easier and nicer than removing the discolored tile
+    myRom->WriteByte(0x1F6F2, 0x15);
+}
+
+void Randomizer::MakeIntroLetterUseful()
+{
+    // Text starting at AAB3 (2AAC3):
+    std::vector<BYTE> newText {
+        // Text 4C (offset 0)
+        0xF9,0x2D,0x27, // Event for checking for the intro letr (3 bytes)
+        // Text 4D (offset 3)
+        0x1F,0x2D,0x34,0x2E,0x34,0x3D,0x2F,0x0A,0x30,0x0A,0x3B,0x34,0x2F,0x2F,0x34,0x2D,0xFB, // Present a letter (17 bytes)
+        0x3E,0x35,0x0A,0x38,0x3D,0x2F,0x2D,0x3E,0x33,0x64,0x32,0x2F,0x38,0x3E,0x3D,0xFB, // of introduction (16 bytes)
+        0x3E,0x2D,0x0A,0x3B,0x34,0x30,0x65,0x34,0x0A,0x30,0x2F,0x0A,0x3E,0x3D,0x32,0x34,0xEC, // or leave at once. (17 bytes)
+        // Text 4E (offset 53)
+        0x12,0x3E,0xF0,0xF0,0x90,0xEB,0xF0,0x1E,0xEC, // Come in please. (9 bytes)
+        // Text 4F (offset 62)
+        0xF9,0xC0,0x17, // Event for "Come in please" + moving the lady (3 bytes)
+        // Text 50 (offset 65)
+        0x18,0x0A,0x35,0x3E,0x64,0x3D,0x33,0x0A,0x30,0x0A,0x3B,0x3E,0x32,0x3A,0x34,0x33,0xFB, // I found a locked (17 bytes)
+        0x2E,0x30,0x35,0x34,0x0A,0x38,0x3D,0x0A,0x1B,0x64,0x3E,0x0A,0x28,0x30,0x3D,0x36,0xFB, // safe in Luo Yang (17 bytes)
+        0x30,0x3D,0x33,0x0A,0x3F,0x64,0x2F,0x0A,0x38,0x2F,0x0A,0x31,0x34,0x37,0x38,0x3D,0x33,0xFD, // and put it behind> (18 bytes)
+        0x2F,0x37,0x30,0x2F,0x0A,0x39,0x30,0x2D,0x63,0x0A,0x18,0x35,0x0A,0x68,0x3E,0x64,0xFB, // that jar. If you (17 bytes)
+        0x32,0x30,0x3D,0x0A,0x3E,0x3F,0x34,0x3D,0x0A,0x38,0x2F,0x62,0x0A,0x68,0x3E,0x64,0xFB, // can open it, you (17 bytes)
+        0x3C,0x30,0x68,0x0A,0x3A,0x34,0x34,0x3F,0x0A,0x38,0x2F,0x2E,0xFD, // may keep its> (13 bytes)
+        0x32,0x3E,0x3D,0x2F,0x34,0x3D,0x2F,0x2E,0xEC, // contents. (9 bytes)
+    };
+
+    for (unsigned int i = 0; i < newText.size(); ++i)
+    {
+        myRom->WriteByte(0x2AAC3 + i, newText[i]);
+    }
+
+    //0x2AB7F is the start for text id 51
+    const unsigned int NUM_TEXT_BYTES_TO_RECLAIM = 0x2AB7F - 0x2AAC3 - newText.size();
+    for (unsigned int i = 0; i < NUM_TEXT_BYTES_TO_RECLAIM; ++i)
+    {
+        myRom->WriteByte(0x2AAC3 + newText.size() + i, 0x00);
+    }
+
+    // AAB3 is the start:
+    // 4C (offset 0) = AAB3
+    // 4D (offset 3) = AAB6
+    // 4E (offset 53 (0x35)) = AAE8
+    // 4F (offset 62 (0x3E)) = AAF1
+    // 50 (offset 65 (0x41)) = AAF4
+
+    // no need to overwrite the 4C pointer, since it didn't change
+    myRom->WriteByte(0x2815D, 0xB6);
+    myRom->WriteByte(0x2815E, 0xE8);
+    myRom->WriteByte(0x2815F, 0xF1);
+    myRom->WriteByte(0x28160, 0xF4);
+    // 4C - 4F already have AA as their pointer MSB
+    myRom->WriteByte(0x28360, 0xAA);
+
+
+    // Starts at 0x3673D
+    std::vector<BYTE> newCode1 {
+        0xA9, 0x1A,       // LDA #$1A (1A is the Intro Letr)
+        0x85, 0xF2,       // STA $F2
+        // This subroutine checks the party inventory for the item in $F2,
+        // removes it if it finds it, and sets C to indicate if it was found.
+        0x20, 0x39, 0x9E, // JSR $9E39
+        0x90, 0x0B,       // BCC ($A741) (the second jump instruction)
+        // We're here if the intro letr was found.
+        // Setting 670Eb0 to 1 will make the lady use the second text on
+        // subsequent entries to the hut.
+        0xAD, 0x0E, 0x67, // LDA $670E
+        0x09, 0x01,       // ORA #$01
+        0x8D, 0x0E, 0x67, // LDA $670E
+        // Head to other new code to trigger the text + lady move
+        0x4C, 0xC0, 0x97, // JMP $97C0
+        // Head to other new code for the failed-to-find intro letr path
+        0x4C, 0xC8, 0x97, // JMP $97C8
+    };
+
+    for (unsigned int i = 0; i < newCode1.size(); ++i)
+    {
+        myRom->WriteByte(0x3673D + i, newCode1[i]);
+    }
+
+    // Starts at 0x357D0
+    std::vector<BYTE> newCode2 {
+        // success path
+        0x20, 0x0D, 0xD1, // JSR $D10D
+        0x4E, 0x01,       // Come in please
+        // Jump to lady moving event (it will take care of returning)
+        0x4C, 0x18, 0xA7, // JMP $A718
+        // Into letr not found path
+        // Check if we've turned in the intro letr previously by checking $670Eb0
+        0xAD, 0x0E, 0x67, // LDA $67OE
+        0x29, 0x01,       // AND #$01
+        // If we turned it in before, go ahead with the success path
+        0xD0, 0xF1,       // BNE $(97C0)
+        // We don't have it and have never turned it in
+        0x20, 0x0D, 0xD1, // JSR $D10D
+        0x4D, 0x01,       // "Present a letter..."
+        // Get us out of here
+        0x4C, 0xA6, 0xC4, // JMP $C4A6 (switches back to bank E, then returns)
+    };
+
+    for (unsigned int i = 0; i < newCode2.size(); ++i)
+    {
+        myRom->WriteByte(0x357D0 + i, newCode2[i]);
+    }
+
+    // NPC Data starts at 0x3123A
+    myRom->WriteByte(0x3123B, 0x01); // Remove the "use text 3 flag" for Shui Jing
+    myRom->WriteByte(0x3123E, 0x50); // Change Shui Jing text to the new text
+    myRom->WriteByte(0x3123F, 0x50); // Replace text 2 with the same
+    myRom->WriteByte(0x31242, 0x01); // Remove the "use text 3 flag" for the lady
+    // Lady's first text is already 4C, so no need to change that
+    myRom->WriteByte(0x31246, 0x4F); // Lady text 2 = "Come in please" + move
+
+    // Finally, there's a character in Chen Cang that sets 670E to #03 when you talk
+    // to him.  Remove that section from the code (and free a few bytes in the process)
+    myRom->WriteByte(0x366E4, 0x05); // Move the branch that was taking us to the 670E set to now just return
+
+    // no longer executed bytes
+    for (unsigned int i = 0; i < 8; ++i)
+    {
+        myRom->WriteByte(0x366ED + i, 0x00);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();
