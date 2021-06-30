@@ -80,6 +80,7 @@ int main(void)
     randomizer.RemoveZhugeLiangFetchQuest();
     randomizer.MoveGuiYangBattle();
 
+    randomizer.RewriteTitleScreen(MAJOR_RELEASE, MINOR_RELEASE, PATCH, seed);
     printf("Saving file...\n");
     rom.WriteRom("./RandoRoms/", MAJOR_RELEASE, MINOR_RELEASE, PATCH, seed);
 

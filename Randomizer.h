@@ -20,6 +20,8 @@ public:
     // IMPORTANT: MUST BE CALLED AFTER ImproveInitialBattlesAndFlags
     void RandomizeStartingGenerals();
 
+    void RewriteTitleScreen(int major, int minor, int patch, int seed);
+
     void ItemShuffle();
     void CaveShuffle();
 

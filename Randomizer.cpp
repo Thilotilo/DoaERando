@@ -1692,4 +1692,170 @@ void Randomizer::NewGeneralAndBattleShuffle()
 */
 }
 
+static int numDigits(int num)
+{
+    int digits = 0;
+    if (num == 0)
+    {
+        return 1;
+    }
+    while (num != 0)
+    {
+        num = num/10;
+        digits++;
+    }
+
+    return digits;
+}
+
+static void appendNumber(std::vector<BYTE>& v, int num)
+{
+    int digits = numDigits(num);
+
+    int divisor = 1;
+    for (int i = 1; i < digits; ++i)
+    {
+        divisor *= 10;
+    }
+
+    while (divisor > 0)
+    {
+        v.push_back((num / divisor) % 10);
+        divisor /= 10;
+    }
+}
+
+void Randomizer::RewriteTitleScreen(int major, int minor, int patch, int seed)
+{
+    // I assume there are line pointers here, but I simply don't know where
+    // they are, so I'm simply replacing the extra characters I don't want
+    // display with 0xFF, but I'm not actually moving any line starts
+
+    // Line format:
+    // first 2 bytes - location to write (lower nibble of byte 2
+    //                 defines horizontal start position)
+    // third byte - number of bytes to write
+    const int CREDIT_START = 0x349A1;
+    int index = CREDIT_START;
+
+    // adding scoping braces for readability
+    // RANDOMIZER
+    {
+        std::vector<BYTE> randomizerLine {
+            0x21,0xAB,0x0A,0x21,0x10,0x1D,0x13,0x1E,0x1C,0x18,0x29,0x14,0x21 // RANDOMIZER
+        };
+        // Fill remaining bytes for this line with 0xFF
+        randomizerLine.resize(0x0F, 0xFF);
+        // Write the data
+        for (int i = 0; i < randomizerLine.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, randomizerLine[i]);
+        }
+    }
+
+
+    // VERSION X.Y.Z
+    {
+        int combinedVersionDigits = numDigits(major) + numDigits(minor) + numDigits(patch);
+        BYTE versionLineLen = 8 + combinedVersionDigits + 2; // 8 for VERSION_, 2 for dots between versions
+        if (versionLineLen % 2 == 1) // Make sure we always have an even number of characters for centering
+        {
+            versionLineLen++;
+        }
+        // Set the lower nibble to a centering offset based upon the version length
+        BYTE versionOffset = (0x10 - static_cast<BYTE>(versionLineLen/2)) | 0xE0;
+        // Write VERSION_
+        std::vector<BYTE> versionLine {0x21, versionOffset, 0x17, 0x25,0x14,0x21,0x22,0x18,0x1E,0x1D,0x0A};
+        if (combinedVersionDigits % 2 == 1) // Add an extra space to get us to an even number of characters
+        {
+            versionLine.push_back(0x0A);
+        }
+        // Add patch numbers
+        appendNumber(versionLine, major);
+        versionLine.push_back(0x63);
+        appendNumber(versionLine, minor);
+        versionLine.push_back(0x63);
+        appendNumber(versionLine, patch);
+        // Fill remaining bytes for this line with 0xFF
+        versionLine.resize(0x1A, 0xFF);
+        // Write the data
+        for (int i = 0; i < versionLine.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, versionLine[i]);
+        }
+    }
+
+    // SEED X
+    {
+        int seedDigits = numDigits(seed);
+        BYTE seedLineLen = 5 + seedDigits;
+        if (seedLineLen % 2 == 1) // Make sure we always have an even number of characters for centering
+        {
+            seedLineLen++;
+        }
+        // Set the lower nibble to a centering offset based upon the seed length
+        BYTE seedOffset = (0x10 - static_cast<BYTE>(seedLineLen/2)) | 0x20;
+        // Write SEED_
+        std::vector<BYTE> seedLine {0x22,seedOffset,0x12,0x22,0x14,0x14,0x13,0x0A};
+        if (seedDigits % 2 == 0) // Write an extra space if needed to get to even character count
+        {
+            seedLine.push_back(0x0A);
+        }
+        // Add seed number
+        appendNumber(seedLine, seed);
+        // Fill remaining bytes for this line with 0xFF
+        seedLine.resize(0x15, 0xFF);
+        // Write the data
+        for (int i = 0; i < seedLine.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, seedLine[i]);
+        }
+    }
+
+    // 4 BLANK LINES
+    {
+        std::vector<BYTE> blankLine0 {0x22, 0x65, 0x0F};
+        blankLine0.resize(0x12, 0xFF);
+        for (int i = 0; i < blankLine0.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, blankLine0[i]);
+        }
+
+        std::vector<BYTE> blankLine1 {0x22, 0xA2, 0x1D};
+        blankLine1.resize(0x20, 0xFF);
+        for (int i = 0; i < blankLine1.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, blankLine1[i]);
+        }
+
+        std::vector<BYTE> blankLine2 {0x22, 0xE6, 0x13};
+        blankLine2.resize(0x16, 0xFF);
+        for (int i = 0; i < blankLine2.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, blankLine2[i]);
+        }
+
+        std::vector<BYTE> blankLine3 {0x23, 0x29, 0x0B};
+        blankLine3.resize(0x0E, 0xFF);
+        for (int i = 0; i < blankLine3.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, blankLine3[i]);
+        }
+    }
+
+    // CREATED BY THILOTILO
+    {
+        // Text data
+        std::vector<BYTE> createdByLine {
+            0x23,0x66,0x18,0x12,0x21,0x14,0x10,0x23,0x14,0x13,0x0A,0x11,0x28,0x0A,0x23,0x17,0x18,0x1B,0x1E,0x23,0x18,0x1B,0x1E};
+        // Fill remaining bytes for this line with 0xFF
+        createdByLine.resize(0x1B, 0xFF);
+        // Write the data
+        for (int i = 0; i < createdByLine.size(); ++i, ++index)
+        {
+            myRom->WriteByte(index, createdByLine[i]);
+        }
+    }
+}
+
 }
