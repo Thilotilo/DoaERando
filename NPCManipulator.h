@@ -32,11 +32,6 @@ public:
     void ReplaceMaLiang(BYTE generalId);
     void ReplaceHuangZhongAndWeiYan(BYTE generalId1, BYTE generalId2);
 
-    void ReplaceXuZheBridgeTrigger(BYTE generalId)
-    {
-    }
-
-
     void ReplaceMaChaoAndMaDai(BYTE generalId1, BYTE generalId2);
     void ReplaceZhangBao(BYTE generalId);
     void ReplaceGuanXing(BYTE generalId);
@@ -52,6 +47,7 @@ public:
     // the id will be replaced.
     void PlaceGeneralInLiuKuiTent(BYTE generalId);
     void ReplaceHanZhongBridgeTrigger(BYTE generalId);
+    void ReplaceXuZheBridgeTrigger(BYTE generalId);
 
     void FixLongNameTexts();
 

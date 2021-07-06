@@ -1608,6 +1608,11 @@ void Randomizer::NewGeneralAndBattleShuffle()
     PullIdFromVector(LU_BU_SHU_ID, BridgeTriggerIds);
     // Remove Liu Bei, as he can leave the party
     PullIdFromVector(LIU_BEI_ID, BridgeTriggerIds);
+
+    // Set the Xu Zhe Bridge trigger
+    BYTE XuZheBridgeTriggerId = myRNG.GetRandomValueFromByteVector(BridgeTriggerIds);
+    myNPCManipulator.ReplaceXuZheBridgeTrigger(XuZheBridgeTriggerId);
+
     // Remove the Bridge-locked general
     PullIdFromVector(QingZhouCaveGeneralId, BridgeTriggerIds);
 

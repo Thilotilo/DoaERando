@@ -183,6 +183,26 @@ void NPCManipulator::ReplaceHanZhongBridgeTrigger(BYTE generalId)
     myRom.WriteByte(0x2D6BD, generalId);
 }
 
+void NPCManipulator::ReplaceXuZheBridgeTrigger(BYTE generalId)
+{
+    // Replace the general that the bridge lady looks for
+    myRom.WriteByte(0x3684F, generalId);
+
+    // Xu Zhe, my love, where are you?
+    myRom.WriteByte(0x2AF53, generalId); // Replace Id
+    myRom.WriteByte(0x2AF55, 0xE0); // newline in case of long name
+
+    // Xu Zhe!  Oh, I'm blocking the bridge...
+    myRom.WriteByte(0x2AF65, generalId); // Replace ID
+    // Adjust text to protect against long names.
+    myRom.WriteByte(0x2AF67, 0xFB);
+    myRom.WriteByte(0x2AF68, 0x18);
+    myRom.WriteByte(0x2AF69, 0x0A);
+    myRom.WriteByte(0x2AF6A, 0x30);
+    myRom.WriteByte(0x2AF6B, 0x3C);
+    myRom.WriteByte(0x2AF6C, 0x8E);
+}
+
 void NPCManipulator::FixLongNameTexts()
 {
     // I'm X. I am happy to serve
