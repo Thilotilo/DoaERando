@@ -53,6 +53,7 @@ public:
     void MoveGemswordToSimaHuisHut();
     void MakeIntroLetterUseful();
     void LetWangGuiTravelToYangZhou();
+    void ProtectChapter1Generals();
 
     // For Freeform Map
     void ImproveInitialBattlesAndFlags();

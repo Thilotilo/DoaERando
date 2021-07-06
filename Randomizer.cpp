@@ -1323,6 +1323,25 @@ void Randomizer::ReturnToEntryDirectionOnFlagClear()
     }
 }
 
+void Randomizer::ProtectChapter1Generals()
+{
+    // The Yellow Scarves battles do stuff to Cheng Yuanzhi and Zheng Mao.
+    // We want it to not do that.
+
+    // Don't change the flags for generals once all 3 Yellow Scarves locations
+    // have been checked.
+    myRom->WriteByte(0x3B03D, 0xF0);
+    myRom->WriteByte(0x3B03E, 0x06);
+    for (int i = 0; i < 6; ++i)
+    {
+        myRom->WriteByte(0x3B03F + i, 0x00);
+    }
+
+    // Don't modify flags for these generals after finishing chapter 1 either
+    myRom->WriteByte(0x3632D, 0xFF);
+    myRom->WriteByte(0x3632E, 0xFF);
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

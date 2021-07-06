@@ -85,6 +85,7 @@ int main(void)
     randomizer.OnlyLaunchShuLuBuOnce();
     randomizer.RemoveZhugeLiangFetchQuest();
     randomizer.MoveGuiYangBattle();
+    randomizer.ProtectChapter1Generals();
 
     randomizer.RewriteTitleScreen(MAJOR_RELEASE, MINOR_RELEASE, PATCH, seed);
     printf("Saving file...\n");
