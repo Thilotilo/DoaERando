@@ -1182,6 +1182,147 @@ void Randomizer::LetWangGuiTravelToYangZhou()
     }
 }
 
+void Randomizer::RemoveFinalIntroScreen()
+{
+    // This is just a way of freeing bytes from bank 7 in order to
+    // put code in.  We free a few hundred bytes this way. We free
+    // up bytes in 2 places: the code that calls the screen and
+    // the text in that screen.
+
+    const int NUM_BYTES_TO_CLEAR_CODE = 0x1DC58 - 0x1DAF9;
+    const int NUM_BYTES_TO_CLEAR_TEXT = 0x1D27A - 0x1D244;
+
+    for (int i = 0; i < NUM_BYTES_TO_CLEAR_CODE; ++i)
+    {
+        myRom->WriteByte(0x1DAF9, 0x00);
+    }
+
+    for (int i = 0; i < NUM_BYTES_TO_CLEAR_TEXT; ++i)
+    {
+        myRom->WriteByte(0x1D27A, 0x00);
+    }
+
+    // Lastly, we have to tell the code to skip over the zeroed code
+    // (JMP $926A)
+    myRom->WriteByte(0x1D241, 0x4C);
+    myRom->WriteByte(0x1D242, 0x6A);
+    myRom->WriteByte(0x1D243, 0x92);
+}
+
+void Randomizer::ReturnToEntryDirectionOnFlagClear()
+{
+    // Intro: There are a few locations in the game that we can enter, then
+    // exit, but whether we can move past that location is entirely dependent
+    // on a trigger (either a story flag or a battle-completed flag)
+    // In vanilla, this exit location is hardcoded (so for example, Bo Hai always
+    // returns us below Bo Hai if we haven't talked to the lady at the bridge
+    // with Xu Zhe in our party.  With the open map in the randomizer, we instead
+    // want to return us to the direction from which we came.  So if we enter Bo
+    // Hai from the East, we'll return to the east side of the castle when we
+    // exit.  There is no mechanism for this, so what we do is store the direction
+    // that we entered from into $94, which seems to be unused as far as I can tell.
+    // Then when we exit, we use the value in $94 to determine how to alter our
+    // position.  In rewriting the location-exit code, we have eliminated a few
+    // requirements.  First, Si Shui only worries about if the battle is clear, not
+    // what chapter we're on.  Zhang Song's hut, Chang An, and Gui Yang no longer
+    // have any special code.
+
+    // PART 1: Store the entry location to $94 only if we are entering a first-level
+    //         location.
+    std::vector<BYTE> entryLocStoreCode {
+        0x48,               // PHA
+        0xAD, 0x11, 0x60,   // LDA $6011
+        0xC9, 0x01,         // CMP #$01 (Only write direction if we've entered from the world map)
+        0xD0, 0x04,         // BNE (PLA instruction)
+        0xA5, 0x87,         // LDA $87
+        0x85, 0x94,         // STA $94
+        0x68,               // PLA
+        // These 3 bytes are needed because they are what we are overriding with the
+        // upcoming JSR instruction
+        0x29, 0xC0,         // AND #$C0
+        0x18,               // CLC
+        0x60,               // RTS
+    };
+
+    for (int i = 0; i < entryLocStoreCode.size(); ++i)
+    {
+        myRom->WriteByte(0x1DAF9 + i, entryLocStoreCode[i]);
+    }
+
+    // PART 2: Actually do the jump to this code on the location-enter code
+    // (JSR $9AE9)
+    myRom->WriteByte(0x3BD3C, 0x20);
+    myRom->WriteByte(0x3BD3D, 0xE9);
+    myRom->WriteByte(0x3BD3E, 0x9A);
+
+    // PART 3: Update the location-exit code to use this new value at $94
+    //         to determine any coordinate adjustments, and to use the new
+    //         location triggers
+    std::vector<BYTE> locationTriggerCode {
+        // Start with Si Shui courtyard
+        0xC0, 0x20,         // CPY #$20
+        0xD0, 0x06,         // BNE (Luo Yang check)
+        0xAD, 0x06, 0x65,   // LDA $6506 (Fortress battle completed)
+        0x4C, 0x8A, 0xBE,   // JMP $BE8A (location to update coordinates)
+        // Next, check Luo Yang courtyard
+        0xC0, 0x21,         // CPY #$21
+        0xD0, 0x06,         // BNE (Guang Zong check)
+        0xAD, 0x0A, 0x65,   // LDA $650A (Luo Yang battle completed)
+        0x4C, 0x8A, 0xBE,   // JMP $BE8A
+        // Next, check Guang Zong outskirts
+        0xC0, 0x28,         // CPY #$28
+        0xD0, 0x06,         // BNE (Luo check)
+        0xAD, 0x16, 0x65,   // LDA $6516 (Castle battle completed)
+        0x4C, 0x8A, 0xBE,   // JMP $BE8A
+        // Next, check Luo
+        0xC0, 0x5F,         // CPY #$5F
+        0xD0, 0x08,         // BNE (Bo Hai check)
+        0xAD, 0x52, 0x65,   // LDA $6552
+        0x29, 0x04,         // AND #$04 (6552b2 indicates we've unlocked the Liu Zheng gate)
+        0x4C, 0x8A, 0xBE,   // JMP $BE8A
+        // Finally, check Bo Hai
+        0xC0, 0x69,         // CPY #$69
+        0xD0, 0x4F,         // BNE (Standard exit code)
+        0xAD, 0x51, 0x65,   // LDA $6551
+        0x29, 0x80,         // AND #$80 (6551b7 indicates the lady has moved from the bridge)
+        // This is the location to update coordinates.  If we are here, then that means we are
+        // at one of the key locations.  If A is 0, then we need to do an adjustment.  Otherwise,
+        // we simply go to the exit code
+        0xD0, 0x48,         // BNE (Standard exit code)
+        0xA5, 0x94,         // LDA $94 (location we entered from)
+        // Check Up
+        0xC9, 0x00,         // CMP #$00 (Up)
+        0xD0, 0x05,         // BNE (Check Down)
+        0xE6, 0x60,         // INC $60 (Move Y coordinate down 1)
+        0x4C, 0xD4, 0xBE,   // JMP (standard exit code)
+        // Check Down
+        0xC9, 0x01,         // CMP #$01 (Down)
+        0xD0, 0x05,         // BNE (Check Left)
+        0xC6, 0x60,         // DEC $60 (Move Y coordinate up 1)
+        0x4C, 0xD4, 0xBE,   // JMP (standard exit code)
+        // Check Left
+        0xC9, 0x02,         // CMP #$02 (Left)
+        0xD0, 0x05,         // BNE (Use right)
+        0xE6, 0x62,         // INC $62 (Move X coordinate right 1)
+        0x4C, 0xD4, 0xBE,   // JMP (standard exit code)
+        // Use Right (Up/Down/Left are all false)
+        0xC6, 0x62,         // DEC $62 (Move X coordinate left 1)
+        0x4C, 0xD4, 0xBE,   // JMP (standard exit code)
+    };
+
+    for (int i = 0; i < locationTriggerCode.size(); ++i)
+    {
+        myRom->WriteByte(0x3BE67 + i, locationTriggerCode[i]);
+    }
+
+    // Finally, zero out the remaining unused bytes in this section
+    const int NUM_BYTES_TO_CLEAR = 0x3BED4 - 0x3BE67 - locationTriggerCode.size();
+    for (int i = 0; i < NUM_BYTES_TO_CLEAR; ++i)
+    {
+        myRom->WriteByte(0x3BE67 + locationTriggerCode.size() + i, 0x00);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

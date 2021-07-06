@@ -38,6 +38,12 @@ int main(void)
     // Need to do this before randomizing the starting generals
     randomizer.MakeAllGeneralsRecruitableAndEncounterable();
 
+    // Need to do this before altering location-exit behavior
+    randomizer.RemoveFinalIntroScreen();
+
+    // Non-random fix, but needs to come before
+    // ReturnToEntryDirectionOnFlagClear
+    randomizer.DisableChapter1LockForSiShui();
     // Randomized features
     if (useNewShuffle)
     {
@@ -49,6 +55,7 @@ int main(void)
         randomizer.MakeZhangBaoAndGuanXingAvailable();
         randomizer.MakeZone0GeneralsUnfirable();
         randomizer.UpdateLiuBeiTurnInTrigger();
+        randomizer.ReturnToEntryDirectionOnFlagClear();
     }
     else
     {
@@ -76,7 +83,6 @@ int main(void)
     randomizer.ModifyEncounterRate();
     randomizer.FixSlot7Glitch();
     randomizer.OnlyLaunchShuLuBuOnce();
-    randomizer.DisableChapter1LockForSiShui();
     randomizer.RemoveZhugeLiangFetchQuest();
     randomizer.MoveGuiYangBattle();
 

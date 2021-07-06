@@ -21,6 +21,7 @@ public:
     void RandomizeStartingGenerals();
 
     void RewriteTitleScreen(int major, int minor, int patch, int seed);
+    void RemoveFinalIntroScreen();
 
     void ItemShuffle();
     void CaveShuffle();
@@ -57,6 +58,10 @@ public:
     void ImproveInitialBattlesAndFlags();
     void ImproveMap();
     void MoveGuiYangBattle();
+    // IMPORTANT:
+    // 1) MUST BE CALLED AFTER RemoveFinalIntroScreen
+    // 2) DisableChapter1LockForSiShui may not be called after this is called.
+    void ReturnToEntryDirectionOnFlagClear();
 
     // Newest General Shuffle
     void SetGeneralForZone0AndRemove(BYTE generalId, std::vector<BYTE>& ids);
