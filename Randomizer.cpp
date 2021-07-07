@@ -1350,6 +1350,16 @@ void Randomizer::MakeAllGeneralsBilletable()
     }
 }
 
+void Randomizer::MakeWarlordsImmuneToAnSha()
+{
+    // Sun Quan, Cao Pi, and Sima Yi are already immune to An Sha
+    myRom->WriteByte(0x3BC5F, 0xA8); // Add Liu Bei
+    myRom->WriteByte(0x3BC60, 0x70); // Add Cao Cao
+    myRom->WriteByte(0x3BC61, 0x56); // Add Sun Ce
+    myRom->WriteByte(0x3BC62, 0xAB); // Add Liu Chan
+    myRom->WriteByte(0x3BC63, 0xBC); // Add the Lu Bu that takes the gemsword
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();

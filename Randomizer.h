@@ -73,6 +73,7 @@ public:
     void RemoveUneededEntranceTriggerCode();
     void UpdateLiuBeiTurnInTrigger();
     void MakeAllGeneralsBilletable();
+    void MakeWarlordsImmuneToAnSha();
 
 private:
     Randomizer() = delete;

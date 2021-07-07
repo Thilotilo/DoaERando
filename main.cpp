@@ -57,6 +57,7 @@ int main(void)
         randomizer.UpdateLiuBeiTurnInTrigger();
         randomizer.ReturnToEntryDirectionOnFlagClear();
         randomizer.MakeAllGeneralsBilletable();
+        randomizer.MakeWarlordsImmuneToAnSha();
     }
     else
     {
