@@ -56,6 +56,7 @@ int main(void)
         randomizer.MakeZone0GeneralsUnfirable();
         randomizer.UpdateLiuBeiTurnInTrigger();
         randomizer.ReturnToEntryDirectionOnFlagClear();
+        randomizer.MakeAllGeneralsBilletable();
     }
     else
     {

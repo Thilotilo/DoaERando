@@ -72,6 +72,7 @@ public:
     void MakeZone0GeneralsUnfirable();
     void RemoveUneededEntranceTriggerCode();
     void UpdateLiuBeiTurnInTrigger();
+    void MakeAllGeneralsBilletable();
 
 private:
     Randomizer() = delete;

@@ -1342,6 +1342,14 @@ void Randomizer::ProtectChapter1Generals()
     myRom->WriteByte(0x3632E, 0xFF);
 }
 
+void Randomizer::MakeAllGeneralsBilletable()
+{
+    for (int i = 0; i < 7; ++i)
+    {
+        myRom->WriteByte(0x39580 + i, 0x00);
+    }
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();
