@@ -1587,10 +1587,12 @@ void Randomizer::NewGeneralAndBattleShuffle()
             myGenerals.SetAndScaleGeneralForZone(generalId, i + 1, myRNG);
         }
     }
-    // Now lets do some special logic for Sun Ce & Cao Cao:
+    // Now lets do some special logic for Sun Ce, Cao Cao, and Gemsword Lu Bu:
     myGenerals.RandomizeCaoCaoAndSunCe(myRNG);
-    myGenerals.ScaleGeneralAllyHpForZone(CAO_CAO_ID, 0, myRNG);
-    myGenerals.ScaleGeneralAllyHpForZone(SUN_CE_ID, 0, myRNG);
+    // Set generals to zone 9 (tiger leveling)
+    myGenerals.ScaleGeneralAllyHpForZone(CAO_CAO_ID, 9, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(SUN_CE_ID, 9, myRNG);
+    myGenerals.ScaleGeneralAllyHpForZone(LU_BU_GEMSWORD_ID, 9, myRNG);
 
     // Give the gemsword Lu Bu the max gear possible to increase
     // gemsword value

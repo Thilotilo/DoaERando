@@ -59,9 +59,10 @@ void General::ScaleMaxTacticForZone(RNG& rng)
 }
 
 void General::ScaleSoldiersForZone(RNG& rng)
-{ 
-    const BYTE MIN_SOLDIERS[9] = {1,   10,  24, 33, 48, 53, 64, 82,  99};
-    const BYTE MAX_SOLDIERS[9] = {121, 27,  32, 47, 61, 60, 79, 111, 121};
+{
+    // Zone 9 is tiger leveling
+    const std::vector<BYTE> MIN_SOLDIERS = {1,   10,  24, 33, 48, 53, 64, 82,  99,  128};
+    const std::vector<BYTE> MAX_SOLDIERS = {121, 27,  32, 47, 61, 60, 79, 111, 121, 148};
 
     BYTE randomizedSoldiers = rng.GetRandomByte(MIN_SOLDIERS[zone], MAX_SOLDIERS[zone]);
     {
@@ -87,8 +88,9 @@ void General::ScaleSoldiersForZone(RNG& rng)
 
 void General::ScaleAllySoldiersForAnotherZone(int zone, RNG& rng)
 {
-    const BYTE MIN_SOLDIERS[9] = {1,   10,  24, 33, 48, 53, 64, 82,  99};
-    const BYTE MAX_SOLDIERS[9] = {121, 27,  32, 47, 61, 60, 79, 111, 121};
+    // Zone 9 is tiger leveling
+    const std::vector<BYTE> MIN_SOLDIERS = {1,   10,  24, 33, 48, 53, 64, 82,  99,  128};
+    const std::vector<BYTE> MAX_SOLDIERS = {121, 27,  32, 47, 61, 60, 79, 111, 121, 148};
 
     BYTE randomizedSoldiers = rng.GetRandomByte(MIN_SOLDIERS[zone], MAX_SOLDIERS[zone]);
     if (allySoldierExponent & 0x80)
