@@ -341,6 +341,15 @@ void Generals::RandomizeCaoCaoAndSunCe(RNG& rng)
     myRom.WriteByte(0x333B3, 0x07); // Portrait color
 }
 
+void Generals::RandomizeLiuShan(RNG& rng)
+{
+    // Scale Liu Shan's STR/INT/AGI to an above average range (180-220)
+    int LiuShanIndex = GetGeneralIndexById(LIU_CHAN_ID);
+    myGenerals[LiuShanIndex].strength = rng.GetRandomByte(180, 220);
+    myGenerals[LiuShanIndex].intelligence = rng.GetRandomByte(180, 220);
+    myGenerals[LiuShanIndex].agility = rng.GetRandomByte(180, 220);
+}
+
 void Generals::SetStartingGenerals(vector<BYTE>& startingGeneralIds)
 {
     for (auto& generalId : startingGeneralIds)

@@ -25,6 +25,7 @@ class Generals
         void ScaleForZone(RNG& rng);
         void ScaleSpecialGenerals(RNG& rng);
         void RandomizeCaoCaoAndSunCe(RNG& rng);
+        void RandomizeLiuShan(RNG& rng);
         void UpdateGenerals();
 
         std::vector<BYTE> GetGeneralIdsFromZone(BYTE zone);
