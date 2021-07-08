@@ -46,6 +46,7 @@ public:
     void RandomizeBattles();
 
     // Other QoL Boosts
+    void UpdateGeneralNames();
     void DisableNonGeneralBattles();
     void IncreaseTacticGains();
     void DoubleXpGain();

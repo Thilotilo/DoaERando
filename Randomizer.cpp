@@ -1360,6 +1360,326 @@ void Randomizer::MakeWarlordsImmuneToAnSha()
     myRom->WriteByte(0x3BC63, 0xBC); // Add the Lu Bu that takes the gemsword
 }
 
+void Randomizer::UpdateGeneralNames()
+{
+    // (0C) Zhang Jao -> Zhang Jue
+    myRom->WriteByte(0x32915, 0x64);
+    myRom->WriteByte(0x32916, 0x34);
+
+    // *(0F) Ma Yuan Yi -> Ma Yuanyi
+    myRom->WriteByte(0x32969, 0xFF);
+    myRom->WriteByte(0x32971, 0x68);
+    myRom->WriteByte(0x32972, 0x38);
+    myRom->WriteByte(0x32973, 0xFF);
+
+    // *(10) Cheng Yuan Zhi -> Cheng Yuanzhi
+    myRom->WriteByte(0x32988, 0xFF);
+    myRom->WriteByte(0x32993, 0x69);
+    myRom->WriteByte(0x32994, 0x37);
+    myRom->WriteByte(0x32995, 0x38);
+    myRom->WriteByte(0x32996, 0xFF);
+
+    // (12) Guo Ji -> Guo Si
+    myRom->WriteByte(0x329CA, 0x22);
+
+    // (15) Fen Chou -> Fan Chou
+    myRom->WriteByte(0x32A1B, 0x30);
+
+    // (36) Liu Yang -> Liu Xian
+    myRom->WriteByte(0x32DCE, 0x27);
+    myRom->WriteByte(0x32DCF, 0x38);
+    myRom->WriteByte(0x32DD0, 0x30);
+    myRom->WriteByte(0x32DD1, 0x3D);
+
+    // (3D) Mi Zhe -> Mi Zhu
+    myRom->WriteByte(0x32E43, 0x64);
+
+    // (46) Liu Kui -> Liu Gui
+    myRom->WriteByte(0x32F2C, 0x16);
+
+    // (47) Liu Zheng -> Liu Zhang
+    myRom->WriteByte(0x32F4A, 0x30);
+
+    // (5D) Tai Si Ci -> Taishi Ci
+    myRom->WriteByte(0x3319A, 0xFF);
+    myRom->WriteByte(0x3319E, 0x2E);
+    myRom->WriteByte(0x3319F, 0x37);
+    myRom->WriteByte(0x331A0, 0x38);
+
+    // (5F) Fan Zhang -> Pan Zhang
+    myRom->WriteByte(0x331D7, 0x1F);
+
+    // (6E) Yan Xun -> Yan Jun
+    myRom->WriteByte(0x33385, 0x19);
+
+    // (78) Xu Zhu -> Xu Chu
+    myRom->WriteByte(0x3349C, 0x12);
+
+    // *(7A) Xia Hou Dun -> Xiahou Dun
+    myRom->WriteByte(0x334D0, 0xFF);
+    myRom->WriteByte(0x334D4, 0x37);
+    myRom->WriteByte(0x334D5, 0x3E);
+    myRom->WriteByte(0x334D6, 0x64);
+    myRom->WriteByte(0x334D7, 0x0A);
+    myRom->WriteByte(0x334D8, 0x13);
+    myRom->WriteByte(0x334D9, 0x64);
+    myRom->WriteByte(0x334DA, 0x3D);
+    myRom->WriteByte(0x334DB, 0xFF);
+
+    // *(7B) Xia Hou Yuan -> Xiahou Yuan
+    myRom->WriteByte(0x334F0, 0xFF);
+    myRom->WriteByte(0x334F4, 0x37);
+    myRom->WriteByte(0x334F5, 0x3E);
+    myRom->WriteByte(0x334F6, 0x64);
+    myRom->WriteByte(0x334F7, 0x0A);
+    myRom->WriteByte(0x334F8, 0x28);
+    myRom->WriteByte(0x334F9, 0x64);
+    myRom->WriteByte(0x334FA, 0x30);
+    myRom->WriteByte(0x334FB, 0x3D);
+    myRom->WriteByte(0x334FC, 0xFF);
+
+    // *(84) Xia Hou Mao -> Xiahou Mao
+    myRom->WriteByte(0x335F2, 0xFF);
+    myRom->WriteByte(0x335F6, 0x37);
+    myRom->WriteByte(0x335F7, 0x3E);
+    myRom->WriteByte(0x335F8, 0x64);
+    myRom->WriteByte(0x335F9, 0x0A);
+    myRom->WriteByte(0x335FA, 0x1C);
+    myRom->WriteByte(0x335FB, 0x30);
+    myRom->WriteByte(0x335FC, 0x3E);
+    myRom->WriteByte(0x335FD, 0xFF);
+
+    // *(85) Xia Hou De -> Xiahou De
+    myRom->WriteByte(0x33612, 0xFF);
+    myRom->WriteByte(0x33616, 0x37);
+    myRom->WriteByte(0x33617, 0x3E);
+    myRom->WriteByte(0x33618, 0x64);
+    myRom->WriteByte(0x33619, 0x0A);
+    myRom->WriteByte(0x3361A, 0x13);
+    myRom->WriteByte(0x3361B, 0x34);
+    myRom->WriteByte(0x3361C, 0xFF);
+
+    // *(86) Xia Hou Shang -> Xiahou Shang
+    myRom->WriteByte(0x33631, 0xFF);
+    myRom->WriteByte(0x33635, 0x37);
+    myRom->WriteByte(0x33636, 0x3E);
+    myRom->WriteByte(0x33637, 0x64);
+    myRom->WriteByte(0x33638, 0x0A);
+    myRom->WriteByte(0x33639, 0x22);
+    myRom->WriteByte(0x3363A, 0x37);
+    myRom->WriteByte(0x3363B, 0x30);
+    myRom->WriteByte(0x3363C, 0x3D);
+    myRom->WriteByte(0x3363D, 0x36);
+    myRom->WriteByte(0x3363E, 0xFF);
+
+    // *(8D) Si Ma Zhao -> Sima Zhao
+    myRom->WriteByte(0x33704, 0xFF);
+    myRom->WriteByte(0x33707, 0x3C);
+    myRom->WriteByte(0x33708, 0x30);
+    myRom->WriteByte(0x33709, 0x0A);
+    myRom->WriteByte(0x3370A, 0x29);
+    myRom->WriteByte(0x3370B, 0x37);
+    myRom->WriteByte(0x3370C, 0x30);
+    myRom->WriteByte(0x3370D, 0x3E);
+    myRom->WriteByte(0x3370E, 0xFF);
+
+    // *(AB) Liu  Chan -> Liu Shan
+    myRom->WriteByte(0x33968, 0x22);
+    myRom->WriteByte(0x33969, 0x37);
+    myRom->WriteByte(0x3396A, 0x30);
+    myRom->WriteByte(0x3396B, 0x3D);
+    myRom->WriteByte(0x3396C, 0xFF);
+
+    // *(BA) Zheng Mao -> Deng Mao
+    myRom->WriteByte(0x33ABE, 0x13);
+    myRom->WriteByte(0x33ABF, 0x34);
+    myRom->WriteByte(0x33AC0, 0x3D);
+    myRom->WriteByte(0x33AC1, 0x36);
+    myRom->WriteByte(0x33AC2, 0x0A);
+    myRom->WriteByte(0x33AC3, 0x1C);
+    myRom->WriteByte(0x33AC4, 0x30);
+    myRom->WriteByte(0x33AC5, 0x3E);
+    myRom->WriteByte(0x33AC6, 0xFF);
+
+    // (C1) Lu Guang -> Lu Kuang
+    myRom->WriteByte(0x33B85, 0x1A);
+
+    // *(C5) Xing Dao Rong -> Xing Daorong
+    myRom->WriteByte(0x33BF1, 0xFF);
+    myRom->WriteByte(0x33BFA, 0x2D);
+    myRom->WriteByte(0x33BFB, 0x3E);
+    myRom->WriteByte(0x33BFC, 0x3D);
+    myRom->WriteByte(0x33BFD, 0x36);
+    myRom->WriteByte(0x33BFE, 0xFF);
+
+    // *(CD) Zhu Ge Jin -> Zhuge Jin
+    myRom->WriteByte(0x33CDD, 0xFF);
+    myRom->WriteByte(0x33CE1, 0x36);
+    myRom->WriteByte(0x33CE2, 0x34);
+    myRom->WriteByte(0x33CE3, 0x0A);
+    myRom->WriteByte(0x33CE4, 0x19);
+    myRom->WriteByte(0x33CE5, 0x38);
+    myRom->WriteByte(0x33CE6, 0x3D);
+    myRom->WriteByte(0x33CE7, 0xFF);
+
+    // *(D2) Xun Huo -> Xun Yu
+    myRom->WriteByte(0x33D72, 0x28);
+    myRom->WriteByte(0x33D74, 0xFF);
+
+    // *(D5) Zhu Ge Liang -> Zhuge Liang
+    myRom->WriteByte(0x33DC3, 0xFF);
+    myRom->WriteByte(0x33DC7, 0x36);
+    myRom->WriteByte(0x33DC8, 0x34);
+    myRom->WriteByte(0x33DC9, 0x0A);
+    myRom->WriteByte(0x33DCA, 0x1B);
+    myRom->WriteByte(0x33DCB, 0x38);
+    myRom->WriteByte(0x33DCC, 0x30);
+    myRom->WriteByte(0x33DCD, 0x3D);
+    myRom->WriteByte(0x33DCE, 0x36);
+    myRom->WriteByte(0x33DCF, 0xFF);
+
+    // (D6) Xu Zhe -> Xu Shu
+    myRom->WriteByte(0x33DE8, 0x22);
+    myRom->WriteByte(0x33DEA, 0x64);
+
+    // Now, for situations where we need to increase the character count,
+    // the easiest way is to swap memory locations for a general whose name
+    // is losing a character, and whose original name has the same number of
+    // characters as the increased-count name will have.  Then update the
+    // pointers so that the ids of the generals don't change.
+
+    // +(2D) Wen Hun -> Wen Chou
+    // *(88) Si Ma Yi -> Sima Yi
+    myRom->SwapBytes(0x32610 + 0x2D, 0x32610 + 0x88);
+    myRom->SwapBytes(0x32710 + 0x2D, 0x32710 + 0x88);
+    for (int i = 0; i < 20; ++i)
+    {
+        myRom->SwapBytes(0x33660 + i, 0x32CB7 + i);
+    }
+    myRom->WriteByte(0x32CCA, 0xFF);
+    myRom->WriteByte(0x32CCB, 0x22);
+    myRom->WriteByte(0x32CCC, 0x38);
+    myRom->WriteByte(0x32CCD, 0x3C);
+    myRom->WriteByte(0x32CCE, 0x30);
+    myRom->WriteByte(0x32CCF, 0x0A);
+    myRom->WriteByte(0x32CD0, 0x28);
+    myRom->WriteByte(0x32CD1, 0x38);
+    myRom->WriteByte(0x33674, 0x26);
+    myRom->WriteByte(0x33675, 0x34);
+    myRom->WriteByte(0x33676, 0x3D);
+    myRom->WriteByte(0x33677, 0x0A);
+    myRom->WriteByte(0x33678, 0x12);
+    myRom->WriteByte(0x33679, 0x37);
+    myRom->WriteByte(0x3367A, 0x3E);
+    myRom->WriteByte(0x3367B, 0x64);
+
+    // +(6A) Chen Pu -> Cheng Pu
+    // *(B9) Yang Jin -> Gan Jin
+    myRom->SwapBytes(0x32610 + 0x6A, 0x32610 + 0xB9);
+    myRom->SwapBytes(0x32710 + 0x6A, 0x32710 + 0xB9);
+    for (int i = 0; i < 20; ++i)
+    {
+        myRom->SwapBytes(0x332FE + i, 0x33A8D + i);
+    }
+    myRom->WriteByte(0x33AA1, 0x12);
+    myRom->WriteByte(0x33AA2, 0x37);
+    myRom->WriteByte(0x33AA3, 0x34);
+    myRom->WriteByte(0x33AA4, 0x3D);
+    myRom->WriteByte(0x33AA5, 0x36);
+    myRom->WriteByte(0x33AA6, 0x0A);
+    myRom->WriteByte(0x33AA7, 0x1F);
+    myRom->WriteByte(0x33AA8, 0x64);
+    myRom->WriteByte(0x33312, 0x16);
+    myRom->WriteByte(0x33313, 0x30);
+    myRom->WriteByte(0x33314, 0x3D);
+    myRom->WriteByte(0x33315, 0x0A);
+    myRom->WriteByte(0x33316, 0x19);
+    myRom->WriteByte(0x33317, 0x38);
+    myRom->WriteByte(0x33318, 0x3D);
+
+
+    // +(61) Jang Qin -> Jiang Qin
+    // *(8E) Si Ma Shi -> Sima Shi
+    myRom->SwapBytes(0x32610 + 0x61, 0x32610 + 0x8E);
+    myRom->SwapBytes(0x32710 + 0x61, 0x32710 + 0x8E);
+    for (int i = 0; i < 20; ++i)
+    {
+        myRom->SwapBytes(0x33710 + i, 0x331FF + i);
+    }
+    myRom->WriteByte(0x33213, 0x22);
+    myRom->WriteByte(0x33214, 0x38);
+    myRom->WriteByte(0x33215, 0x3C);
+    myRom->WriteByte(0x33216, 0x30);
+    myRom->WriteByte(0x33217, 0x0A);
+    myRom->WriteByte(0x33218, 0x22);
+    myRom->WriteByte(0x33219, 0x37);
+    myRom->WriteByte(0x3321A, 0x38);
+    myRom->WriteByte(0x33723, 0xFF);
+    myRom->WriteByte(0x33724, 0x19);
+    myRom->WriteByte(0x33725, 0x38);
+    myRom->WriteByte(0x33726, 0x30);
+    myRom->WriteByte(0x33727, 0x3D);
+    myRom->WriteByte(0x33728, 0x36);
+    myRom->WriteByte(0x33729, 0x0A);
+    myRom->WriteByte(0x3372A, 0x20);
+    myRom->WriteByte(0x3372B, 0x38);
+    myRom->WriteByte(0x3372C, 0x3D);
+
+    // This is the trickiest of the bunch.  There are no names that
+    // are being reduced to 5 characters, so we can't do the same type
+    // of swap.  Instead, we're going to have to adjust a pointer.
+    // The least invasive way to do this is to swap Zhou Yu(66) and
+    // Xu Shou, and also swap Lu Su (65) and Bu Xi.  This puts Bu Xi
+    // and Xu Shou next to each other.  We now need to grow Bu Xi to
+    // Bu Zhi, so what we do is shift all of the general info bytes
+    // for Xu Shou up by 1, giving us an extra name character for Bu Zhi.
+    // Then, since Xu Shou is shortening to Xu You, the offset change
+    // doesn't carry on to any additional generals.
+
+    // *(32) Xu Shou -> Xu You
+    // +(63) Bu Xi -> Bu Zhi
+
+    // Swap Bu Xi & Lu Su (65)
+    // Swap Zhou Yu(66) and Xu Shou
+    myRom->SwapBytes(0x32610 + 0x63, 0x32610 + 0x65);
+    myRom->SwapBytes(0x32710 + 0x63, 0x32710 + 0x65);
+    myRom->SwapBytes(0x32610 + 0x32, 0x32610 + 0x66);
+    myRom->SwapBytes(0x32710 + 0x32, 0x32710 + 0x66);
+    for (int i = 0; i < 25; ++i)
+    {
+        myRom->SwapBytes(0x3326F + i, 0x33238 + i);
+    }
+    for (int i = 0; i < 27; ++i)
+    {
+        myRom->SwapBytes(0x33289 + i, 0x32D47 + i);
+    }
+    // Shift all of Xu You's data to the right by 1
+    for (int i = 19; i >= 0; --i)
+    {
+        myRom->SwapBytes(0x33289 + i, 0x33289 + i + 1);
+    }
+    // Change the offset for Xu You
+    BYTE XuYouOffset = myRom->ReadByte(0x32610 + 0x32);
+    myRom->WriteByte(0x32610 + 0x32, XuYouOffset + 1);
+    // Write Bu Zhi's name
+    myRom->WriteByte(0x33283, 0x11);
+    myRom->WriteByte(0x33284, 0x64);
+    myRom->WriteByte(0x33285, 0x0A);
+    myRom->WriteByte(0x33286, 0x29);
+    myRom->WriteByte(0x33287, 0x37);
+    myRom->WriteByte(0x33288, 0x38);
+    myRom->WriteByte(0x33289, 0xFF);
+    // Write Xu You's name
+    myRom->WriteByte(0x3329E, 0x27);
+    myRom->WriteByte(0x3329F, 0x64);
+    myRom->WriteByte(0x332A0, 0x0A);
+    myRom->WriteByte(0x332A1, 0x28);
+    myRom->WriteByte(0x332A2, 0x3E);
+    myRom->WriteByte(0x332A3, 0x64);
+    myRom->WriteByte(0x332A4, 0xFF);
+
+}
+
 void Randomizer::NewGeneralAndBattleShuffle()
 {
     vector<BYTE> ids = myGenerals.GetAllGeneralIds();
