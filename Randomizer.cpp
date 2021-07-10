@@ -1522,10 +1522,6 @@ void Randomizer::UpdateGeneralNames()
     myRom->WriteByte(0x33CE6, 0x3D);
     myRom->WriteByte(0x33CE7, 0xFF);
 
-    // *(D2) Xun Huo -> Xun Yu
-    myRom->WriteByte(0x33D72, 0x28);
-    myRom->WriteByte(0x33D74, 0xFF);
-
     // *(D5) Zhu Ge Liang -> Zhuge Liang
     myRom->WriteByte(0x33DC3, 0xFF);
     myRom->WriteByte(0x33DC7, 0x36);
@@ -1624,6 +1620,28 @@ void Randomizer::UpdateGeneralNames()
     myRom->WriteByte(0x3372A, 0x20);
     myRom->WriteByte(0x3372B, 0x38);
     myRom->WriteByte(0x3372C, 0x3D);
+
+    // *(D2) Xun Huo -> Xun Yu
+    // +(7C) Le Xin -> Yue Jin
+    myRom->SwapBytes(0x32610 + 0xD2, 0x32610 + 0x7C);
+    myRom->SwapBytes(0x32710 + 0xD2, 0x32710 + 0x7C);
+    for (int i = 0; i < 20; ++i)
+    {
+        myRom->SwapBytes(0x33D5A + i, 0x334FE + i);
+    }
+    myRom->WriteByte(0x33512, 0x27);
+    myRom->WriteByte(0x33513, 0x64);
+    myRom->WriteByte(0x33514, 0x3D);
+    myRom->WriteByte(0x33515, 0x0A);
+    myRom->WriteByte(0x33516, 0x28);
+    myRom->WriteByte(0x33517, 0x64);
+    myRom->WriteByte(0x33D6E, 0x28);
+    myRom->WriteByte(0x33D6F, 0x64);
+    myRom->WriteByte(0x33D70, 0x34);
+    myRom->WriteByte(0x33D71, 0x0A);
+    myRom->WriteByte(0x33D72, 0x19);
+    myRom->WriteByte(0x33D73, 0x38);
+    myRom->WriteByte(0x33D74, 0x3D);
 
     // This is the trickiest of the bunch.  There are no names that
     // are being reduced to 5 characters, so we can't do the same type
