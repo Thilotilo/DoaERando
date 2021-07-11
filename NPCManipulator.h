@@ -49,6 +49,11 @@ public:
     void ReplaceHanZhongBridgeTrigger(BYTE generalId);
     void ReplaceXuZheBridgeTrigger(BYTE generalId);
 
+    void ReplaceMaYuanyi(BYTE generalId);
+    void ReplaceYuanShang(BYTE generalId);
+    void ReplaceLuMeng(BYTE generalId);
+    void ReplacePirate(BYTE generalId);
+
     void FixLongNameTexts();
 
 private:

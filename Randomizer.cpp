@@ -1959,6 +1959,19 @@ void Randomizer::NewGeneralAndBattleShuffle()
     myBattleRandomizer.RandomizeZone8(zone8Generals, myRNG);
     printf("9.\n");
 
+    myBattleRandomizer.UpdateBattles(*myRom);
+
+    // Now let's drag out the battle leaders for the 4 in-town battles
+    myNPCManipulator.ReplaceMaYuanyi(myRom->ReadByte(0x30D70 + 5 * 0x04));
+    myNPCManipulator.ReplaceLuMeng(myRom->ReadByte(0x30D70 + 5 * 0x32));
+    myNPCManipulator.ReplacePirate(myRom->ReadByte(0x30D70 + 5 * 0x4C));
+    // We need to do some special logic for Yuan Shang, as his flags must be
+    // 0x80, and he is hardcoded to 0x90 after the battle.
+    BYTE YuanShangId = myRom->ReadByte(0x30D70 + 5 * 0x17);
+    myNPCManipulator.ReplaceYuanShang(YuanShangId);
+    myGenerals.SetGeneralEncounterable(YuanShangId, false);
+    myGenerals.SetGeneralRecruitable(YuanShangId, false);
+
     myGenerals.UpdateGenerals();
 
     printf("After Randomization:\n");
@@ -1973,8 +1986,6 @@ void Randomizer::NewGeneralAndBattleShuffle()
         }
         printf("\n");
     }
-
-    myBattleRandomizer.UpdateBattles(*myRom);
 
     // Here's where we do some other events with deadlock checking.
     // At the moment, there is only one - the Han Zhong Bridge

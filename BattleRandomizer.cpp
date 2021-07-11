@@ -497,7 +497,10 @@ void BattleRandomizer::RandomizeZone1(std::vector<BYTE>& generalIds, RNG& rng)
     PlaceGeneralInBattle(generalIds[1], 0x05);
     PlaceGeneralInBattle(generalIds[0], 0x05);
 
-    std::vector<BYTE> nonSpecialGeneralIds(generalIds.cbegin() + 3, generalIds.cend());
+    // Make Ma Yuan Yi unique
+    PlaceGeneralInBattle(generalIds[3], 0x04);
+
+    std::vector<BYTE> nonSpecialGeneralIds(generalIds.cbegin() + 4, generalIds.cend());
 
     // Make sure every general goes to a relevant battle
     for (auto& id : nonSpecialGeneralIds)
@@ -570,17 +573,19 @@ void BattleRandomizer::RandomizeZone4(std::vector<BYTE>& generalIds, RNG& rng)
     // for now, the only special consideration we're giving here is that we want the
     // first general in the Yuan Shao ambush (48) to be the first general in the Yuan Shao
     // battle at Ji Zhou (1A)
-    // Update: We want to relegate the Yuan Shang battle (17) to duplicates, as it isn't always
-    // there (yet).
 
     // Assign the special generals to each battle
     PlaceGeneralInBattle(generalIds[0], 0x48);
     PlaceGeneralInBattle(generalIds[0], 0x1A);
+    // Make Yuan Shang unique
+    PlaceGeneralInBattle(generalIds[1], 0x17);
+
+    std::vector<BYTE> nonSpecialGeneralIds(generalIds.cbegin() + 2, generalIds.cend());
 
     // All the other battles can be filled like normal.
-    vector<int> battlesToFill = {0x14, 0x15, 0x16, /*0x17, */0x18, 0x19, 0x1A};
+    vector<int> battlesToFill = {0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A};
     // Make sure every general goes to a relevant battle
-    for (auto& id : generalIds)
+    for (auto& id : nonSpecialGeneralIds)
     {
         int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];
@@ -594,7 +599,6 @@ void BattleRandomizer::RandomizeZone4(std::vector<BYTE>& generalIds, RNG& rng)
     // There is a non-existent battle with Zhou Cang (49) that would fit in this zone. We
     // can't trigger it yet, but let's fill it anyway (only with repeat generals, of course)
     battlesToFill.push_back(0x49);
-    battlesToFill.push_back(0x17); // Yuan Shang Battle
     battlesToFill.push_back(0x48); // Ambush
     // Now fill all battles with generals/rebel forces
     FillBattlesRandomly(generalIds, battlesToFill, rng);
@@ -667,12 +671,19 @@ void BattleRandomizer::RandomizeZone7(std::vector<BYTE>& generalIds, RNG& rng)
     // 2) There is a Yan Xun battle (2C) that is not triggerable, but we'll fill it anyway
     //    (with duplicates of course)
 
+    // Make Lu Meng unique
+    PlaceGeneralInBattle(generalIds[0], 0x32);
+    // Make Pirate unique
+    PlaceGeneralInBattle(generalIds[1], 0x4C);
+
+    std::vector<BYTE> nonSpecialGeneralIds(generalIds.cbegin() + 2, generalIds.cend());
+
     // Other than the battles mentioned above, we can now fill the battles like normal.
     vector<int> battlesToFill = {0x2A, 0x2B, 0x2D, 0x2E, 0x2F,
                                  0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x4C, 0x4D};
 
     // Make sure every general goes to a relevant battle
-    for (auto& id : generalIds)
+    for (auto& id : nonSpecialGeneralIds)
     {
         int battleIndex = rng.GetRandomInt(0, battlesToFill.size() - 1);
         int battleId = battlesToFill[battleIndex];

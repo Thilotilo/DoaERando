@@ -203,6 +203,54 @@ void NPCManipulator::ReplaceXuZheBridgeTrigger(BYTE generalId)
     myRom.WriteByte(0x2AF6C, 0x8E);
 }
 
+void NPCManipulator::ReplaceMaYuanyi(BYTE generalId)
+{
+    // Replace the actual NPC
+    myRom.WriteByte(0x31A73, generalId);
+    // This requires a bit of explanation.  There are 2 bits that can tell the NPC to
+    // use text 2 instead of text 1.  One of those bits is set when the yellow scarves
+    // are defeated, the other is set when Ma Yuanyi is defeated.  It doesn't matter
+    // if one or both are set - as long as both aren't clear, we will move to text 2.
+    // EXCEPT we can actually move one id past text 2 if both bits are set AND bit 6 of
+    // the YZone is set.  Thus, we swizzle this a bit so that both of Ma Yuanyi's texts
+    // are the battle text (the textId + 1 is the text we get on future interactions), and
+    // then set both bits when the battle is complete.  This way, we can't lock the battle
+    // out when we clear the yellow scarves.  (Note that this will go ahead and change the
+    // other NPCs in Qing Zhou texts, but those aren't really relevant any more anyway)
+    myRom.WriteByte(0x31A6E, 0xCB); // Set bit 6 of YZone
+    myRom.WriteByte(0x31A72, 0xAB); // Set text 2 to the battle text
+    myRom.WriteByte(0x3B076, 0x83); // Set bit 7 & bit 0 of the location flags
+}
+
+void NPCManipulator::ReplaceYuanShang(BYTE generalId)
+{
+    // Replace the actual NPC
+    myRom.WriteByte(0x317C3, generalId);
+    myRom.WriteByte(0x3695A, generalId);
+    // Set the correct general's flags to 0x90 (recruitable & encounterable)
+    // rather than setting Yuan Shang's flags to 00 after defeating the
+    // Yuan Shang battle.
+    myRom.WriteByte(0x3693A, 0x90);
+    myRom.WriteByte(0x3693C, generalId);
+}
+
+void NPCManipulator::ReplaceLuMeng(BYTE generalId)
+{
+    // Lu Meng is nice because he doesn't have any special logic to deal with,
+    // since his appearance is entirely based on story flags rather than his
+    // flags.  However, he appears in 3 different places, so we need to update
+    // his NPC data in each one.
+    myRom.WriteByte(0x315A9, generalId); // Wu
+    myRom.WriteByte(0x3156E, generalId); // Po Yang
+    myRom.WriteByte(0x31541, generalId); // Jin Du
+}
+
+void NPCManipulator::ReplacePirate(BYTE generalId)
+{
+    // Only need to replace the NPC here. No other logic.
+    myRom.WriteByte(0x313EA, generalId);
+}
+
 void NPCManipulator::FixLongNameTexts()
 {
     // I'm X. I am happy to serve
